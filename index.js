@@ -1,5 +1,6 @@
 import { h, app } from "hyperapp"
-import { Router } from "./hrouter.js"
+
+import { router, Link } from "@hyperapp/router"
 
 import  R from "rambda"
 
@@ -11,9 +12,12 @@ import {home, detail} from './views.js'
 
 app({
     events: {
-        init: (state, actions) => {
+        load: (state, actions) => {
+            console.log("S")
             actions.loadPeople('https://swapi.co/api/people/');
-        },
+        }
+        /*
+        ,
         route: (state, actions, data, emit) => {
             if(data.match == "/view/:id") {
               let id = data.params.id;
@@ -21,6 +25,7 @@ app({
               actions.loadPerson(id);
             }
         }
+        */
     },
     state: {
         text: 'Hi!!!!!!!',
@@ -33,14 +38,7 @@ app({
             next: null
         }
     },
-    //view: ,
-    mixins: [
-        Router([
-            ["/", home],
-            ["/view/:id", detail],
-            ["*", state => <h1>404</h1>]
-        ])
-    ],
-    actions: actions,
-    root: document.getElementById("app")
+    view: home, 
+    actions: actions
+    ,root: document.getElementById("app")
 })
