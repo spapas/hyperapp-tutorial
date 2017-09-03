@@ -1,16 +1,12 @@
 
 const reducers = module.exports = {
-    updateText: (state, actions, newValue) => {
-        return {
-          'text': newValue
-        }
-    },
+    updateText: (state, actions, newValue) => ({
+      'text': newValue
+    }),
     
-    updateCount: (state, actions, newValue) => {
-        return {
-          'count': 1 * newValue
-        }
-    },
+    updateCount: (state, actions, newValue) => ({
+      'count': 1 * newValue
+    }),
     
     updateLoading: (_, __, loading) => ({
         loading

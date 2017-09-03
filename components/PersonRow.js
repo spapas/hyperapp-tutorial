@@ -3,7 +3,7 @@ import  R from "rambda"
 
 
 const PersonRow = module.exports = ({ person, actions }) => {
-    let id = R.dropLast(1,R.drop(1,R.head(R.match(/\/\d+\/$/, person.url))));
+    let id = person.url.match(/\/(\d+)\/$/)[1]
     return <tr>
         <td>{person.name}</td>
         <td>{person.gender}</td>
