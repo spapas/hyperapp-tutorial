@@ -12,8 +12,9 @@ const reducers = module.exports = {
         loading
     }),
     
-    updatePeople: (state, actions, people) => ({
-        people: people
+    updatePeople: (state, actions, {people, page}) => ({
+        people: people,
+        page: page
     }),
     
     updatePerson: (state, actions, person) => ({
@@ -22,9 +23,15 @@ const reducers = module.exports = {
     
     loadPeople: (state, actions, url) => {
         actions.updateLoading(true)
+        
         setTimeout(() => fetch(url).then(function (r) { return r.json() }).then(function (j) {
+          console.log(url);
           console.log(j);
-          actions.updatePeople(j);
+          let match = url.match(/\?page=(\d+)/)
+          let page = 1;
+          if (match) page = 1*match[1]
+          
+          actions.updatePeople({people: j, page});
           actions.updateLoading(false)
         }), 100);
     },

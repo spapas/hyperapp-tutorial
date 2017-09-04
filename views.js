@@ -4,6 +4,7 @@ import Table from './components/Table.js'
 import People from './components/People.js'
 
 import Spinner from './components/Spinner.js'
+import Pagination from './components/Pagination.js'
 import PersonModal from './components/PersonModal.js'
 import ToastContainer from './components/ToastContainer.js'
 
@@ -18,10 +19,8 @@ export const home = (state, actions) => <div>
     <Table count={state.count} text={state.text} actions={actions} />
     <hr />
     <ToastContainer toasts={state.toasts} actions={actions} />
-    
     {state.loading == true ? <Spinner /> : <People people={state.people} actions={actions} />}
-    {state.people.previous ? <button class='btn' onclick={() => actions.loadPeople(state.people.previous)}>Prev</button> : null}
-    {state.people.next ? <button class='btn' onclick={() => actions.loadPeople(state.people.next)}>Next</button> : null}
+    <Pagination actions={actions} page={state.page} next={state.people.next} previous={state.people.previous} />
 </div>
 
 export const detail = (state, actions) => <div>
