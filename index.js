@@ -31,6 +31,7 @@ app({
         text: 'Hi!!!!!!!',
         count: 5,
         loading: true,
+        toasts: [],
         person: undefined,
         people: {
             results: [],

@@ -41,5 +41,51 @@ const reducers = module.exports = {
         actions.updateLoading(true);
         console.log("ROUTER")
         actions.router.go('#/view/'+id);
+    },
+    
+    displayModal: (state, actions, id) => {
+        actions.loadPerson(id)
+        actions.updateLoading(true);
+        return {
+            person: 'loading'
+        }
+        
+    },
+    
+    hideModal: (state, actions, id) => ({
+        person: undefined
+    }),
+    
+    addToast: (state, actiosn, text) => ({
+        toasts: [...state.toasts, text]
+    }),
+    
+    hideToast: (state, actions, text) => {
+        let idx = state.toasts.indexOf(text)
+        return {
+            toasts: [
+                ...state.toasts.slice(0, idx),
+                ...state.toasts.slice(idx+1),
+            ]
+        }
+    },
+    
+    updateForm: (state, actions, {object, field, value} ) => {
+        console.log("updateform", object, field, value)
+        return {
+            [object]: Object.assign({}, state[object], {
+                [field]: value
+            })
+            
+        }
+    },
+    savePerson: (state, actions, id) => {
+        console.log("Fake saving person ", id)
+        actions.updateLoading(true);
+        setTimeout(() => {
+            actions.hideModal();
+            actions.updateLoading(false);
+            actions.addToast(`Person ${id} saved ok!`)
+        }, 500);
     }
 }
