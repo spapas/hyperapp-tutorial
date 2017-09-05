@@ -6,7 +6,7 @@ const People = module.exports = ({ people, actions }) => <table class="table tab
         <th>Name</th>
         <th>Gender</th>
         <th>Birth year</th>
-        <th>ID</th>
+        <th>Films</th>
         <th>Modal</th>
     </tr></thead>
     <tbody>

@@ -7,13 +7,22 @@ import  R from "rambda"
 import actions from './actions.js'
 import {home, detail} from './views.js'
 
-
-// https://swapi.co/api/people/
+var state = {
+    loading: true,
+    loadingFilms: false,
+    toasts: [],
+    person: undefined,
+    films: [],
+    people: {
+        results: [],
+        count: 0,
+        next: null
+    }
+}
 
 app({
     events: {
         load: (state, actions) => {
-            console.log("S")
             actions.loadPeople('https://swapi.co/api/people/');
         }
         /*
@@ -27,19 +36,8 @@ app({
         }
         */
     },
-    state: {
-        text: 'Hi!!!!!!!',
-        count: 5,
-        loading: true,
-        toasts: [],
-        person: undefined,
-        people: {
-            results: [],
-            count: 0,
-            next: null
-        }
-    },
+    state: state,
     view: home, 
-    actions: actions
-    ,root: document.getElementById("app")
+    actions: actions,
+    root: document.getElementById("app")
 })

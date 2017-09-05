@@ -12,9 +12,17 @@ const reducers = module.exports = {
         loading
     }),
     
+    updateLoadingFilms: (_, __, loadingFilms) => ({
+        loadingFilms
+    }),
+    
     updatePeople: (state, actions, {people, page}) => ({
         people: people,
         page: page
+    }),
+    
+    updateFilms: (state, actions, films) => ({
+        films: films
     }),
     
     updatePerson: (state, actions, person) => ({
@@ -94,5 +102,18 @@ const reducers = module.exports = {
             actions.updateLoading(false);
             actions.addToast(`Person ${id} saved ok!`)
         }, 500);
+    },
+    
+    loadFilms: (state, actions, films) => {
+        console.log("Loading films", films)
+        let film_data = []
+        actions.updateLoadingFilms(true);
+        const grabContent = url => fetch(url).then(res => res.json()).then(j=> film_data.push(j))
+
+        Promise.all(films.map(grabContent)).then(() => {
+            console.log("OK", film_data)
+            actions.updateLoadingFilms(false);
+            actions.updateFilms(film_data)
+        })
     }
 }
