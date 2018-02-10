@@ -1,26 +1,27 @@
 
 const reducers = module.exports = {
-    updateText: (state, actions, newValue) => ({
+    updateText: newValue => state => ({
       'text': newValue
     }),
     
-    updateCount: (state, actions, newValue) => ({
+    updateCount: newValue => state => ({
       'count': 1 * newValue
     }),
     
-    updateLoading: (_, __, loading) => ({
+    updateLoading: loading => state => ({
         loading
     }),
     
-    updatePeople: (state, actions, people) => ({
+    updatePeople: people => state => ({
         people: people
     }),
     
-    updatePerson: (state, actions, person) => ({
+    updatePerson: person => state => ({
         person: person
     }),
     
-    loadPeople: (state, actions, url) => {
+    loadPeople: url => (state, actions) => {
+        console.log("LOADING");
         actions.updateLoading(true)
         setTimeout(() => fetch(url).then(function (r) { return r.json() }).then(function (j) {
           console.log(j);
@@ -29,7 +30,7 @@ const reducers = module.exports = {
         }), 100);
     },
     
-    loadPerson: (state, actions, id) => {
+    loadPerson: id => (state, actions ) => {
         setTimeout(() => fetch('https://swapi.co/api/people/'+id).then(function (r) { return r.json() }).then(function (j) {
           console.log(j);
           actions.updatePerson(j);
@@ -37,7 +38,7 @@ const reducers = module.exports = {
         }), 100);
     },
     
-    loadPersonAndGo: (state, actions, id) => {
+    loadPersonAndGo: id => (state, actions ) => {
         actions.updateLoading(true);
         console.log("ROUTER")
         actions.router.go('#/view/'+id);

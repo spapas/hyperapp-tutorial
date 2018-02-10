@@ -20,8 +20,8 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "@hyperapp/router": "^0.2.3",
-    "hyperapp": "^0.12.0",
+    "@hyperapp/router": "^0.4.1",
+    "hyperapp": "^1.1.2",
     "update": "^0.7.4"
   }
 }

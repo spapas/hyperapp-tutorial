@@ -1,6 +1,4 @@
 const { h } = require('hyperapp')
-import  R from "rambda"
-
 
 const PersonRow = module.exports = ({ person, actions }) => {
     let id = person.url.match(/\/(\d+)\/$/)[1]
