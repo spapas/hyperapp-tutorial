@@ -83,7 +83,7 @@ var reducers = module.exports = {
                     actions.updatePeople({ people: j, page: page });
                     actions.updateLoading(false);
                 });
-            }, 100);
+            }, 10);
         };
     },
 
@@ -97,7 +97,7 @@ var reducers = module.exports = {
                     actions.updatePerson(j);
                     actions.updateLoading(false);
                 });
-            }, 100);
+            }, 10);
         };
     },
 
@@ -121,7 +121,9 @@ var reducers = module.exports = {
 
     hideModal: function hideModal(id) {
         return function (state) {
-            person: undefined;
+            return {
+                person: undefined
+            };
         };
     },
 
@@ -159,7 +161,7 @@ var reducers = module.exports = {
                 actions.hideModal();
                 actions.updateLoading(false);
                 actions.addToast('Person ' + id + ' saved ok!');
-            }, 500);
+            }, 50);
         };
     },
 
@@ -213,7 +215,7 @@ var Empty = module.exports = function () {
     );
 };
 
-},{"hyperapp":19}],3:[function(require,module,exports){
+},{"hyperapp":20}],3:[function(require,module,exports){
 "use strict";
 
 var _require = require('hyperapp'),
@@ -267,7 +269,7 @@ var FilmCard = module.exports = function (_ref) {
   );
 };
 
-},{"hyperapp":19}],4:[function(require,module,exports){
+},{"hyperapp":20}],4:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -287,7 +289,7 @@ var FilmsList = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":19}],5:[function(require,module,exports){
+},{"hyperapp":20}],5:[function(require,module,exports){
 'use strict';
 
 var _FilmCard = require('./FilmCard.js');
@@ -310,7 +312,45 @@ var FilmsView = module.exports = function (_ref) {
     );
 };
 
-},{"./FilmCard.js":3,"hyperapp":19}],6:[function(require,module,exports){
+},{"./FilmCard.js":3,"hyperapp":20}],6:[function(require,module,exports){
+"use strict";
+
+var _require = require('hyperapp'),
+    h = _require.h;
+
+var dateInput = function dateInput(element) {
+    console.log(element);
+    console.log(flatpickr);
+    flatpickr(element, {
+        onChange: function onChange(selectedDates, dateStr, instance) {
+            console.log("CHANGED", selectedDates, dateStr, instance);
+        }
+    });
+};
+
+var FormDateInput = module.exports = function (_ref) {
+    var label = _ref.label,
+        value = _ref.value,
+        action = _ref.action;
+    return h(
+        "div",
+        { "class": "form-group" },
+        h(
+            "label",
+            { "class": "form-label", "for": "{label}" },
+            label
+        ),
+        h("input", { "class": "form-input", type: "text", id: "{label}",
+            placeholder: label, value: value,
+            onkeyup: function onkeyup(e) {
+                return action(e.target.value);
+            },
+            oncreate: dateInput
+        })
+    );
+};
+
+},{"hyperapp":20}],7:[function(require,module,exports){
 "use strict";
 
 var _require = require('hyperapp'),
@@ -325,10 +365,10 @@ var FormInput = module.exports = function (_ref) {
         { "class": "form-group" },
         h(
             "label",
-            { "class": "form-label", "for": "input-example-1" },
+            { "class": "form-label", "for": "{label}" },
             label
         ),
-        h("input", { "class": "form-input", type: "text", id: "input-example-1",
+        h("input", { "class": "form-input", type: "text", id: "{label}",
             placeholder: label, value: value,
             onkeyup: function onkeyup(e) {
                 return action(e.target.value);
@@ -337,7 +377,7 @@ var FormInput = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":19}],7:[function(require,module,exports){
+},{"hyperapp":20}],8:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -351,7 +391,7 @@ var Input = module.exports = function (_ref) {
     }, value: text });
 };
 
-},{"hyperapp":19}],8:[function(require,module,exports){
+},{"hyperapp":20}],9:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -399,7 +439,7 @@ var Toast = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":19}],9:[function(require,module,exports){
+},{"hyperapp":20}],10:[function(require,module,exports){
 'use strict';
 
 var _PersonRow = require('./PersonRow.js');
@@ -460,12 +500,16 @@ var People = module.exports = function (_ref) {
     );
 };
 
-},{"./PersonRow.js":12,"hyperapp":19}],10:[function(require,module,exports){
+},{"./PersonRow.js":13,"hyperapp":20}],11:[function(require,module,exports){
 'use strict';
 
 var _FormInput = require('./FormInput.js');
 
 var _FormInput2 = _interopRequireDefault(_FormInput);
+
+var _FormDateInput = require('./FormDateInput.js');
+
+var _FormDateInput2 = _interopRequireDefault(_FormDateInput);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -486,6 +530,9 @@ var PersonForm = module.exports = function (_ref) {
                 return actions.updateForm({ object: 'person', field: 'gender', value: x });
             } }),
         h(_FormInput2.default, { label: 'Έτος γέννησης', value: person.birth_year, action: function action(x) {
+                return actions.updateForm({ object: 'person', field: 'birth_year', value: x });
+            } }),
+        h(_FormDateInput2.default, { label: 'Έτος γέννησης', value: person.created, action: function action(x) {
                 return actions.updateForm({ object: 'person', field: 'birth_year', value: x });
             } }),
         h(
@@ -517,7 +564,7 @@ var PersonForm = module.exports = function (_ref) {
     );
 };
 
-},{"./FormInput.js":6,"hyperapp":19}],11:[function(require,module,exports){
+},{"./FormDateInput.js":6,"./FormInput.js":7,"hyperapp":20}],12:[function(require,module,exports){
 'use strict';
 
 var _SpinnerSmall = require('./SpinnerSmall.js');
@@ -582,7 +629,7 @@ var PersonModal = module.exports = function (_ref) {
     );
 };
 
-},{"./PersonForm.js":10,"./SpinnerSmall.js":14,"hyperapp":19}],12:[function(require,module,exports){
+},{"./PersonForm.js":11,"./SpinnerSmall.js":15,"hyperapp":20}],13:[function(require,module,exports){
 'use strict';
 
 var _FilmsList = require('./FilmsList.js');
@@ -636,7 +683,7 @@ var PersonRow = module.exports = function (_ref) {
     );
 };
 
-},{"./FilmsList.js":4,"hyperapp":19}],13:[function(require,module,exports){
+},{"./FilmsList.js":4,"hyperapp":20}],14:[function(require,module,exports){
 "use strict";
 
 var _require = require('hyperapp'),
@@ -654,7 +701,7 @@ var Spinner = module.exports = function () {
     );
 };
 
-},{"hyperapp":19}],14:[function(require,module,exports){
+},{"hyperapp":20}],15:[function(require,module,exports){
 "use strict";
 
 var _require = require('hyperapp'),
@@ -666,7 +713,7 @@ var SpinnerSmall = module.exports = function () {
   return h("div", { "class": "loading loading-lg" });
 };
 
-},{"hyperapp":19}],15:[function(require,module,exports){
+},{"hyperapp":20}],16:[function(require,module,exports){
 'use strict';
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -714,7 +761,7 @@ var Table = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":19}],16:[function(require,module,exports){
+},{"hyperapp":20}],17:[function(require,module,exports){
 "use strict";
 
 var _require = require('hyperapp'),
@@ -733,7 +780,7 @@ var Toast = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":19}],17:[function(require,module,exports){
+},{"hyperapp":20}],18:[function(require,module,exports){
 'use strict';
 
 var _Toast = require('./Toast.js');
@@ -753,7 +800,7 @@ var ToastContainer = module.exports = function (_ref) {
   });
 };
 
-},{"./Toast.js":16,"hyperapp":19}],18:[function(require,module,exports){
+},{"./Toast.js":17,"hyperapp":20}],19:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -781,10 +828,10 @@ var state = {
 
 (0, _hyperapp.app)(state, _actions2.default, _views.home, document.getElementById("app"));
 
-},{"./actions.js":1,"./views.js":20,"hyperapp":19}],19:[function(require,module,exports){
+},{"./actions.js":1,"./views.js":21,"hyperapp":20}],20:[function(require,module,exports){
 !function(e,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd||n(e.hyperapp={})}(this,function(e){"use strict";e.h=function(e,n){for(var t,r=[],o=[],i=arguments.length;i-- >2;)r.push(arguments[i]);for(;r.length;)if((t=r.pop())&&t.pop)for(i=t.length;i--;)r.push(t[i]);else null!=t&&!0!==t&&!1!==t&&o.push(t);return"function"==typeof e?e(n||{},o):{nodeName:e,attributes:n||{},children:o,key:n&&n.key}},e.app=function(e,n,t,r){var o,i=[],u=r&&r.children[0]||null,l=u&&function e(n,t){return{nodeName:n.nodeName.toLowerCase(),attributes:{},children:t.call(n.childNodes,function(n){return 3===n.nodeType?n.nodeValue:e(n,t)})}}(u,[].map),f=s(e),a=s(n);return d(function e(n,t,r){for(var o in r)"function"==typeof r[o]?function(e,o){r[e]=function(e){return"function"==typeof(e=o(e))&&(e=e(p(n,f),r)),e&&e!==(t=p(n,f))&&!e.then&&d(f=h(n,s(t,e),f)),e}}(o,r[o]):e(n.concat(o),t[o]=t[o]||{},r[o]=s(r[o]))}([],f,a)),a;function c(){o=!o;var e=t(f,a);for(r&&!o&&(u=function e(n,t,r,o,u,l){if(o===r);else if(null==r)t=n.insertBefore(y(o,u),t);else if(o.nodeName&&o.nodeName===r.nodeName){!function(e,n,t,r){for(var o in s(n,t))t[o]!==("value"===o||"checked"===o?e[o]:n[o])&&m(e,o,t[o],r,n[o]);t.onupdate&&i.push(function(){t.onupdate(e,n)})}(t,r.attributes,o.attributes,u=u||"svg"===o.nodeName);for(var f=[],a={},c={},d=0;d<r.children.length;d++){f[d]=t.childNodes[d];var h=r.children[d],p=v(h);null!=p&&(a[p]=[f[d],h])}for(var d=0,b=0;b<o.children.length;){var h=r.children[d],g=o.children[b],p=v(h),k=v(g);if(c[p])d++;else if(null==k)null==p&&(e(t,f[d],h,g,u),b++),d++;else{var w=a[k]||[];p===k?(e(t,w[0],w[1],g,u),d++):w[0]?e(t,t.insertBefore(w[0],f[d]),w[1],g,u):e(t,f[d],null,g,u),b++,c[k]=g}}for(;d<r.children.length;){var h=r.children[d];null==v(h)&&N(t,f[d],h),d++}for(var d in a)c[a[d][1].key]||N(t,a[d][0],a[d][1])}else o.nodeName===r.nodeName?t.nodeValue=o:(t=n.insertBefore(y(o,u),l=t),N(n,l,r));return t}(r,u,l,l=e));e=i.pop();)e()}function d(){o||(o=!o,setTimeout(c))}function s(e,n){var t={};for(var r in e)t[r]=e[r];for(var r in n)t[r]=n[r];return t}function h(e,n,t){var r={};return e.length?(r[e[0]]=e.length>1?h(e.slice(1),n,t[e[0]]):n,s(t,r)):n}function p(e,n){for(var t=0;t<e.length;t++)n=n[e[t]];return n}function v(e){return e?e.key:null}function m(e,n,t,r,o){if("key"===n);else if("style"===n)for(var i in s(o,t))e[n][i]=null==t||null==t[i]?"":t[i];else"function"==typeof t||n in e&&!r?e[n]=null==t?"":t:null!=t&&!1!==t&&e.setAttribute(n,t),null!=t&&!1!==t||e.removeAttribute(n)}function y(e,n){var t="string"==typeof e||"number"==typeof e?document.createTextNode(e):(n=n||"svg"===e.nodeName)?document.createElementNS("http://www.w3.org/2000/svg",e.nodeName):document.createElement(e.nodeName);if(e.attributes){e.attributes.oncreate&&i.push(function(){e.attributes.oncreate(t)});for(var r=0;r<e.children.length;r++)t.appendChild(y(e.children[r],n));for(var o in e.attributes)m(t,o,e.attributes[o],n)}return t}function N(e,n,t,r){function o(){e.removeChild(function e(n,t,r){if(r=t.attributes){for(var o=0;o<t.children.length;o++)e(n.childNodes[o],t.children[o]);r.ondestroy&&r.ondestroy(n)}return n}(n,t))}t.attributes&&(r=t.attributes.onremove)?r(n,o):o()}}});
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -866,4 +913,4 @@ var detail = exports.detail = function detail(state, actions) {
     );
 };
 
-},{"./components/Empty.js":2,"./components/FilmsView.js":5,"./components/Input.js":7,"./components/Pagination.js":8,"./components/People.js":9,"./components/PersonModal.js":11,"./components/Spinner.js":13,"./components/Table.js":15,"./components/ToastContainer.js":17,"hyperapp":19}]},{},[18]);
+},{"./components/Empty.js":2,"./components/FilmsView.js":5,"./components/Input.js":8,"./components/Pagination.js":9,"./components/People.js":10,"./components/PersonModal.js":12,"./components/Spinner.js":14,"./components/Table.js":16,"./components/ToastContainer.js":18,"hyperapp":20}]},{},[19]);

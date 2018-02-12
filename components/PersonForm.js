@@ -1,5 +1,6 @@
 const { h } = require('hyperapp')
 import FormInput from './FormInput.js'
+import FormDateInput from './FormDateInput.js'
 
 
 const PersonForm = module.exports = ({ person, actions }) => {
@@ -7,6 +8,7 @@ const PersonForm = module.exports = ({ person, actions }) => {
         <FormInput label={'Όνομα'} value={person.name} action={(x)=>actions.updateForm({object: 'person', field: 'name', value: x})} />
         <FormInput label={'Φύλο'} value={person.gender} action={(x)=>actions.updateForm({object: 'person', field: 'gender', value: x})} />
         <FormInput label={'Έτος γέννησης'} value={person.birth_year} action={(x)=>actions.updateForm({object: 'person', field: 'birth_year', value: x})} />
+        <FormDateInput label={'Έτος γέννησης'} value={person.created} action={(x)=>actions.updateForm({object: 'person', field: 'birth_year', value: x})} />
         
         <td><button type='button' class='btn btn-block' onclick={()=>{
                 //console.log(person.url)

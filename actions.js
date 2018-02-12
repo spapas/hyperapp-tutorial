@@ -42,7 +42,7 @@ const reducers = module.exports = {
           
           actions.updatePeople({people: j, page});
           actions.updateLoading(false)
-        }), 100);
+        }), 10);
     },
     
     loadPerson: id => (state, actions ) => {
@@ -50,7 +50,7 @@ const reducers = module.exports = {
           console.log(j);
           actions.updatePerson(j);
           actions.updateLoading(false);
-        }), 100);
+        }), 10);
     },
     
     loadPersonAndGo: id => (state, actions ) => {
@@ -68,9 +68,9 @@ const reducers = module.exports = {
         
     },
     
-    hideModal: id => state => {
+    hideModal: id => state => ({
         person: undefined
-    },
+    }),
     
     addToast: text => state => ({
         toasts: [...state.toasts, text]
@@ -102,7 +102,7 @@ const reducers = module.exports = {
             actions.hideModal();
             actions.updateLoading(false);
             actions.addToast(`Person ${id} saved ok!`)
-        }, 500);
+        }, 50);
     },
     
     loadFilms: films => (state, actions) => {
