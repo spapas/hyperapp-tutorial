@@ -3,21 +3,21 @@ import { h, app } from "hyperapp"
 import actions from './actions.js'
 import {home, detail} from './views.js'
 
-
-// https://swapi.co/api/people/
+var state = {
+    loading: true,
+    loadingFilms: false,
+    toasts: [],
+    person: undefined,
+    films: [],
+    people: {
+        results: [],
+        count: 0,
+        next: null
+    }
+}
 
 app(
-    {
-        text: 'Hi!!!!!!!',
-        count: 5,
-        loading: true,
-        person: undefined,
-        people: {
-            results: [],
-            count: 0,
-            next: null
-        }
-    },
+    state,
     actions,
     home, 
     document.getElementById("app")
