@@ -5,15 +5,23 @@ import {home, detail} from './views.js'
 
 var state = {
     loading: true,
-    loadingFilms: false,
+    loadingMovies: false,
     toasts: [],
+    movie: undefined,
     person: undefined,
-    films: [],
-    people: {
-        results: [],
+    movies: {
+        showPlot: false,
+        loading: false,
+        page: null,
         count: 0,
-        next: null
-    }
+        next: null,
+        previous: null,
+        items: []
+    },
+    people: {
+        loading: false,
+        items: []
+    }   
 }
 
 app(
