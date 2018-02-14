@@ -2,7 +2,7 @@ const { h } = require('hyperapp')
 import MovieRow from './MovieRow.js'
 import PlotModal from './PlotModal.js'
 
-const Movies = module.exports = ({ movies, actions }) => <div>
+const MoviesTable = module.exports = ({ movies, actions }) => <div>
     <table class="table table-striped table-hover">
         <thead><tr>
             <th>Id</th>

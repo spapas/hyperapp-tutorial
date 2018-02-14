@@ -1,5 +1,7 @@
-
+import { location } from "@hyperapp/router"
+console.log(location);
 const reducers = module.exports = {
+    location: location.actions, 
     movies: {
         load: url => (state, actions) => {
             actions.updateLoading(true)

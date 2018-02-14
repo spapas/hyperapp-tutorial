@@ -1,9 +1,10 @@
 import { h, app } from "hyperapp"
-
+import { Route, location } from "@hyperapp/router"
 import actions from './actions.js'
-import {home, detail} from './views.js'
+import {main} from './views.js'
 
 var state = {
+    location: location.state, 
     loading: true,
     loadingMovies: false,
     toasts: [],
@@ -24,9 +25,11 @@ var state = {
     }   
 }
 
-app(
+const application = app(
     state,
     actions,
-    home, 
+    main,
     document.getElementById("app")
 )
+
+const unsubscribe = location.subscribe(application.location)

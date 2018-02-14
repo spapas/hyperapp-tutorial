@@ -1,8 +1,9 @@
 import { h } from "hyperapp"
+import { Link, Route, location } from "@hyperapp/router"
 import Input from './components/Input.js'
 import Table from './components/Table.js'
 import People from './components/People.js'
-import Movies from './components/Movies.js'
+import MoviesTable from './components/MoviesTable.js'
 
 import Spinner from './components/Spinner.js'
 import Empty from './components/Empty.js'
@@ -10,18 +11,14 @@ import FilmsView from './components/FilmsView.js'
 import Pagination from './components/Pagination.js'
 import PersonModal from './components/PersonModal.js'
 import ToastContainer from './components/ToastContainer.js'
+import Tabs from './components/Tabs.js'
 
-export const home = (state, actions) => <div class='container grid-xl'>
-    <h2>Movie list</h2>
-  <div class="columns">
-    <div class="column col-lg-12" oncreate={() => actions.movies.load(window.g_urls.movies)}>
-        {state.movies.loading == true ? <Spinner /> : <Movies movies={state.movies} actions={actions.movies} />}
-    </div>
+import Home from './views/Home.js'
+import Movies from './views/Movies.js'
 
-  </div>
-</div>
-
-export const detail = (state, actions) => <div>
-    {state.loading == true ? <Spinner /> : <div>{state.person.name}</div>}
+export const main = (state, actions) => <div class='container grid-xl'>
+    <Tabs />
+    <Route path="/" render={Home} />
+    <Route path="/movies" render={Movies} />
 </div>
 
