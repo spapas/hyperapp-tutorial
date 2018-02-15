@@ -11,7 +11,7 @@ const MoviesTable = module.exports = ({ movies, actions }) => <div>
             <th>Runtime</th>
             <th>Genres</th>
             <th>Plot</th>
-            <th>Modal</th>
+            <th>Edit</th>
         </tr></thead>
         <tbody>
             {

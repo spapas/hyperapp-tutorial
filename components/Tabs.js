@@ -1,17 +1,18 @@
 import { h } from "hyperapp"
 
+import { Link } from "@hyperapp/router"
 
-const Table = module.exports = ({text, count, actions}) => <ul class="tab tab-block">
-  <li class="tab-item active">
-    <a href="#">Music</a>
+const Table = module.exports = ({currentLocation}) => <ul class="tab tab-block">
+  <li className={`tab-item ${currentLocation.pathname=='/'?'active':''}`}>
+    <Link to="/">Home</Link>
   </li>
-  <li class="tab-item">
-    <a href="#" class="active">Playlists</a>
+  <li className={`tab-item ${currentLocation.pathname=='/movies'?'active':''}`}>
+    <Link to="/movies">Movies</Link>
   </li>
-  <li class="tab-item">
-    <a href="#">Radio</a>
+  <li className={`tab-item ${currentLocation.pathname=='/people'?'active':''}`}>
+    <Link to="/people">People</Link>
   </li>
-  <li class="tab-item">
-    <a href="#">Connect</a>
+  <li className={`tab-item ${currentLocation.pathname=='/login'?'active':''}`}>
+    <Link to="/login">Login</Link>
   </li>
 </ul>

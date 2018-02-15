@@ -1,6 +1,6 @@
 const { h } = require('hyperapp')
 
-const Table=module.exports = ({text, count, actions}) => <table>
+const Table = module.exports = ({text, count, actions}) => <table>
     <thead><tr><th>VALUE</th></tr></thead>
     <tbody>
         {

@@ -1,15 +1,12 @@
 import { h, app } from "hyperapp"
 import { Route, location } from "@hyperapp/router"
 import actions from './actions.js'
-import {main} from './views.js'
+import {main} from './views/Main.js'
 
 var state = {
+    auth: null,
     location: location.state, 
-    loading: true,
-    loadingMovies: false,
     toasts: [],
-    movie: undefined,
-    person: undefined,
     movies: {
         showPlot: false,
         loading: false,
@@ -21,6 +18,10 @@ var state = {
     },
     people: {
         loading: false,
+        page: null,
+        count: 0,
+        next: null,
+        previous: null,
         items: []
     }   
 }

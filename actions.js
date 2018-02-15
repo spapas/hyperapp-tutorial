@@ -15,7 +15,7 @@ const reducers = module.exports = {
               
               actions.update({response: j, page});
               actions.updateLoading(false)
-            }), 10);
+            }), 100);
         },
 
         updateLoading: loading => state => ({
@@ -36,77 +36,33 @@ const reducers = module.exports = {
         }),
     },
 
-    updateText: newValue => state => ({
-      'text': newValue
-    }),
-    
-    updateCount: newValue => state => ({
-      'count': 1 * newValue
-    }),
-    
-    updateLoading: loading => state => ({
-        loading
-    }),
-    
-    updateLoadingFilms: loadingFilms => state => ({
-        loadingFilms
-    }),
-    
-    updatePeople: ({people, page}) => state => ({
-        people: people,
-        page: page
-    }),
-    
-    updateFilms: films => state => ({
-        films: films
-    }),
-    
-    updatePerson: person => state => ({
-        person: person
-    }),
-    
-    loadPeople: url => (state, actions) => {
-        console.log("LOADING");
-        actions.updateLoading(true)
+    people: {
+        load: url => (state, actions) => {
+            actions.updateLoading(true)
+            
+            setTimeout(() => fetch(url).then(function (r) { return r.json() }).then(function (j) {
+              let match = url.match(/\?page=(\d+)/)
+              let page = 1;
+              if (match) page = 1*match[1]
+              
+              actions.update({response: j, page});
+              actions.updateLoading(false)
+            }), 100);
+        },
+
+        updateLoading: loading => state => ({
+            loading
+        }),
         
-        setTimeout(() => fetch(url).then(function (r) { return r.json() }).then(function (j) {
-          console.log(url);
-          console.log(j);
-          let match = url.match(/\?page=(\d+)/)
-          let page = 1;
-          if (match) page = 1*match[1]
-          
-          actions.updatePeople({people: j, page});
-          actions.updateLoading(false)
-        }), 10);
+        update: ({response, page}) => state => ({
+            page,
+            count: response.count,
+            next: response.next,
+            previous: response.previous,
+            items: response.results
+
+        }),
     },
-    
-    loadPerson: id => (state, actions ) => {
-        setTimeout(() => fetch('https://swapi.co/api/people/'+id).then(function (r) { return r.json() }).then(function (j) {
-          console.log(j);
-          actions.updatePerson(j);
-          actions.updateLoading(false);
-        }), 10);
-    },
-    
-    loadPersonAndGo: id => (state, actions ) => {
-        actions.updateLoading(true);
-        console.log("ROUTER")
-        actions.router.go('#/view/'+id);
-    },
-    
-    displayModal: id => (state, actions) => {
-        actions.loadPerson(id)
-        actions.updateLoading(true);
-        return {
-            person: 'loading'
-        }
-        
-    },
-    
-    hideModal: id => state => ({
-        person: undefined
-    }),
     
     addToast: text => state => ({
         toasts: [...state.toasts, text]
