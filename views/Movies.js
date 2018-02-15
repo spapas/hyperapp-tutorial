@@ -3,7 +3,7 @@ import Spinner from '../components/Spinner.js'
 import MoviesTable from '../components/MoviesTable.js'
 import Pagination from '../components/Pagination.js'
 
-const Movies = module.exports = (state, actions) => <div>
+const Movies = module.exports = (state, actions) => <div key='movies'>
     <h2>Movie list</h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => {

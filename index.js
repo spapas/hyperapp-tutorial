@@ -4,7 +4,12 @@ import actions from './actions.js'
 import {main} from './views/Main.js'
 
 var state = {
-    auth: null,
+    auth: {
+        token: null,
+        username: null,
+        password: null,
+        loading: false
+    },
     location: location.state, 
     toasts: [],
     movies: {

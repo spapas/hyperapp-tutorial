@@ -1,7 +1,41 @@
 import { location } from "@hyperapp/router"
-console.log(location);
+
 const reducers = module.exports = {
     location: location.actions, 
+    auth: {
+        updateField: ({field, value}) => state => {
+            console.log(state, field, value);
+            return {
+                [field]: value
+            }
+        },
+
+        login: () => (state, actions) => {
+            console.log("LOGIN", state);
+            actions.updateLoading(true)
+            console.log(g_urls.login);
+            let data = {
+                username: state.username,
+                password: state.password
+            }
+            console.log(data)
+            setTimeout(() => fetch(g_urls.login, {
+                method: 'POST',
+                // body: `username=${state.username}&password=${state.password}`,
+                body: JSON.stringify(data),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            }).then(function (r) { return r.json() }).then(function (j) {
+              console.log(j);
+              actions.updateLoading(false)
+            }), 1000);
+        },
+
+        updateLoading: loading => state => ({
+            loading
+        }),
+    }, 
     movies: {
         load: url => (state, actions) => {
             actions.updateLoading(true)
