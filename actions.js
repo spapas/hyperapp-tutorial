@@ -1,39 +1,67 @@
 import { location } from "@hyperapp/router"
 
 const reducers = module.exports = {
+    init: () => (state, actions) => {
+      actions.auth.init({
+        addToastLocal: txt=>actions.addToast(txt), 
+      })
+    },
     location: location.actions, 
     auth: {
+        set: x => x,
+        init: callups => (state, actions) => {
+           actions.set(callups)
+        },
         updateField: ({field, value}) => state => {
-            console.log(state, field, value);
             return {
                 [field]: value
             }
         },
 
-        login: () => (state, actions) => {
-            console.log("LOGIN", state);
+        login: (g_actions) => (state, actions) => {
             actions.updateLoading(true)
-            console.log(g_urls.login);
             let data = {
                 username: state.username,
                 password: state.password
             }
-            console.log(data)
             setTimeout(() => fetch(g_urls.login, {
                 method: 'POST',
-                // body: `username=${state.username}&password=${state.password}`,
                 body: JSON.stringify(data),
                 headers: {
                     'content-type': 'application/json'
                 }
             }).then(function (r) { return r.json() }).then(function (j) {
-              console.log(j);
-              actions.updateLoading(false)
-            }), 1000);
-        },
+                if(j.key) {
+                    actions.updateLogin(j.key);
+                    g_actions.addToast("Successfully logged in!")
+                    state.addToastLocal("TEST")
+                    g_actions.location.go("/");
 
+                } else {
+                    g_actions.addToast("Erro while logging in - please try again!")
+                }
+                actions.updateLoading(false)
+            }), 500);
+        },
+        logout: (g_actions) => (state, actions) => {
+            actions.updateLoading(true)
+            setTimeout(() => fetch(g_urls.logout, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                }
+            }).then(function (r) { return r.json() }).then(function (j) {
+                actions.updateLogin(null);
+                g_actions.addToast("Successfully logged out!")
+                g_actions.location.go("/");
+                actions.updateLoading(false)
+            }), 500);
+        },
         updateLoading: loading => state => ({
             loading
+        }),
+        updateLogin: key => state => ({
+            key
         }),
     }, 
     movies: {
@@ -98,9 +126,12 @@ const reducers = module.exports = {
         }),
     },
     
-    addToast: text => state => ({
+    addToast: text => state => {
+        console.log("ADDING ", text);
+        return {
         toasts: [...state.toasts, text]
-    }),
+        }
+    },
     
     hideToast: text => state => {
         let idx = state.toasts.indexOf(text)

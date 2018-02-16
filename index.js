@@ -4,8 +4,9 @@ import actions from './actions.js'
 import {main} from './views/Main.js'
 
 var state = {
+
     auth: {
-        token: null,
+        key: null,
         username: null,
         password: null,
         loading: false
@@ -38,4 +39,7 @@ const application = app(
     document.getElementById("app")
 )
 
+console.log(application);
+
 const unsubscribe = location.subscribe(application.location)
+application.init();

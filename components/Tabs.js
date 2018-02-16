@@ -2,7 +2,8 @@ import { h } from "hyperapp"
 
 import { Link } from "@hyperapp/router"
 
-const Table = module.exports = ({currentLocation}) => <ul class="tab tab-block">
+
+const Table = module.exports = ({currentLocation, auth, actions}) => <ul class="tab tab-block">
   <li className={`tab-item ${currentLocation.pathname=='/'?'active':''}`}>
     <Link to="/">Home</Link>
   </li>
@@ -12,7 +13,10 @@ const Table = module.exports = ({currentLocation}) => <ul class="tab tab-block">
   <li className={`tab-item ${currentLocation.pathname=='/people'?'active':''}`}>
     <Link to="/people">People</Link>
   </li>
-  <li className={`tab-item ${currentLocation.pathname=='/login'?'active':''}`}>
+  {auth.key?<div>
+      {auth.username} <button class='btn' onclick={()=>actions.auth.logout(actions)}>Logout</button>
+    </div>:<li className={`tab-item ${currentLocation.pathname=='/login'?'active':''}`}>
     <Link to="/login">Login</Link>
   </li>
+  }
 </ul>
