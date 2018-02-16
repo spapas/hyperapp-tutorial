@@ -3,7 +3,6 @@ import FormInput from '../components/FormInput.js'
 import Spinner from '../components/Spinner.js'
 
 const okClick = (e, actions, g_actions) => {
-    console.log(e);
     actions.login(g_actions)
     return false;
 }

@@ -6,7 +6,7 @@ const PersonRow = module.exports = ({ person, actions }) => {
         <td>{person.name}</td>
         <td>{person.birthday}</td>
         
-        <td><button class='btn btn-block btn-primary' onclick={()=>actions.displayModal(person.id)}>Edit</button></td>
+        <td><button class='btn btn-block btn-primary' onclick={()=>actions.edit(person)}>Edit</button></td>
     </tr>
 }
 

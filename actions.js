@@ -123,8 +123,11 @@ const reducers = module.exports = {
             next: response.next,
             previous: response.previous,
             items: response.results
-
         }),
+
+        edit: person => state => ({
+            editing: person
+        })
     },
     
     addToast: ({text, style}) => state => {

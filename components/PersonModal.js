@@ -4,6 +4,7 @@ import PersonForm from './PersonForm.js'
 
 const PersonModal = module.exports = ({ person, loading, actions }) => {
     let personDisplay = ''
+    console.log(person)
     if(person && person.name) {
         personDisplay = <PersonForm person={person} actions={actions} />
     } else {
