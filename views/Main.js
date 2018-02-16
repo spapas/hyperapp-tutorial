@@ -8,7 +8,7 @@ import Login from './Login.js'
 import Tabs from '../components/Tabs.js'
 import ToastContainer from '../components/ToastContainer.js'
 
-export const main = (state, actions) => <div class='container grid-xl'>
+const reducers = module.exports = (state, actions) => <div class='container grid-xl'>
     <Tabs currentLocation={state.location} auth={state.auth} actions={actions} />
     <Switch>
         <Route path="/" render={() => Home(state, actions)} />

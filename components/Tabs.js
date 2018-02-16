@@ -4,7 +4,7 @@ import { Link } from "@hyperapp/router"
 
 
 const Table = module.exports = ({currentLocation, auth, actions}) => <ul class="tab tab-block">
-  <li className={`tab-item ${currentLocation.pathname=='/'?'active':''}`}>
+  <li className={`tab-item ${(currentLocation.pathname=='/'||!currentLocation.pathname)?'active':''}`}>
     <Link to="/">Home</Link>
   </li>
   <li className={`tab-item ${currentLocation.pathname=='/movies'?'active':''}`}>
