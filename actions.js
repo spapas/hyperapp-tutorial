@@ -33,12 +33,12 @@ const reducers = module.exports = {
             }).then(function (r) { return r.json() }).then(function (j) {
                 if(j.key) {
                     actions.updateLogin(j.key);
-                    g_actions.addToast("Successfully logged in!")
-                    state.addToastLocal("TEST")
+                    g_actions.addToast({text: "Successfully logged in!", style: "success"} )
+                    state.addToastLocal({text: "TEST"})
                     g_actions.location.go("/");
 
                 } else {
-                    g_actions.addToast("Erro while logging in - please try again!")
+                    g_actions.addToast({text: "Error while logging in - please try again!", style: "error"})
                 }
                 actions.updateLoading(false)
             }), 500);
@@ -52,7 +52,7 @@ const reducers = module.exports = {
                 }
             }).then(function (r) { return r.json() }).then(function (j) {
                 actions.updateLogin(null);
-                g_actions.addToast("Successfully logged out!")
+                g_actions.addToast({text: "Successfully logged out!", style: "success"})
                 g_actions.location.go("/");
                 actions.updateLoading(false)
             }), 500);
@@ -61,7 +61,8 @@ const reducers = module.exports = {
             loading
         }),
         updateLogin: key => state => ({
-            key
+            key,
+            password: ''
         }),
     }, 
     movies: {
@@ -126,10 +127,10 @@ const reducers = module.exports = {
         }),
     },
     
-    addToast: text => state => {
-        console.log("ADDING ", text);
+    addToast: ({text, style}) => state => {
+        console.log("ADDING TOAST ", text, style);
         return {
-        toasts: [...state.toasts, text]
+            toasts: [...state.toasts, {text: text, style: style}]
         }
     },
     
