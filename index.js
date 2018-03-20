@@ -1,6 +1,6 @@
 import { h, app } from "hyperapp"
 import { Route, location } from "@hyperapp/router"
-import actions from './actions.js'
+import actions from './actions'
 import main from './views/Main.js'
 import state from './state.js'
 

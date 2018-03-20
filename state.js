@@ -28,5 +28,7 @@ const state = module.exports = {
         items: [],
         editing: null
     },
-    forms: {}
+    forms: {
+        login: {}
+    }
 }
