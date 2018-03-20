@@ -1,30 +1,15 @@
 import { location } from "@hyperapp/router"
 
 const reducers = module.exports = {
-    init: () => (state, actions) => {
-      actions.auth.init({
-        addToastLocal: txt=>actions.addToast(txt), 
-      })
-    },
     location: location.actions, 
     auth: {
-        set: x => x,
-        init: callups => (state, actions) => {
-           actions.set(callups)
-        },
-        updateField: ({field, value}) => state => {
-            return {
-                [field]: value
-            }
-        },
-
         login: (g_actions) => (state, actions) => {
             actions.updateLoading(true)
             let data = {
                 username: state.username,
                 password: state.password
             }
-            setTimeout(() => fetch(g_urls.login, {
+            fetch(g_urls.login, {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
@@ -33,15 +18,14 @@ const reducers = module.exports = {
             }).then(function (r) { return r.json() }).then(function (j) {
                 if(j.key) {
                     actions.updateLogin(j.key);
-                    g_actions.addToast({text: "Successfully logged in!", style: "success"} )
-                    state.addToastLocal({text: "TEST"})
+                    g_actions.toasts.add({text: "Successfully logged in!", style: "success"} )
                     g_actions.location.go("/");
 
                 } else {
-                    g_actions.addToast({text: "Error while logging in - please try again!", style: "error"})
+                    g_actions.toasts.add({text: "Error while logging in - please try again!", style: "error"})
                 }
                 actions.updateLoading(false)
-            }), 500);
+            })
         },
         logout: (g_actions) => (state, actions) => {
             actions.updateLoading(true)
@@ -52,7 +36,7 @@ const reducers = module.exports = {
                 }
             }).then(function (r) { return r.json() }).then(function (j) {
                 actions.updateLogin(null);
-                g_actions.addToast({text: "Successfully logged out!", style: "success"})
+                g_actions.toasts.add({text: "Successfully logged out!", style: "success"})
                 g_actions.location.go("/");
                 actions.updateLoading(false)
             }), 500);
@@ -130,20 +114,25 @@ const reducers = module.exports = {
         })
     },
     
-    addToast: ({text, style}) => state => {
-        console.log("ADDING TOAST ", text, style);
-        return {
-            toasts: [...state.toasts, {text: text, style: style}]
-        }
-    },
-    
-    hideToast: text => state => {
-        let idx = state.toasts.indexOf(text)
-        return {
-            toasts: [
-                ...state.toasts.slice(0, idx),
-                ...state.toasts.slice(idx+1),
-            ]
+    toasts: {
+        add: ({text, style}) => state => {
+            console.log("ADDING TOAST ", text, style, state);
+            return {
+                items: [...state.items, {text: text, style: style}]
+            }
+        },
+        
+        hide: text => state => {
+            let idx = state.items.map(v => v.text).indexOf(text)
+            return {
+                items: [
+                    ...state.items.slice(0, idx),
+                    ...state.items.slice(idx+1),
+                ]
+            }
+        },
+        clear: () => state => {
+            return {items: []}
         }
     },
     
@@ -162,7 +151,7 @@ const reducers = module.exports = {
         setTimeout(() => {
             actions.hideModal();
             actions.updateLoading(false);
-            actions.addToast(`Person ${id} saved ok!`)
+            actions.toasts.add(`Person ${id} saved ok!`)
         }, 50);
     },
     

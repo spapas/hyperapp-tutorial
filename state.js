@@ -7,7 +7,9 @@ const state = module.exports = {
         loading: false
     },
     location: location.state, 
-    toasts: [],
+    toasts: {
+        items: []
+    },
     movies: {
         showPlot: false,
         loading: false,

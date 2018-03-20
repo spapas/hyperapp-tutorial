@@ -11,7 +11,13 @@ const application = app(
     document.getElementById("app")
 )
 
-console.log(application);
-
 const unsubscribe = location.subscribe(application.location)
-application.init();
+
+const hideToasts = () => {
+    application.toasts.clear();
+}
+
+actions.location.go('/');
+
+addEventListener("pushstate", hideToasts)
+addEventListener("popstate", hideToasts)

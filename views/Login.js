@@ -14,8 +14,5 @@ const Login = module.exports = (state, actions, g_actions) => <div key='login'>
         <FormInput label='Password' value={state.password} type='password' action={(value)=>actions.updateField({field: 'password', value}) } />
         {state.loading == true ? <Spinner /> : <button id='btn' name='btn'  class='btn btn-primary' onclick={(e)=>okClick(e, actions, g_actions)}>Ok</button>}
     </form>
-    
-
-
 
 </div>

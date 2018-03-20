@@ -1,18 +1,31 @@
 import { h } from "hyperapp"
 import Spinner from '../components/Spinner.js'
-import PeopleTable from '../components/PeopleTable.js'
-import Pagination from '../components/Pagination.js'
+import Table from '../components/Table.js'
 import PersonModal from '../components/PersonModal.js'
+
+
+const rowHeaders = [
+    'Id',
+    'Name',
+    'Birthday',
+    'Edit'
+]
+
+const rowColumns = [
+    (person, actions) => person.id,
+    (person, actions) => person.name,
+    (person, actions) => person.birthday,
+    (person, actions) => <button class='btn btn-block btn-primary' onclick={()=>actions.edit(person)}>Edit</button>
+    
+]
 
 const People = module.exports = (state, actions) => <div key='people'>
     <h2>People list</h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => actions.load(window.g_urls.persons)}>
-            {state.loading == true ? <Spinner /> : <PeopleTable people={state} actions={actions} />}
+            {state.loading == true ? <Spinner /> : <Table rowHeaders={rowHeaders} rowColumns={rowColumns} rows={state} actions={actions} />}
         </div>
     </div>
-    1
     <PersonModal person={state.editing} loading={state.loading} actions={actions} />
-    2
-    <Pagination page={state.page} next={state.next} previous={state.previous} actions={actions} />
+    
 </div>

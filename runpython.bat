@@ -1,1 +1,1 @@
-python -m SimpleHTTPServer 
+py -2 -m SimpleHTTPServer 
