@@ -15,9 +15,10 @@ module.exports = {
             }
         }).then(function (r) { return r.json() }).then(function (j) {
             if(j.key) {
-                actions.updateLogin(j.key, state.forms.login.username);
-                g_actions.toasts.add({text: "Successfully logged in!", style: "success"} )
+                console.log("OK" , j.key, state.forms.login.username )
+                actions.updateLogin({key: j.key, username: state.forms.login.username});
                 g_actions.location.go("/");
+                g_actions.toasts.add({text: "Successfully logged in!", style: "success"} )
 
             } else {
                 g_actions.toasts.add({text: "Error while logging in - please try again!", style: "error"})
@@ -33,18 +34,22 @@ module.exports = {
                 'content-type': 'application/json'
             }
         }).then(function (r) { return r.json() }).then(function (j) {
-            actions.updateLogin(null);
-            g_actions.toasts.add({text: "Successfully logged out!", style: "success"})
+            actions.updateLogin({key: null, username: null});
+            
             g_actions.location.go("/");
             actions.updateLoading(false)
+            g_actions.toasts.add({text: "Successfully logged out!", style: "success"})
         }), 500);
     },
     updateLoading: loading => state => ({
         loading
     }),
-    updateLogin: (key, username) => state => ({
+    updateLogin: ({key, username}) => state => ({
         key,
-        username
+        username,
+        forms: {
+            login: {}
+        }
     }),
     updateField
 }

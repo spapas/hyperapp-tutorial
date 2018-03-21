@@ -2,7 +2,7 @@
 const state = module.exports = {
     auth: {
         key: null,
-        username: null,
+        username: '123',
         loading: false,
         forms: {
             login: {}
