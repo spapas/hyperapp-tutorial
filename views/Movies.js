@@ -22,8 +22,12 @@ const rowColumns = [
     (movie, actions) => movie.genres.map(z => <span class='chip bg-dark'><a class='text-secondary text-norma' href=''>{z.name}</a></span>),
     (movie, actions) => <span onclick={()=>actions.updateShowPlot(movie)}>{movie.story.substring(0,50) + '...'}</span>,
     (movie, actions) => <button class='btn btn-block btn-primary' onclick={()=>actions.movies.displayModal(movie.id)}>Edit</button>
-    
 ]
+
+const checkAuth = (list, auth) => {
+    if(auth.key) return list
+    return list.slice(0, -1);
+}
 
 // TODO: Maybe this is better
 const tableDef = [
@@ -38,8 +42,8 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
     <h2>Movie list</h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => actions.load(window.g_urls.movies)}>
-            {state.loading == true ? <Spinner /> : <Table rowHeaders={rowHeaders} rowColumns={rowColumns} rows={state} actions={actions} />}
+            {state.movies.loading == true ? <Spinner /> : <Table rowHeaders={checkAuth(rowHeaders, state.auth)} rowColumns={checkAuth(rowColumns, state.auth)} rows={state.movies} actions={actions} />}
         </div>
     </div>
-    {state.showPlot?<PlotModal movie={state.showPlot} actions={actions} />:null}
+    {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}
 </div>
