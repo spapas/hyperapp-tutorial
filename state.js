@@ -3,8 +3,10 @@ const state = module.exports = {
     auth: {
         key: null,
         username: null,
-        password: null,
-        loading: false
+        loading: false,
+        forms: {
+            login: {}
+        }
     },
     location: location.state, 
     toasts: {
@@ -27,8 +29,5 @@ const state = module.exports = {
         previous: null,
         items: [],
         editing: null
-    },
-    forms: {
-        login: {}
     }
 }

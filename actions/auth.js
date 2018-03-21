@@ -1,9 +1,11 @@
+import updateField from "./forms.js"
+
 module.exports = {
     login: (g_actions) => (state, actions) => {
         actions.updateLoading(true)
         let data = {
-            username: state.username,
-            password: state.password
+            username: state.forms.login.username,
+            password: state.forms.login.password
         }
         fetch(g_urls.login, {
             method: 'POST',
@@ -13,7 +15,7 @@ module.exports = {
             }
         }).then(function (r) { return r.json() }).then(function (j) {
             if(j.key) {
-                actions.updateLogin(j.key);
+                actions.updateLogin(j.key, state.forms.login.username);
                 g_actions.toasts.add({text: "Successfully logged in!", style: "success"} )
                 g_actions.location.go("/");
 
@@ -40,8 +42,9 @@ module.exports = {
     updateLoading: loading => state => ({
         loading
     }),
-    updateLogin: key => state => ({
+    updateLogin: (key, username) => state => ({
         key,
-        password: ''
+        username
     }),
+    updateField
 }
