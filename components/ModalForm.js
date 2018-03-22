@@ -1,8 +1,24 @@
 import { h } from 'hyperapp'
 import FormInput from './FormInput.js'
+import FormInputLong from './FormInputLong.js'
+
+
+const renderField = (field, item, updateFieldAction ) => {
+    let ftype = FormInput 
+    if(field.type == 'longtext') ftype = FormInputLong
+    return ftype({
+        label: field.label,
+        key: field.key,
+        value: item[field.key],
+        type: field.type,
+        action: (val) => updateFieldAction(field.key, val)
+    });
+
+}
+
 
 const renderFields = (fields, item, updateFieldAction) => fields.map(
-    f => <FormInput label={f.label} key={f.key} value={item[f.key]} action={(val) => updateFieldAction(f.key, val)} />
+    f => renderField(f, item, updateFieldAction)
 )
 
 const ModalForm = module.exports = ({ formFields, item, hideAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>

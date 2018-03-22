@@ -41,7 +41,10 @@ const tableDef = [
 
 
 const formFields = [
-    {'key': 'title', 'label': 'Title'}
+    {'key': 'title', 'label': 'Title', 'type': 'text'},
+    {'key': 'release_year', 'label': 'Release Year', 'type': 'number'},
+    {'key': 'runtime', 'label': 'Runtime', 'type': 'number'},
+    {'key': 'story', 'label': 'Plot', 'type': 'longtext'},
 ]
 
 const Movies = module.exports = (state, actions) => <div key='movies'>
