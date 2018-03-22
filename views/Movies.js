@@ -7,7 +7,7 @@ import ModalForm from '../components/ModalForm.js'
 
 const rowHeaders = [
     'Id',
-    'Name',
+    'Title',
     'Release year',
     'Runtime',
     'Genres',
@@ -22,7 +22,7 @@ const rowColumns = [
     (movie, actions) => movie.runtime,
     (movie, actions) => movie.genres.map(z => <span class='chip bg-dark'><a class='text-secondary text-norma' href=''>{z.name}</a></span>),
     (movie, actions) => <span onclick={()=>actions.updateShowPlot(movie)}>{movie.story.substring(0,50) + '...'}</span>,
-    (movie, actions) => <button class='btn btn-block btn-primary' onclick={()=>actions.updateEditing(Object.assign({}, movie) )}>Edit</button>
+    (movie, actions) => <button class='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, movie) )}>Edit</button>
 ]
 
 const checkAuth = (list, auth) => {
@@ -40,10 +40,17 @@ const tableDef = [
 ]
 
 
-const formFields = []
+const formFields = [
+    {'key': 'title', 'label': 'Title'}
+]
 
 const Movies = module.exports = (state, actions) => <div key='movies'>
-    <h2>Movie list</h2>
+    <h2>
+        Movie list &nbsp;  &nbsp;
+        <button class="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>
+            <i class="icon icon-plus"></i>
+        </button>
+    </h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => actions.load(window.g_urls.movies)}>
             {state.movies.loading == true ? <Spinner /> : <Table 
@@ -54,6 +61,12 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
             />}
         </div>
     </div>
+    1{JSON.stringify(state.movies.forms.edit)}2
     {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}
-    {state.movies.editing?<ModalForm formFields={formFields} item={state.movies.editing} hideAction={()=>actions.updateEditing(null)} />:null}
+    {state.movies.forms.edit?<ModalForm 
+                            formFields={formFields} 
+                            item={state.movies.forms.edit} 
+                            hideAction={()=>actions.updateEdit(null)} 
+                            updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})} 
+                            />:null}
 </div>

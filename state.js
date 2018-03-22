@@ -31,9 +31,8 @@ const state = module.exports = {
         next: null,
         previous: null,
         items: [],
-        editing: null,
         forms: {
-            edit: {},
+            edit: null,
             filter: {}
         }
     },

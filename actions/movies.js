@@ -1,3 +1,6 @@
+import updateField from "./forms.js"
+
+
 module.exports = {
     load: url => (state, actions) => {
         actions.updateLoading(true)
@@ -31,7 +34,11 @@ module.exports = {
 
     }),
 
-    updateEditing: item => state => ({
-        editing: item
-    })
+    updateEdit: item => state => ({
+        forms: Object.assign({}, state['forms'], {
+            edit: item
+        })
+    }),
+
+    updateField
 }

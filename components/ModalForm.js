@@ -1,7 +1,11 @@
-const { h } = require('hyperapp')
+import { h } from 'hyperapp'
+import FormInput from './FormInput.js'
 
+const renderFields = (fields, item, updateFieldAction) => fields.map(
+    f => <FormInput label={f.label} key={f.key} value={item[f.key]} action={(val) => updateFieldAction(f.key, val)} />
+)
 
-const ModalForm = module.exports = ({ fields, item, hideAction }) => <div className={`modal ${item?'active':''}`}>
+const ModalForm = module.exports = ({ formFields, item, hideAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>
 <div class="modal-overlay"></div>
     <div class="modal-container">
     <div class="modal-header">
@@ -10,10 +14,13 @@ const ModalForm = module.exports = ({ fields, item, hideAction }) => <div classN
     </div>
     <div class="modal-body">
         <div class="content">
-            ...
+            <form method='POST'>
+                {renderFields(formFields, item, updateFieldAction)}
+            </form>
         </div>
     </div>
         <div class="modal-footer">
+        <button class="btn" onclick={hideAction}>Cancel</button>
             <button class="btn" onclick={hideAction}>Ok</button>
 
         </div>
