@@ -30,4 +30,8 @@ module.exports = {
         items: response.results
 
     }),
+
+    updateEditing: item => state => ({
+        editing: item
+    })
 }

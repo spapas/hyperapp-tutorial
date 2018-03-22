@@ -30,7 +30,12 @@ const state = module.exports = {
         count: 0,
         next: null,
         previous: null,
-        items: []
+        items: [],
+        editing: null,
+        forms: {
+            edit: {},
+            filter: {}
+        }
     },
     people: {
         loading: false,

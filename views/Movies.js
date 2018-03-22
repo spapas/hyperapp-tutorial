@@ -3,6 +3,7 @@ import Spinner from '../components/Spinner.js'
 import PlotModal from '../components/PlotModal.js'
 
 import Table from '../components/Table.js'
+import ModalForm from '../components/ModalForm.js'
 
 const rowHeaders = [
     'Id',
@@ -21,7 +22,7 @@ const rowColumns = [
     (movie, actions) => movie.runtime,
     (movie, actions) => movie.genres.map(z => <span class='chip bg-dark'><a class='text-secondary text-norma' href=''>{z.name}</a></span>),
     (movie, actions) => <span onclick={()=>actions.updateShowPlot(movie)}>{movie.story.substring(0,50) + '...'}</span>,
-    (movie, actions) => <button class='btn btn-block btn-primary' onclick={()=>actions.movies.displayModal(movie.id)}>Edit</button>
+    (movie, actions) => <button class='btn btn-block btn-primary' onclick={()=>actions.updateEditing(Object.assign({}, movie) )}>Edit</button>
 ]
 
 const checkAuth = (list, auth) => {
@@ -35,8 +36,11 @@ const tableDef = [
         'key': 'id',
         'label': 'Id',
         'render': (movie, actions) => movie.id
-    }
+    } // etc
 ]
+
+
+const formFields = []
 
 const Movies = module.exports = (state, actions) => <div key='movies'>
     <h2>Movie list</h2>
@@ -51,4 +55,5 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
         </div>
     </div>
     {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}
+    {state.movies.editing?<ModalForm formFields={formFields} item={state.movies.editing} hideAction={()=>actions.updateEditing(null)} />:null}
 </div>
