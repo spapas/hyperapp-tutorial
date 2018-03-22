@@ -1,8 +1,19 @@
+let existingAuth = localStorage.getItem("auth");
+
+if(existingAuth) {
+    try {
+        existingAuth = JSON.parse(existingAuth);
+    } catch(error) {
+        existingAuth = null;
+    }
+}
+if(!existingAuth) existingAuth = {key:'', username:''}
+
 
 const state = module.exports = {
     auth: {
-        key: null,
-        username: null,
+        key: existingAuth.key,
+        username: existingAuth.username,
         loading: false,
         forms: {
             login: {}

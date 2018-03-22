@@ -34,7 +34,7 @@ const tableDef = [
     {
         'key': 'id',
         'label': 'Id',
-        'render': (movie, actions) => movie.id,
+        'render': (movie, actions) => movie.id
     }
 ]
 
@@ -42,7 +42,12 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
     <h2>Movie list</h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => actions.load(window.g_urls.movies)}>
-            {state.movies.loading == true ? <Spinner /> : <Table rowHeaders={checkAuth(rowHeaders, state.auth)} rowColumns={checkAuth(rowColumns, state.auth)} rows={state.movies} actions={actions} />}
+            {state.movies.loading == true ? <Spinner /> : <Table 
+                rowHeaders={checkAuth(rowHeaders, state.auth)} 
+                rowColumns={checkAuth(rowColumns, state.auth)} 
+                rows={state.movies} 
+                actions={actions} 
+            />}
         </div>
     </div>
     {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}

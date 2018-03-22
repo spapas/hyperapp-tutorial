@@ -35,7 +35,6 @@ module.exports = {
             }
         }).then(function (r) { return r.json() }).then(function (j) {
             actions.updateLogin({key: null, username: null});
-            
             g_actions.location.go("/");
             actions.updateLoading(false)
             g_actions.toasts.add({text: "Successfully logged out!", style: "success"})
@@ -44,12 +43,15 @@ module.exports = {
     updateLoading: loading => state => ({
         loading
     }),
-    updateLogin: ({key, username}) => state => ({
-        key,
-        username,
-        forms: {
-            login: {}
+    updateLogin: ({key, username}) => state => {
+        localStorage.setItem("auth", JSON.stringify({key, username}))
+        return {
+            key,
+            username,
+            forms: {
+                login: {}
+            }
         }
-    }),
+    },
     updateField
 }
