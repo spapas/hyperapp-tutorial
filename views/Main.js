@@ -18,5 +18,9 @@ const reducers = module.exports = (state, actions) => <div class='container grid
     </Switch>
     <ToastContainer toasts={state.toasts} actions={actions} />
 
+    
+    {JSON.stringify(state)}
+    
+
 </div>
 
