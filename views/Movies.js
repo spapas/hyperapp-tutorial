@@ -70,6 +70,7 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
                             formFields={formFields} 
                             item={state.movies.forms.edit} 
                             hideAction={()=>actions.updateEdit(null)} 
+                            saveAction={()=>actions.saveEdit(state.auth.key)} 
                             updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})} 
                             />:null}
 </div>

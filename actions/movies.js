@@ -40,5 +40,25 @@ module.exports = {
         })
     }),
 
+    saveEdit: key => state => {
+        console.log("Saving ...", state)
+        let item = state.forms.edit
+        if(item.id) { // UPDATE
+
+        } else { // CREATE
+            console.log("Create new item")
+            fetch(window.g_urls.movies, {
+                body: JSON.stringify(item), 
+                headers: {
+                  'content-type': 'application/json',
+                  'Authorization': "Token " + key
+                },
+                credentials: 'same-origin',
+                method: 'POST',
+                
+              }).then(data => console.log(data)).catch(error => console.error(error))
+        }
+    },
+
     updateField
 }

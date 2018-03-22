@@ -16,12 +16,11 @@ const renderField = (field, item, updateFieldAction ) => {
 
 }
 
-
 const renderFields = (fields, item, updateFieldAction) => fields.map(
     f => renderField(f, item, updateFieldAction)
 )
 
-const ModalForm = module.exports = ({ formFields, item, hideAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>
+const ModalForm = module.exports = ({ formFields, item, hideAction, saveAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>
 <div class="modal-overlay"></div>
     <div class="modal-container">
     <div class="modal-header">
@@ -37,7 +36,7 @@ const ModalForm = module.exports = ({ formFields, item, hideAction, updateFieldA
     </div>
         <div class="modal-footer">
         <button class="btn" onclick={hideAction}>Cancel</button>
-            <button class="btn" onclick={hideAction}>Ok</button>
+            <button class="btn" onclick={saveAction}>Ok</button>
 
         </div>
     </div>
