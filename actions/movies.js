@@ -53,7 +53,6 @@ module.exports = {
                   'content-type': 'application/json',
                   'Authorization': "Token " + key
                 },
-                credentials: 'same-origin',
                 method: 'POST',
                 
               }).then(data => console.log(data)).catch(error => console.error(error))
