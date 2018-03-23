@@ -35,7 +35,6 @@ const ModalForm = module.exports = ({ loading, formFields, item, hideAction, sav
                 <button class="btn" onclick={hideAction}>Cancel</button>
                 <button class="ml-2 btn btn-primary" onclick={saveAction}>Ok</button>
             </div>}
-
         </div>
     </div>
 </div>

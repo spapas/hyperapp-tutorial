@@ -4,10 +4,7 @@ import { updateField, addErrors } from "./forms.js"
 module.exports = {
     load: url => (state, actions) => {
         actions.updateLoading(true)
-        
         setTimeout(() => fetch(url).then(function (r) { return r.json() }).then(function (j) {
-          console.log(url);
-          console.log(j);
           let match = url.match(/\?page=(\d+)/)
           let page = 1;
           if (match) page = 1*match[1]
@@ -68,7 +65,7 @@ module.exports = {
                 method,
             }).then(response => {
                 actions.updateLoading(false)
-                console.log(response.status);
+
                 if(response.status == 400) {
                     response.json().then(errors => {
                         console.log(errors)
@@ -86,7 +83,7 @@ module.exports = {
             }).catch(error => {
                 console.log("ERR", error.status);
             })
-        }, 1000)
+        }, 500)
         
     },
 

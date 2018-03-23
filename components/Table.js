@@ -13,5 +13,5 @@ const Table = module.exports = ({ rowHeaders, rowColumns, rows, actions }) => <d
             }
         </tbody>
     </table>
-    <Pagination page={rows.page} next={rows.next} previous={rows.previous} actions={actions} />
+    <Pagination page={rows.page} next={rows.next} previous={rows.previous} loadAction={actions.load} />
 </div>
