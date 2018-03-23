@@ -4,6 +4,7 @@ import PlotModal from '../components/PlotModal.js'
 
 import Table from '../components/Table.js'
 import ModalForm from '../components/ModalForm.js'
+import SearchForm from '../components/SearchForm.js'
 
 const rowHeaders = [
     'Id',
@@ -66,6 +67,11 @@ const Movies = module.exports = (state, actions, g_actions) => <div key='movies'
     </h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => actions.load(window.g_urls.movies)}>
+            <SearchForm 
+                formFields={mergeValuesErrors(formFields, state.movies.forms.search, null)} 
+                updateFieldAction={(key, value)=>actions.updateField({formname: 'search', fieldname: key, value})} 
+                searchAction={actions.searchAction}
+                />
             {state.movies.loading == true ? <Spinner /> : <Table 
                 rowHeaders={checkAuth(rowHeaders, state.auth)} 
                 rowColumns={checkAuth(rowColumns, state.auth)} 

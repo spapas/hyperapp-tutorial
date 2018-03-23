@@ -28,5 +28,6 @@ const FormInputLong =({field, action}) => AbstractInput({
 })
 
 
+
 module.exports['FormInput'] = FormInput
 module.exports['FormInputLong'] = FormInputLong

@@ -86,7 +86,12 @@ module.exports = {
         }, 500)
         
     },
+    searchAction: (reset) => (state, actions) => {
+        console.log("SEARCH", reset, state)
+        if(reset) {
 
+        }
+    },
     updateField,
     addErrors
 }
