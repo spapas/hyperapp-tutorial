@@ -1,5 +1,5 @@
 import { h } from "hyperapp"
-import Spinner from '../components/Spinner.js'
+import { Spinner } from '../components/Spinners.js'
 import Table from '../components/Table.js'
 import PersonModal from '../components/PersonModal.js'
 
@@ -26,6 +26,5 @@ const People = module.exports = (state, actions) => <div key='people'>
             {state.loading == true ? <Spinner /> : <Table rowHeaders={rowHeaders} rowColumns={rowColumns} rows={state} actions={actions} />}
         </div>
     </div>
-    <PersonModal person={state.editing} loading={state.loading} actions={actions} />
     
 </div>

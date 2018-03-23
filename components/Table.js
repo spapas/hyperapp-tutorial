@@ -1,6 +1,10 @@
-const { h } = require('hyperapp')
-import Row from './Row.js'
+import { h } from 'hyperapp'
 import Pagination from '../components/Pagination.js'
+
+const Row = module.exports = ({ row, rowColumns, actions }) => <tr>
+    {rowColumns.map(z => <td>{z(row, actions)}</td>) }
+</tr>
+
 
 const Table = module.exports = ({ rowHeaders, rowColumns, rows, actions }) => <div>
     <table class="table table-striped table-hover">

@@ -1,6 +1,6 @@
 const { h } = require('hyperapp')
 
-const Toast = module.exports = ({page, next, previous, loadAction}) => <ul class="pagination">
+const Pagination = module.exports = ({page, next, previous, loadAction}) => <ul class="pagination">
     <li class={`page-item ${previous?'':'disabled'}`}>
         <a onclick={() => loadAction(previous)} href="#" tabindex="-1">Previous</a>
     </li>
