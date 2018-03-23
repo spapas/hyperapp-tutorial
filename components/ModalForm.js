@@ -3,23 +3,19 @@ import FormInput from './FormInput.js'
 import FormInputLong from './FormInputLong.js'
 
 
-const renderField = (field, item, updateFieldAction ) => {
+const renderField = (field, updateFieldAction ) => {
     console.log("RENDERING ", field)
     let ftype = FormInput 
     if(field.type == 'longtext') ftype = FormInputLong
     return ftype({
-        label: field.label,
-        key: field.key,
-        value: item[field.key],
-        type: field.type,
-        errors: field.errors,
+        field,
         action: (val) => updateFieldAction(field.key, val)
     });
 
 }
 
-const renderFields = (fields, item, updateFieldAction) => fields.map(
-    f => renderField(f, item, updateFieldAction)
+const renderFields = (fields,  updateFieldAction) => fields.map(
+    f => renderField(f, updateFieldAction)
 )
 
 const ModalForm = module.exports = ({ formFields, item, hideAction, saveAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>
@@ -32,7 +28,7 @@ const ModalForm = module.exports = ({ formFields, item, hideAction, saveAction, 
     <div class="modal-body">
         <div class="content">
             <form method='POST'>
-                {renderFields(formFields, item, updateFieldAction)}
+                {renderFields(formFields, updateFieldAction)}
             </form>
         </div>
     </div>

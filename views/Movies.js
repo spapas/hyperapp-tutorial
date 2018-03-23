@@ -47,11 +47,16 @@ const formFields = [
     {'key': 'story', 'label': 'Plot', 'type': 'longtext'},
 ]
 
-const mergeErrors = (formFields, errors) => {
-    console.log("Merging ", formFields, errors)
-    return errors?formFields.map(f => Object.assign({}, f, {'errors': errors[f.key]})):formFields
-
+const mergeValuesErrors = (formFields, item, errors) => {
+    return formFields.map(f => Object.assign({}, f, {
+        'value': item[f.key]
+    }, errors?{
+        'errors': errors[f.key]
+    }:{}
+    ))
 }
+
+
 
 const Movies = module.exports = (state, actions) => <div key='movies'>
     <h2>
@@ -70,11 +75,10 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
             />}
         </div>
     </div>
-    1{JSON.stringify(state.movies.forms.edit)}2
     {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}
     {state.movies.forms.edit?<ModalForm 
-                            formFields={mergeErrors(formFields, state.movies.forms.edit.errors)} 
-                            item={state.movies.forms.edit} 
+                            formFields={mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors)} 
+                            item={state.movies.forms.edit}
                             hideAction={()=>actions.updateEdit(null)} 
                             saveAction={()=>actions.saveEdit(state.auth.key)} 
                             updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})} 
