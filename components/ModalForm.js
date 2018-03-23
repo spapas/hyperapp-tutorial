@@ -1,6 +1,6 @@
 import { h } from 'hyperapp'
-import FormInput from './FormInput.js'
-import FormInputLong from './FormInputLong.js'
+import { FormInput, FormInputLong} from './FormInputs.js'
+
 
 
 const renderField = (field, updateFieldAction ) => {
