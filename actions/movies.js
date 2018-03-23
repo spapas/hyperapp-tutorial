@@ -1,4 +1,4 @@
-import updateField from "./forms.js"
+import { updateField, addErrors } from "./forms.js"
 
 
 module.exports = {
@@ -39,8 +39,9 @@ module.exports = {
             edit: item
         })
     }),
+    
 
-    saveEdit: key => state => {
+    saveEdit: key => (state, actions) => {
         console.log("Saving ...", state)
         let item = state.forms.edit
         if(item.id) { // UPDATE
@@ -55,9 +56,20 @@ module.exports = {
                 },
                 method: 'POST',
                 
-              }).then(data => console.log(data)).catch(error => console.error(error))
+            }).then(response => {
+                console.log(response.status);
+                if(response.status == 400) {
+                    response.json().then(errors => {
+                        console.log(errors)
+                        actions.addErrors({formname: 'edit', errors})
+                    })
+                }
+            }).catch(error => {
+                console.log("ERR", error.status);
+            })
         }
     },
 
-    updateField
+    updateField,
+    addErrors
 }
