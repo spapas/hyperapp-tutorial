@@ -1,4 +1,4 @@
-import updateField from "./forms.js"
+import { updateField } from "./forms.js"
 
 module.exports = {
     login: g_actions => (state, actions) => {

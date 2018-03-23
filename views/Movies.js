@@ -61,9 +61,9 @@ const mergeValuesErrors = (formFields, item, errors) => {
 const Movies = module.exports = (state, actions, g_actions) => <div key='movies'>
     <h2>
         Movie list &nbsp;  &nbsp;
-        <button class="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>
+        {state.auth.key?<button class="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>
             <i class="icon icon-plus"></i>
-        </button>
+        </button>:null}
     </h2>
     <div class="columns">
         <div class="column col-lg-12" oncreate={() => actions.load(window.g_urls.movies)}>
