@@ -1,6 +1,6 @@
 import { h } from "hyperapp"
-import FormInput from '../components/FormInput.js'
-import Spinner from '../components/Spinner.js'
+import { FormInput } from '../components/FormInputs.js'
+import { Spinner } from '../components/Spinners.js'
 
 const okClick = (e, actions, g_actions) => {
     actions.login(g_actions)

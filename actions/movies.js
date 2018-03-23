@@ -89,7 +89,19 @@ module.exports = {
     searchAction: (reset) => (state, actions) => {
         console.log("SEARCH", reset, state)
         if(reset) {
-
+            
+            actions.load(state.current.split('?')[0]);
+            return {
+                forms: Object.assign({}, state['forms'], {
+                    search: {}
+                })
+            }
+        } else {
+            console.log(state.forms.search);
+            let params = Object.keys(state.forms.search).map(function(k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k])
+            }).join('&')
+            actions.load(state.current.split('?')[0]+'?'+params);
         }
     },
     updateField,

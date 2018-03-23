@@ -26,8 +26,8 @@ const SearchForm = module.exports = ({ loading, formFields, searchAction, update
             </div>)
         }
         {loading?<SpinnerSmall />:<div  >
-            <button style={{'margin-top': '2.3em'}} class="btn ml-2" onclick={e => {e.preventDefault(); searchAction(true); return false; }} >Reset</button>
             <button style={{marginTop: '2.3em'}}  class="btn ml-2 btn-primary" onclick={e => {e.preventDefault(); searchAction(); return false; }}>Filter</button>
+            <button style={{'margin-top': '2.3em'}} class="btn ml-2" onclick={e => {e.preventDefault(); searchAction(true); return false; }} >Reset</button>
         </div>}
     </div>
   

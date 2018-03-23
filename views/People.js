@@ -1,7 +1,6 @@
 import { h } from "hyperapp"
 import { Spinner } from '../components/Spinners.js'
 import Table from '../components/Table.js'
-import PersonModal from '../components/PersonModal.js'
 
 
 const rowHeaders = [
