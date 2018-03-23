@@ -12,7 +12,7 @@ module.exports = {
           let page = 1;
           if (match) page = 1*match[1]
           
-          actions.update({response: j, page});
+          actions.update({response: j, current: url, page});
           actions.updateLoading(false)
         }), 100);
     },
@@ -25,8 +25,9 @@ module.exports = {
         showPlot
     }),
 
-    update: ({response, page}) => state => ({
+    update: ({response, current, page}) => state => ({
         page,
+        current,
         count: response.count,
         next: response.next,
         previous: response.previous,
@@ -41,33 +42,52 @@ module.exports = {
     }),
     
 
-    saveEdit: key => (state, actions) => {
+    saveEdit: ({key, g_actions}) => (state, actions) => {
         console.log("Saving ...", state)
+        actions.updateLoading(true)
         let item = state.forms.edit
+        let saveUrl = ''
+        let method = ''
         if(item.id) { // UPDATE
-
+            console.log("Update item")
+            saveUrl = item.url
+            method = 'PATCH'
         } else { // CREATE
             console.log("Create new item")
-            fetch(window.g_urls.movies, {
+            saveUrl = window.g_urls.movies
+            method = 'POST'
+        }
+        
+        window.setTimeout( () => { 
+            fetch(saveUrl, {
                 body: JSON.stringify(item), 
                 headers: {
-                  'content-type': 'application/json',
-                  'Authorization': "Token " + key
+                    'content-type': 'application/json',
+                    'Authorization': "Token " + key
                 },
-                method: 'POST',
-                
+                method,
             }).then(response => {
+                actions.updateLoading(false)
                 console.log(response.status);
                 if(response.status == 400) {
                     response.json().then(errors => {
                         console.log(errors)
                         actions.addErrors({formname: 'edit', errors})
                     })
+                } else if(response.status == 200 || response.status == 201) {
+                    response.json().then(data => {
+                        // Data is the object that was saved
+                        console.log(data)
+                        g_actions.toasts.add({text: "Successfully saved object!", style: "success"} ) 
+                        actions.updateEdit(null)
+                        actions.load(state.current)
+                    })
                 }
             }).catch(error => {
                 console.log("ERR", error.status);
             })
-        }
+        }, 1000)
+        
     },
 
     updateField,

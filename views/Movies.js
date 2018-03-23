@@ -1,5 +1,5 @@
 import { h } from "hyperapp"
-import Spinner from '../components/Spinner.js'
+import { Spinner } from '../components/Spinners.js'
 import PlotModal from '../components/PlotModal.js'
 
 import Table from '../components/Table.js'
@@ -57,8 +57,7 @@ const mergeValuesErrors = (formFields, item, errors) => {
 }
 
 
-
-const Movies = module.exports = (state, actions) => <div key='movies'>
+const Movies = module.exports = (state, actions, g_actions) => <div key='movies'>
     <h2>
         Movie list &nbsp;  &nbsp;
         <button class="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>
@@ -77,10 +76,11 @@ const Movies = module.exports = (state, actions) => <div key='movies'>
     </div>
     {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}
     {state.movies.forms.edit?<ModalForm 
+                            loading={state.movies.loading}
                             formFields={mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors)} 
                             item={state.movies.forms.edit}
                             hideAction={()=>actions.updateEdit(null)} 
-                            saveAction={()=>actions.saveEdit(state.auth.key)} 
+                            saveAction={()=>actions.saveEdit({g_actions: g_actions, key: state.auth.key})} 
                             updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})} 
                             />:null}
 </div>

@@ -12,7 +12,7 @@ const reducers = module.exports = (state, actions) => <div class='container grid
     <Tabs currentLocation={state.location} auth={state.auth} actions={actions} />
     <Switch>
         <Route path="/" render={() => Home(state, actions)} />
-        <Route path="/movies" render={() => Movies(state, actions.movies)} />
+        <Route path="/movies" render={() => Movies(state, actions.movies, actions)} />
         <Route path="/people" render={() => People(state.people, actions.people)} />
         <Route path="/login" render={() => Login(state.auth, actions.auth, actions)} />
     </Switch>

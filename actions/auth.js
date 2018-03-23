@@ -1,7 +1,7 @@
 import updateField from "./forms.js"
 
 module.exports = {
-    login: (g_actions) => (state, actions) => {
+    login: g_actions => (state, actions) => {
         actions.updateLoading(true)
         let data = {
             username: state.forms.login.username,
@@ -26,7 +26,7 @@ module.exports = {
             actions.updateLoading(false)
         })
     },
-    logout: (g_actions) => (state, actions) => {
+    logout: g_actions => (state, actions) => {
         actions.updateLoading(true)
         setTimeout(() => fetch(g_urls.logout, {
             method: 'POST',

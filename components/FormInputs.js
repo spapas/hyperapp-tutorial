@@ -1,4 +1,4 @@
-const { h } = require('hyperapp')
+import { h } from 'hyperapp'
 
 const AbstractInput = ({field, action, realInput}) => <div class={`form-group ${field.errors?'has-error':''}`} key={field.key}>
 <label class="form-label" for="{field.key}">{field.label}</label>
@@ -14,7 +14,6 @@ const FormInput = ({field, action}) => AbstractInput({
         oninput={e => action(e.target.value)}
         />
 })
-
 
 
 const FormInputLong =({field, action}) => AbstractInput({

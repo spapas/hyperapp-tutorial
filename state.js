@@ -30,6 +30,7 @@ const state = module.exports = {
         count: 0,
         next: null,
         previous: null,
+        current: null,
         items: [],
         forms: {
             edit: null,
