@@ -22,7 +22,7 @@
   "dependencies": {
     "@hyperapp/router": "^0.4.1",
     "babel-core": "^6.26.0",
-    "hyperapp": "^1.1.2",
+    "hyperapp": "^1.2.9",
     "update": "^0.7.4"
   }
 }
