@@ -12,15 +12,15 @@
   "devDependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
-    "babelify": "^8.0.0",
+    "babelify": "^10.0.0",
     "browserify": "^16.1.0",
     "bundle-collapser": "^1.2.1",
-    "uglifyify": "^4.0.3",
+    "uglifyify": "^5.0.1",
     "uglifyjs": "^2.4.11",
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "@hyperapp/router": "^0.4.1",
+    "@hyperapp/router": "^0.7.1",
     "babel-core": "^6.26.0",
     "hyperapp": "^1.2.9",
     "update": "^0.7.4"
