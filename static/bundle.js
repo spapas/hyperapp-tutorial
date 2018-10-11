@@ -831,8 +831,11 @@ var Table = module.exports = function (_ref) {
     auth.key ? (0, _hyperapp.h)(
       "div",
       null,
-      auth.username,
-      " ",
+      (0, _hyperapp.h)(
+        "span",
+        { "class": "chip" },
+        auth.username
+      ),
       (0, _hyperapp.h)(
         "button",
         { "class": "btn", onclick: function onclick() {
