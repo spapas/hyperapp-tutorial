@@ -886,38 +886,38 @@ var ToastContainer = module.exports = function (_ref2) {
 };
 
 },{"hyperapp":2}],18:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _hyperapp = require("hyperapp");
+var _hyperapp = require('hyperapp');
 
-var _router = require("@hyperapp/router");
+var _router = require('@hyperapp/router');
 
-var _actions = require("./actions");
+var _actions = require('./actions');
 
 var _actions2 = _interopRequireDefault(_actions);
 
-var _Main = require("./views/Main.js");
+var _Main = require('./views/Main.js');
 
 var _Main2 = _interopRequireDefault(_Main);
 
-var _state = require("./state.js");
+var _state = require('./state.js');
 
 var _state2 = _interopRequireDefault(_state);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var application = (0, _hyperapp.app)(_state2.default, _actions2.default, _Main2.default, document.getElementById("app"));
+var application = (0, _hyperapp.app)(_state2.default, _actions2.default, _Main2.default, document.getElementById('app'));
 
 var unsubscribe = _router.location.subscribe(application.location);
 
 var hideToasts = function hideToasts() {
-    application.toasts.clear();
+  application.toasts.clear();
 };
 
 _actions2.default.location.go('/');
 
-addEventListener("pushstate", hideToasts);
-addEventListener("popstate", hideToasts);
+addEventListener('pushstate', hideToasts);
+addEventListener('popstate', hideToasts);
 
 },{"./actions":5,"./state.js":19,"./views/Main.js":22,"@hyperapp/router":1,"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
@@ -1042,62 +1042,62 @@ var Login = module.exports = function (state, actions, g_actions) {
 };
 
 },{"../components/FormInputs.js":9,"../components/Spinners.js":14,"hyperapp":2}],22:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _hyperapp = require("hyperapp");
+var _hyperapp = require('hyperapp');
 
-var _router = require("@hyperapp/router");
+var _router = require('@hyperapp/router');
 
-var _Home = require("./Home.js");
+var _Home = require('./Home.js');
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _Movies = require("./Movies.js");
+var _Movies = require('./Movies.js');
 
 var _Movies2 = _interopRequireDefault(_Movies);
 
-var _People = require("./People.js");
+var _People = require('./People.js');
 
 var _People2 = _interopRequireDefault(_People);
 
-var _Login = require("./Login.js");
+var _Login = require('./Login.js');
 
 var _Login2 = _interopRequireDefault(_Login);
 
-var _Tabs = require("../components/Tabs.js");
+var _Tabs = require('../components/Tabs.js');
 
 var _Tabs2 = _interopRequireDefault(_Tabs);
 
-var _ToastContainer = require("../components/ToastContainer.js");
+var _ToastContainer = require('../components/ToastContainer.js');
 
 var _ToastContainer2 = _interopRequireDefault(_ToastContainer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var reducers = module.exports = function (state, actions) {
-    return (0, _hyperapp.h)(
-        "div",
-        { "class": "container grid-xl" },
-        (0, _hyperapp.h)(_Tabs2.default, { currentLocation: state.location, auth: state.auth, actions: actions }),
-        (0, _hyperapp.h)(
-            _router.Switch,
-            null,
-            (0, _hyperapp.h)(_router.Route, { path: "/", render: function render() {
-                    return (0, _Home2.default)(state, actions);
-                } }),
-            (0, _hyperapp.h)(_router.Route, { path: "/movies", render: function render() {
-                    return (0, _Movies2.default)(state, actions.movies, actions);
-                } }),
-            (0, _hyperapp.h)(_router.Route, { path: "/people", render: function render() {
-                    return (0, _People2.default)(state.people, actions.people);
-                } }),
-            (0, _hyperapp.h)(_router.Route, { path: "/login", render: function render() {
-                    return (0, _Login2.default)(state.auth, actions.auth, actions);
-                } })
-        ),
-        (0, _hyperapp.h)(_ToastContainer2.default, { toasts: state.toasts, actions: actions }),
-        JSON.stringify(state)
-    );
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'container grid-xl' },
+    (0, _hyperapp.h)(_Tabs2.default, { currentLocation: state.location, auth: state.auth, actions: actions }),
+    (0, _hyperapp.h)(
+      _router.Switch,
+      null,
+      (0, _hyperapp.h)(_router.Route, { path: '/', render: function render() {
+          return (0, _Home2.default)(state, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/movies', render: function render() {
+          return (0, _Movies2.default)(state, actions.movies, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/people', render: function render() {
+          return (0, _People2.default)(state.people, actions.people);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/login', render: function render() {
+          return (0, _Login2.default)(state.auth, actions.auth, actions);
+        } })
+    ),
+    (0, _hyperapp.h)(_ToastContainer2.default, { toasts: state.toasts, actions: actions }),
+    JSON.stringify(state)
+  );
 };
 
 },{"../components/Tabs.js":16,"../components/ToastContainer.js":17,"./Home.js":20,"./Login.js":21,"./Movies.js":23,"./People.js":24,"@hyperapp/router":1,"hyperapp":2}],23:[function(require,module,exports){
