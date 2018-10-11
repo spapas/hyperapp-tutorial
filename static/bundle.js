@@ -154,195 +154,193 @@ var reducers = module.exports = {
 var _forms = require("./forms.js");
 
 module.exports = {
-    load: function load(url) {
-        return function (state, actions) {
-            actions.updateLoading(true);
-            setTimeout(function () {
-                return fetch(url).then(function (r) {
-                    return r.json();
-                }).then(function (j) {
-                    var match = url.match(/\?page=(\d+)/);
-                    var page = 1;
-                    if (match) page = 1 * match[1];
+  load: function load(url) {
+    return function (state, actions) {
+      actions.updateLoading(true);
+      setTimeout(function () {
+        return fetch(url).then(function (r) {
+          return r.json();
+        }).then(function (j) {
+          var match = url.match(/\?page=(\d+)/);
+          var page = 1;
+          if (match) page = 1 * match[1];
 
-                    actions.update({ response: j, current: url, page: page });
-                    actions.updateLoading(false);
-                });
-            }, 100);
+          actions.update({ response: j, current: url, page: page });
+          actions.updateLoading(false);
+        });
+      }, 100);
+    };
+  },
+
+  updateLoading: function updateLoading(loading) {
+    return function (state) {
+      return {
+        loading: loading
+      };
+    };
+  },
+
+  updateShowPlot: function updateShowPlot(showPlot) {
+    return function (state) {
+      return {
+        showPlot: showPlot
+      };
+    };
+  },
+
+  update: function update(_ref) {
+    var response = _ref.response,
+        current = _ref.current,
+        page = _ref.page;
+    return function (state) {
+      return {
+        page: page,
+        current: current,
+        count: response.count,
+        next: response.next,
+        previous: response.previous,
+        items: response.results
+
+      };
+    };
+  },
+
+  updateEdit: function updateEdit(item) {
+    return function (state) {
+      return {
+        forms: Object.assign({}, state['forms'], {
+          edit: item
+        })
+      };
+    };
+  },
+
+  saveEdit: function saveEdit(_ref2) {
+    var key = _ref2.key,
+        g_actions = _ref2.g_actions;
+    return function (state, actions) {
+      console.log("Saving ...", state);
+      actions.updateLoading(true);
+      var item = state.forms.edit;
+      var saveUrl = '';
+      var method = '';
+      if (item.id) {
+        // UPDATE
+        console.log("Update item");
+        saveUrl = item.url;
+        method = 'PATCH';
+      } else {
+        // CREATE
+        console.log("Create new item");
+        saveUrl = window.g_urls.movies;
+        method = 'POST';
+      }
+
+      window.setTimeout(function () {
+        fetch(saveUrl, {
+          body: JSON.stringify(item),
+          headers: {
+            'content-type': 'application/json',
+            'Authorization': "Token " + key
+          },
+          method: method
+        }).then(function (response) {
+          actions.updateLoading(false);
+
+          if (response.status == 400) {
+            response.json().then(function (errors) {
+              console.log(errors);
+              actions.addErrors({ formname: 'edit', errors: errors });
+            });
+          } else if (response.status == 200 || response.status == 201) {
+            response.json().then(function (data) {
+              // Data is the object that was saved
+              console.log(data);
+              g_actions.toasts.add({ text: "Successfully saved object!", style: "success" });
+              actions.updateEdit(null);
+              actions.load(state.current);
+            });
+          }
+        }).catch(function (error) {
+          console.log("ERR", error.status);
+        });
+      }, 500);
+    };
+  },
+  searchAction: function searchAction(reset) {
+    return function (state, actions) {
+      if (reset) {
+
+        actions.load(state.current.split('?')[0]);
+        return {
+          forms: Object.assign({}, state['forms'], {
+            search: {}
+          })
         };
-    },
-
-    updateLoading: function updateLoading(loading) {
-        return function (state) {
-            return {
-                loading: loading
-            };
-        };
-    },
-
-    updateShowPlot: function updateShowPlot(showPlot) {
-        return function (state) {
-            return {
-                showPlot: showPlot
-            };
-        };
-    },
-
-    update: function update(_ref) {
-        var response = _ref.response,
-            current = _ref.current,
-            page = _ref.page;
-        return function (state) {
-            return {
-                page: page,
-                current: current,
-                count: response.count,
-                next: response.next,
-                previous: response.previous,
-                items: response.results
-
-            };
-        };
-    },
-
-    updateEdit: function updateEdit(item) {
-        return function (state) {
-            return {
-                forms: Object.assign({}, state['forms'], {
-                    edit: item
-                })
-            };
-        };
-    },
-
-    saveEdit: function saveEdit(_ref2) {
-        var key = _ref2.key,
-            g_actions = _ref2.g_actions;
-        return function (state, actions) {
-            console.log("Saving ...", state);
-            actions.updateLoading(true);
-            var item = state.forms.edit;
-            var saveUrl = '';
-            var method = '';
-            if (item.id) {
-                // UPDATE
-                console.log("Update item");
-                saveUrl = item.url;
-                method = 'PATCH';
-            } else {
-                // CREATE
-                console.log("Create new item");
-                saveUrl = window.g_urls.movies;
-                method = 'POST';
-            }
-
-            window.setTimeout(function () {
-                fetch(saveUrl, {
-                    body: JSON.stringify(item),
-                    headers: {
-                        'content-type': 'application/json',
-                        'Authorization': "Token " + key
-                    },
-                    method: method
-                }).then(function (response) {
-                    actions.updateLoading(false);
-
-                    if (response.status == 400) {
-                        response.json().then(function (errors) {
-                            console.log(errors);
-                            actions.addErrors({ formname: 'edit', errors: errors });
-                        });
-                    } else if (response.status == 200 || response.status == 201) {
-                        response.json().then(function (data) {
-                            // Data is the object that was saved
-                            console.log(data);
-                            g_actions.toasts.add({ text: "Successfully saved object!", style: "success" });
-                            actions.updateEdit(null);
-                            actions.load(state.current);
-                        });
-                    }
-                }).catch(function (error) {
-                    console.log("ERR", error.status);
-                });
-            }, 500);
-        };
-    },
-    searchAction: function searchAction(reset) {
-        return function (state, actions) {
-            console.log("SEARCH", reset, state);
-            if (reset) {
-
-                actions.load(state.current.split('?')[0]);
-                return {
-                    forms: Object.assign({}, state['forms'], {
-                        search: {}
-                    })
-                };
-            } else {
-                console.log(state.forms.search);
-                var params = Object.keys(state.forms.search).map(function (k) {
-                    return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
-                }).join('&');
-                actions.load(state.current.split('?')[0] + '?' + params);
-            }
-        };
-    },
-    updateField: _forms.updateField,
-    addErrors: _forms.addErrors
+      } else {
+        var params = Object.keys(state.forms.search).map(function (k) {
+          return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
+        }).join('&');
+        actions.load(state.current.split('?')[0] + '?' + params);
+      }
+    };
+  },
+  updateField: _forms.updateField,
+  addErrors: _forms.addErrors
 };
 
 },{"./forms.js":4}],7:[function(require,module,exports){
 "use strict";
 
 module.exports = {
-    load: function load(url) {
-        return function (state, actions) {
-            actions.updateLoading(true);
+  load: function load(url) {
+    return function (state, actions) {
+      actions.updateLoading(true);
 
-            setTimeout(function () {
-                return fetch(url).then(function (r) {
-                    return r.json();
-                }).then(function (j) {
-                    var match = url.match(/\?page=(\d+)/);
-                    var page = 1;
-                    if (match) page = 1 * match[1];
+      setTimeout(function () {
+        return fetch(url).then(function (r) {
+          return r.json();
+        }).then(function (j) {
+          var match = url.match(/\?page=(\d+)/);
+          var page = 1;
+          if (match) page = 1 * match[1];
 
-                    actions.update({ response: j, page: page });
-                    actions.updateLoading(false);
-                });
-            }, 100);
-        };
-    },
+          actions.update({ response: j, page: page });
+          actions.updateLoading(false);
+        });
+      }, 100);
+    };
+  },
 
-    updateLoading: function updateLoading(loading) {
-        return function (state) {
-            return {
-                loading: loading
-            };
-        };
-    },
+  updateLoading: function updateLoading(loading) {
+    return function (state) {
+      return {
+        loading: loading
+      };
+    };
+  },
 
-    update: function update(_ref) {
-        var response = _ref.response,
-            page = _ref.page;
-        return function (state) {
-            return {
-                page: page,
-                count: response.count,
-                next: response.next,
-                previous: response.previous,
-                items: response.results
-            };
-        };
-    },
+  update: function update(_ref) {
+    var response = _ref.response,
+        page = _ref.page;
+    return function (state) {
+      return {
+        page: page,
+        count: response.count,
+        next: response.next,
+        previous: response.previous,
+        items: response.results
+      };
+    };
+  },
 
-    edit: function edit(person) {
-        return function (state) {
-            return {
-                editing: person
-            };
-        };
-    }
+  edit: function edit(person) {
+    return function (state) {
+      return {
+        editing: person
+      };
+    };
+  }
 };
 
 },{}],8:[function(require,module,exports){
@@ -1129,125 +1127,125 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var rowHeaders = ['Id', 'Title', 'Release year', 'Runtime', 'Genres', 'Plot', 'Edit'];
 
-var rowColumns = [function (movie, actions) {
-    return movie.id;
-}, function (movie, actions) {
-    return movie.title;
-}, function (movie, actions) {
-    return movie.release_year;
-}, function (movie, actions) {
-    return movie.runtime;
-}, function (movie, actions) {
-    return movie.genres.map(function (z) {
-        return (0, _hyperapp.h)(
-            'span',
-            { 'class': 'chip bg-dark' },
-            (0, _hyperapp.h)(
-                'a',
-                { 'class': 'text-secondary text-norma', href: '' },
-                z.name
-            )
-        );
-    });
-}, function (movie, actions) {
+var rowColumns = [function (movie) {
+  return movie.id;
+}, function (movie) {
+  return movie.title;
+}, function (movie) {
+  return movie.release_year;
+}, function (movie) {
+  return movie.runtime;
+}, function (movie) {
+  return movie.genres.map(function (z) {
     return (0, _hyperapp.h)(
-        'span',
-        { onclick: function onclick() {
-                return actions.updateShowPlot(movie);
-            } },
-        movie.story.substring(0, 50) + '...'
+      'span',
+      { className: 'chip bg-dark' },
+      (0, _hyperapp.h)(
+        'a',
+        { 'class': 'text-secondary text-norma', href: '' },
+        z.name
+      )
     );
+  });
 }, function (movie, actions) {
-    return (0, _hyperapp.h)(
-        'button',
-        { 'class': 'btn btn-block btn-primary', onclick: function onclick() {
-                return actions.updateEdit(Object.assign({}, movie));
-            } },
-        'Edit'
-    );
+  return (0, _hyperapp.h)(
+    'span',
+    { onclick: function onclick() {
+        return actions.updateShowPlot(movie);
+      } },
+    movie.story.substring(0, 50) + '...'
+  );
+}, function (movie, actions) {
+  return (0, _hyperapp.h)(
+    'button',
+    { className: 'btn btn-block btn-primary', onclick: function onclick() {
+        return actions.updateEdit(Object.assign({}, movie));
+      } },
+    'Edit'
+  );
 }];
 
 var checkAuth = function checkAuth(list, auth) {
-    if (auth.key) return list;
-    return list.slice(0, -1);
+  if (auth.key) return list;
+  return list.slice(0, -1);
 };
 
 // TODO: Maybe this is better
 var tableDef = [{
-    'key': 'id',
-    'label': 'Id',
-    'render': function render(movie, actions) {
-        return movie.id;
-    } // etc
+  'key': 'id',
+  'label': 'Id',
+  'render': function render(movie, actions) {
+    return movie.id;
+  } // etc
 }];
 
 var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }];
 
 var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
-    return formFields.map(function (f) {
-        return Object.assign({}, f, {
-            'value': item[f.key]
-        }, errors ? {
-            'errors': errors[f.key]
-        } : {});
-    });
+  return formFields.map(function (f) {
+    return Object.assign({}, f, {
+      'value': item[f.key]
+    }, errors ? {
+      'errors': errors[f.key]
+    } : {});
+  });
 };
 
 var Movies = module.exports = function (state, actions, g_actions) {
-    return (0, _hyperapp.h)(
+  return (0, _hyperapp.h)(
+    'div',
+    { key: 'movies' },
+    (0, _hyperapp.h)(
+      'h2',
+      null,
+      'Movie list \xA0  \xA0',
+      state.auth.key ? (0, _hyperapp.h)(
+        'button',
+        { className: 'btn btn-primary btn-action btn-lg', onclick: function onclick() {
+            return actions.updateEdit({});
+          } },
+        (0, _hyperapp.h)('i', { className: 'icon icon-plus' })
+      ) : null
+    ),
+    (0, _hyperapp.h)(
+      'div',
+      { className: 'columns' },
+      (0, _hyperapp.h)(
         'div',
-        { key: 'movies' },
-        (0, _hyperapp.h)(
-            'h2',
-            null,
-            'Movie list \xA0  \xA0',
-            state.auth.key ? (0, _hyperapp.h)(
-                'button',
-                { 'class': 'btn btn-primary btn-action btn-lg', onclick: function onclick() {
-                        return actions.updateEdit({});
-                    } },
-                (0, _hyperapp.h)('i', { 'class': 'icon icon-plus' })
-            ) : null
-        ),
-        (0, _hyperapp.h)(
-            'div',
-            { 'class': 'columns' },
-            (0, _hyperapp.h)(
-                'div',
-                { 'class': 'column col-lg-12', oncreate: function oncreate() {
-                        return actions.load(window.g_urls.movies);
-                    } },
-                (0, _hyperapp.h)(_SearchForm2.default, {
-                    formFields: mergeValuesErrors(formFields, state.movies.forms.search, null),
-                    updateFieldAction: function updateFieldAction(key, value) {
-                        return actions.updateField({ formname: 'search', fieldname: key, value: value });
-                    },
-                    searchAction: actions.searchAction
-                }),
-                state.movies.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
-                    rowHeaders: checkAuth(rowHeaders, state.auth),
-                    rowColumns: checkAuth(rowColumns, state.auth),
-                    rows: state.movies,
-                    actions: actions
-                })
-            )
-        ),
-        state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null,
-        state.movies.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
-            loading: state.movies.loading,
-            formFields: mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
-            item: state.movies.forms.edit,
-            hideAction: function hideAction() {
-                return actions.updateEdit(null);
-            },
-            saveAction: function saveAction() {
-                return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
-            },
-            updateFieldAction: function updateFieldAction(key, value) {
-                return actions.updateField({ formname: 'edit', fieldname: key, value: value });
-            }
-        }) : null
-    );
+        { className: 'column col-lg-12', oncreate: function oncreate() {
+            return actions.load(window.g_urls.movies);
+          } },
+        (0, _hyperapp.h)(_SearchForm2.default, {
+          formFields: mergeValuesErrors(formFields, state.movies.forms.search, null),
+          updateFieldAction: function updateFieldAction(key, value) {
+            return actions.updateField({ formname: 'search', fieldname: key, value: value });
+          },
+          searchAction: actions.searchAction
+        }),
+        state.movies.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
+          rowHeaders: checkAuth(rowHeaders, state.auth),
+          rowColumns: checkAuth(rowColumns, state.auth),
+          rows: state.movies,
+          actions: actions
+        })
+      )
+    ),
+    state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null,
+    state.movies.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
+      loading: state.movies.loading,
+      formFields: mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
+      item: state.movies.forms.edit,
+      hideAction: function hideAction() {
+        return actions.updateEdit(null);
+      },
+      saveAction: function saveAction() {
+        return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
+      },
+      updateFieldAction: function updateFieldAction(key, value) {
+        return actions.updateField({ formname: 'edit', fieldname: key, value: value });
+      }
+    }) : null
+  );
 };
 
 },{"../components/ModalForm.js":10,"../components/PlotModal.js":12,"../components/SearchForm.js":13,"../components/Spinners.js":14,"../components/Table.js":15,"hyperapp":2}],24:[function(require,module,exports){
@@ -1265,43 +1263,47 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var rowHeaders = ['Id', 'Name', 'Birthday', 'Edit'];
 
-var rowColumns = [function (person, actions) {
-    return person.id;
+var rowColumns = [function (person) {
+  return person.id;
+}, function (person) {
+  return person.name;
+}, function (person) {
+  return person.birthday;
 }, function (person, actions) {
-    return person.name;
-}, function (person, actions) {
-    return person.birthday;
-}, function (person, actions) {
-    return (0, _hyperapp.h)(
-        'button',
-        { 'class': 'btn btn-block btn-primary', onclick: function onclick() {
-                return actions.edit(person);
-            } },
-        'Edit'
-    );
+  return (0, _hyperapp.h)(
+    'button',
+    { className: 'btn btn-block btn-primary', onclick: function onclick() {
+        return actions.edit(person);
+      } },
+    'Edit'
+  );
 }];
 
-var People = module.exports = function (state, actions) {
-    return (0, _hyperapp.h)(
+module.exports = function (state, actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    { key: 'people' },
+    (0, _hyperapp.h)(
+      'h2',
+      null,
+      'People list'
+    ),
+    (0, _hyperapp.h)(
+      'div',
+      { className: 'columns' },
+      (0, _hyperapp.h)(
         'div',
-        { key: 'people' },
-        (0, _hyperapp.h)(
-            'h2',
-            null,
-            'People list'
-        ),
-        (0, _hyperapp.h)(
-            'div',
-            { 'class': 'columns' },
-            (0, _hyperapp.h)(
-                'div',
-                { 'class': 'column col-lg-12', oncreate: function oncreate() {
-                        return actions.load(window.g_urls.persons);
-                    } },
-                state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, { rowHeaders: rowHeaders, rowColumns: rowColumns, rows: state, actions: actions })
-            )
-        )
-    );
+        { className: 'column col-lg-12', oncreate: function oncreate() {
+            return actions.load(window.g_urls.persons);
+          } },
+        state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
+          rowHeaders: rowHeaders,
+          rowColumns: rowColumns,
+          rows: state,
+          actions: actions })
+      )
+    )
+  );
 };
 
 },{"../components/Spinners.js":14,"../components/Table.js":15,"hyperapp":2}]},{},[18]);

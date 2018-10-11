@@ -16,15 +16,17 @@
         "react"
     ],
     "rules": {
+        "react/react-in-jsx-scope": "off",
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
+        "react/display-name": 0,
         "indent": [
             "error",
             2
         ],
         "linebreak-style": [
             "error",
-            "unix"
+            "windows"
         ],
         "quotes": [
             "error",
