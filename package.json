@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "browserify -t babelify -g uglifyify   -p bundle-collapser/plugin index.js | uglifyjs > ../../py3/movie-api/movieapi/static/bundle.js",
-    "watch": "watchify -v -t babelify  index.js -o ../../py3/movie-api/movieapi/static/bundle.js"
+    "build": "browserify -t babelify -g uglifyify -p bundle-collapser/plugin ./srcjs/index.js | uglifyjs > ./static/bundle.js",
+    "watch": "watchify -v -t babelify  ./srcjs/index.js -o ./static/bundle.js"
   },
   "author": "",
   "license": "ISC",

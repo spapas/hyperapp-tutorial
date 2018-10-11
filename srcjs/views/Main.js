@@ -19,7 +19,7 @@ const reducers = module.exports = (state, actions) => <div class='container grid
     <ToastContainer toasts={state.toasts} actions={actions} />
 
     {JSON.stringify(state)}
-    
+
 
 </div>
 
