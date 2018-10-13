@@ -52,9 +52,9 @@ module.exports = (state, actions, g_actions) => <div key='people'>
     </div>
   </div>
   {state.people.forms.edit?<ModalForm
-    loading={state.movies.loading}
-    formFields={mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors)}
-    item={state.movies.forms.edit}
+    loading={state.people.loading}
+    formFields={mergeValuesErrors(formFields, state.people.forms.edit, state.people.forms.edit.errors)}
+    item={state.people.forms.edit}
     hideAction={()=>actions.updateEdit(null)}
     saveAction={()=>actions.saveEdit({g_actions: g_actions, key: state.auth.key})}
     updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})}

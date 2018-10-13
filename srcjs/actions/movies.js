@@ -38,21 +38,17 @@ module.exports = {
     })
   }),
 
-
   saveEdit: ({key, g_actions}) => (state, actions) => {
-    console.log("Saving ...", state)
-    actions.updateLoading(true)
-    let item = state.forms.edit
-    let saveUrl = ''
-    let method = ''
+    actions.updateLoading(true);
+    let item = state.forms.edit;
+    let saveUrl = '';
+    let method = '';
     if(item.id) { // UPDATE
-      console.log("Update item")
-      saveUrl = item.url
-      method = 'PATCH'
+      saveUrl = item.url;
+      method = 'PATCH';
     } else { // CREATE
-      console.log("Create new item")
-      saveUrl = window.g_urls.movies
-      method = 'POST'
+      saveUrl = window.g_urls.movies;
+      method = 'POST';
     }
 
     window.setTimeout( () => {
@@ -60,30 +56,28 @@ module.exports = {
         body: JSON.stringify(item),
         headers: {
           'content-type': 'application/json',
-          'Authorization': "Token " + key
+          'Authorization': 'Token ' + key
         },
         method,
       }).then(response => {
-        actions.updateLoading(false)
+        actions.updateLoading(false);
 
         if(response.status == 400) {
           response.json().then(errors => {
-            console.log(errors)
-            actions.addErrors({formname: 'edit', errors})
-          })
+            actions.addErrors({formname: 'edit', errors});
+          });
         } else if(response.status == 200 || response.status == 201) {
           response.json().then(data => {
             // Data is the object that was saved
-            console.log(data)
-            g_actions.toasts.add({text: "Successfully saved object!", style: "success"} )
-            actions.updateEdit(null)
-            actions.load(state.current)
-          })
+            g_actions.toasts.add({text: 'Successfully saved object!', style: 'success'} );
+            actions.updateEdit(null);
+            actions.load(state.current);
+          });
         }
       }).catch(error => {
-        console.log("ERR", error.status);
-      })
-    }, 500)
+        console.log('ERR', error.status);
+      });
+    }, 500);
 
   },
   searchAction: (reset) => (state, actions) => {
@@ -94,14 +88,14 @@ module.exports = {
         forms: Object.assign({}, state['forms'], {
           search: {}
         })
-      }
+      };
     } else {
       let params = Object.keys(state.forms.search).map(function(k) {
         return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k])
-      }).join('&')
+      }).join('&');
       actions.load(state.current.split('?')[0]+'?'+params);
     }
   },
   updateField,
   addErrors
-}
+};

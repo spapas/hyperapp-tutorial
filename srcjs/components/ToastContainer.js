@@ -1,11 +1,11 @@
-import { h } from 'hyperapp'
+import { h } from 'hyperapp';
 
 const Toast  = ({text, actions, style='primary'}) => <div className={`toast toast-${style}`}>
-    <button class="btn btn-clear float-right" onclick={() => actions.toasts.hide(text)}></button>
-    {text}
-</div>
+  <button className="btn btn-clear float-right" onclick={() => actions.toasts.hide(text)}></button>
+  {text}
+</div>;
 
 const ToastContainer = module.exports = ({toasts, actions}) => <div className='toast-container'>
-    {toasts.items.map((t) => <Toast text={t.text} style={t.style} actions={actions} />)}
-</div>
+  {toasts.items.map((t) => <Toast text={t.text} style={t.style} actions={actions} />)}
+</div>;
 

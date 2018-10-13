@@ -9,30 +9,13 @@
 
 var _forms = require('./forms.js');
 
-var getCookie = function getCookie(name) {
-  var cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = cookies[i];
-      // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === name + '=') {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-};
-
 module.exports = {
   login: function login(g_actions) {
     return function (state, actions) {
       actions.updateLoading(true);
       var data = {
         username: state.forms.login.username,
-        password: state.forms.login.password,
-        csrfmiddlewaretoken: getCookie('csrftoken')
+        password: state.forms.login.password
       };
       fetch(g_urls.login, {
         method: 'POST',
@@ -166,9 +149,9 @@ var reducers = module.exports = {
 };
 
 },{"./auth.js":3,"./movies.js":6,"./people.js":7,"./toasts.js":8,"@hyperapp/router":1}],6:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _forms = require("./forms.js");
+var _forms = require('./forms.js');
 
 module.exports = {
   load: function load(url) {
@@ -236,19 +219,16 @@ module.exports = {
     var key = _ref2.key,
         g_actions = _ref2.g_actions;
     return function (state, actions) {
-      console.log("Saving ...", state);
       actions.updateLoading(true);
       var item = state.forms.edit;
       var saveUrl = '';
       var method = '';
       if (item.id) {
         // UPDATE
-        console.log("Update item");
         saveUrl = item.url;
         method = 'PATCH';
       } else {
         // CREATE
-        console.log("Create new item");
         saveUrl = window.g_urls.movies;
         method = 'POST';
       }
@@ -258,7 +238,7 @@ module.exports = {
           body: JSON.stringify(item),
           headers: {
             'content-type': 'application/json',
-            'Authorization': "Token " + key
+            'Authorization': 'Token ' + key
           },
           method: method
         }).then(function (response) {
@@ -266,20 +246,18 @@ module.exports = {
 
           if (response.status == 400) {
             response.json().then(function (errors) {
-              console.log(errors);
               actions.addErrors({ formname: 'edit', errors: errors });
             });
           } else if (response.status == 200 || response.status == 201) {
             response.json().then(function (data) {
               // Data is the object that was saved
-              console.log(data);
-              g_actions.toasts.add({ text: "Successfully saved object!", style: "success" });
+              g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
               actions.updateEdit(null);
               actions.load(state.current);
             });
           }
         }).catch(function (error) {
-          console.log("ERR", error.status);
+          console.log('ERR', error.status);
         });
       }, 500);
     };
@@ -309,6 +287,8 @@ module.exports = {
 },{"./forms.js":4}],7:[function(require,module,exports){
 'use strict';
 
+var _forms = require('./forms.js');
+
 module.exports = {
   load: function load(url) {
     return function (state, actions) {
@@ -322,7 +302,7 @@ module.exports = {
           var page = 1;
           if (match) page = 1 * match[1];
 
-          actions.update({ response: j, page: page });
+          actions.update({ response: j, current: url, page: page });
           actions.updateLoading(false);
         });
       }, 100);
@@ -339,10 +319,12 @@ module.exports = {
 
   update: function update(_ref) {
     var response = _ref.response,
+        current = _ref.current,
         page = _ref.page;
     return function (state) {
       return {
         page: page,
+        current: current,
         count: response.count,
         next: response.next,
         previous: response.previous,
@@ -359,43 +341,97 @@ module.exports = {
         })
       };
     };
-  }
+  },
+
+  saveEdit: function saveEdit(_ref2) {
+    var key = _ref2.key,
+        g_actions = _ref2.g_actions;
+    return function (state, actions) {
+      actions.updateLoading(true);
+      var item = state.forms.edit;
+      var saveUrl = '';
+      var method = '';
+      if (item.id) {
+        // UPDATE
+        saveUrl = item.url;
+        method = 'PATCH';
+      } else {
+        // CREATE
+        saveUrl = window.g_urls.people;
+        method = 'POST';
+      }
+
+      window.setTimeout(function () {
+        fetch(saveUrl, {
+          body: JSON.stringify(item),
+          headers: {
+            'content-type': 'application/json',
+            'Authorization': 'Token ' + key
+          },
+          method: method
+        }).then(function (response) {
+          actions.updateLoading(false);
+
+          if (response.status == 400) {
+            response.json().then(function (errors) {
+              actions.addErrors({ formname: 'edit', errors: errors });
+            });
+          } else if (response.status == 200 || response.status == 201) {
+            response.json().then(function (data) {
+              // Data is the object that was saved
+              g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
+              actions.updateEdit(null);
+              actions.load(state.current);
+            });
+          }
+        }).catch(function (error) {
+          console.log('ERR', error.status);
+        });
+      }, 500);
+    };
+  },
+  updateField: _forms.updateField,
+  addErrors: _forms.addErrors
 
 };
 
-},{}],8:[function(require,module,exports){
+},{"./forms.js":4}],8:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 module.exports = {
-    add: function add(_ref) {
-        var text = _ref.text,
-            style = _ref.style;
-        return function (state) {
-            return {
-                items: [].concat(_toConsumableArray(state.items), [{ text: text, style: style }])
-            };
-        };
-    },
+  add: function add(_ref) {
+    var text = _ref.text,
+        style = _ref.style;
+    return function (state, actions) {
+      // Hide toast after 10 s
+      window.setTimeout(function () {
+        actions.hide(text);
+      }, 10000);
+      return {
+        items: [].concat(_toConsumableArray(state.items), [{ text: text, style: style }])
+      };
+    };
+  },
 
-    hide: function hide(text) {
-        return function (state) {
-            var idx = state.items.map(function (v) {
-                return v.text;
-            }).indexOf(text);
-            return {
-                items: [].concat(_toConsumableArray(state.items.slice(0, idx)), _toConsumableArray(state.items.slice(idx + 1)))
-            };
-        };
-    },
-    clear: function clear() {
-        return function (state) {
-            return {
-                items: []
-            };
-        };
-    }
+  hide: function hide(text) {
+    return function (state) {
+      var idx = state.items.map(function (v) {
+        return v.text;
+      }).indexOf(text);
+      return {
+        items: [].concat(_toConsumableArray(state.items.slice(0, idx)), _toConsumableArray(state.items.slice(idx + 1)))
+      };
+    };
+  },
+  clear: function clear() {
+    return function (state) {
+      return {
+        items: []
+      };
+    };
+  }
 };
 
 },{}],9:[function(require,module,exports){
@@ -879,30 +915,30 @@ var Table = module.exports = function (_ref) {
 var _hyperapp = require('hyperapp');
 
 var Toast = function Toast(_ref) {
-    var text = _ref.text,
-        actions = _ref.actions,
-        _ref$style = _ref.style,
-        style = _ref$style === undefined ? 'primary' : _ref$style;
-    return (0, _hyperapp.h)(
-        'div',
-        { className: 'toast toast-' + style },
-        (0, _hyperapp.h)('button', { 'class': 'btn btn-clear float-right', onclick: function onclick() {
-                return actions.toasts.hide(text);
-            } }),
-        text
-    );
+  var text = _ref.text,
+      actions = _ref.actions,
+      _ref$style = _ref.style,
+      style = _ref$style === undefined ? 'primary' : _ref$style;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'toast toast-' + style },
+    (0, _hyperapp.h)('button', { className: 'btn btn-clear float-right', onclick: function onclick() {
+        return actions.toasts.hide(text);
+      } }),
+    text
+  );
 };
 
 var ToastContainer = module.exports = function (_ref2) {
-    var toasts = _ref2.toasts,
-        actions = _ref2.actions;
-    return (0, _hyperapp.h)(
-        'div',
-        { className: 'toast-container' },
-        toasts.items.map(function (t) {
-            return (0, _hyperapp.h)(Toast, { text: t.text, style: t.style, actions: actions });
-        })
-    );
+  var toasts = _ref2.toasts,
+      actions = _ref2.actions;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'toast-container' },
+    toasts.items.map(function (t) {
+      return (0, _hyperapp.h)(Toast, { text: t.text, style: t.style, actions: actions });
+    })
+  );
 };
 
 },{"hyperapp":2}],18:[function(require,module,exports){
@@ -1352,9 +1388,9 @@ module.exports = function (state, actions, g_actions) {
       )
     ),
     state.people.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
-      loading: state.movies.loading,
-      formFields: mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
-      item: state.movies.forms.edit,
+      loading: state.people.loading,
+      formFields: mergeValuesErrors(formFields, state.people.forms.edit, state.people.forms.edit.errors),
+      item: state.people.forms.edit,
       hideAction: function hideAction() {
         return actions.updateEdit(null);
       },

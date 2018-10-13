@@ -1,3 +1,5 @@
+import { updateField, addErrors } from "./forms.js"
+
 module.exports = {
   load: url => (state, actions) => {
     actions.updateLoading(true);
@@ -7,7 +9,7 @@ module.exports = {
       let page = 1;
       if (match) page = 1*match[1];
 
-      actions.update({response: j, page});
+      actions.update({response: j, current: url, page});
       actions.updateLoading(false);
     }), 100);
   },
@@ -16,8 +18,9 @@ module.exports = {
     loading
   }),
 
-  update: ({response, page}) => state => ({
+  update: ({response, current, page}) => state => ({
     page,
+    current,
     count: response.count,
     next: response.next,
     previous: response.previous,
@@ -29,5 +32,49 @@ module.exports = {
       edit: item
     })
   }),
+
+  saveEdit: ({key, g_actions}) => (state, actions) => {
+    actions.updateLoading(true);
+    let item = state.forms.edit;
+    let saveUrl = '';
+    let method = '';
+    if(item.id) { // UPDATE
+      saveUrl = item.url;
+      method = 'PATCH';
+    } else { // CREATE
+      saveUrl = window.g_urls.people;
+      method = 'POST';
+    }
+
+    window.setTimeout( () => {
+      fetch(saveUrl, {
+        body: JSON.stringify(item),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Token ' + key
+        },
+        method,
+      }).then(response => {
+        actions.updateLoading(false);
+
+        if(response.status == 400) {
+          response.json().then(errors => {
+            actions.addErrors({formname: 'edit', errors});
+          });
+        } else if(response.status == 200 || response.status == 201) {
+          response.json().then(data => {
+            // Data is the object that was saved
+            g_actions.toasts.add({text: 'Successfully saved object!', style: 'success'} );
+            actions.updateEdit(null);
+            actions.load(state.current);
+          });
+        }
+      }).catch(error => {
+        console.log('ERR', error.status);
+      });
+    }, 500);
+  },
+  updateField,
+  addErrors
 
 };
