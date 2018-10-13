@@ -24,7 +24,10 @@ module.exports = {
     items: response.results
   }),
 
-  edit: person => state => ({
-    editing: person
-  })
+  updateEdit: item => state => ({
+    forms: Object.assign({}, state['forms'], {
+      edit: item
+    })
+  }),
+
 };

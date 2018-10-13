@@ -27,7 +27,7 @@ const rowColumns = [
 ];
 
 const checkAuth = (list, auth) => {
-  if(auth.key) return list
+  if(auth.key) return list;
   return list.slice(0, -1);
 };
 
@@ -58,7 +58,7 @@ const mergeValuesErrors = (formFields, item, errors) => {
 };
 
 
-const Movies = module.exports = (state, actions, g_actions) => <div key='movies'>
+module.exports = (state, actions, g_actions) => <div key='movies'>
   <h2>
     Movie list &nbsp;  &nbsp;
     {state.auth.key?<button className="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>

@@ -13,7 +13,7 @@ const reducers = module.exports = (state, actions) => <div className='container 
   <Switch>
     <Route path="/" render={() => Home(state, actions)} />
     <Route path="/movies" render={() => Movies(state, actions.movies, actions)} />
-    <Route path="/people" render={() => People(state.people, actions.people)} />
+    <Route path="/people" render={() => People(state, actions.people, actions)} />
     <Route path="/login" render={() => Login(state.auth, actions.auth, actions)} />
   </Switch>
   <ToastContainer toasts={state.toasts} actions={actions} />

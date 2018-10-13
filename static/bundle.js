@@ -290,7 +290,7 @@ module.exports = {
 };
 
 },{"./forms.js":4}],7:[function(require,module,exports){
-"use strict";
+'use strict';
 
 module.exports = {
   load: function load(url) {
@@ -334,13 +334,16 @@ module.exports = {
     };
   },
 
-  edit: function edit(person) {
+  updateEdit: function updateEdit(item) {
     return function (state) {
       return {
-        editing: person
+        forms: Object.assign({}, state['forms'], {
+          edit: item
+        })
       };
     };
   }
+
 };
 
 },{}],8:[function(require,module,exports){
@@ -922,53 +925,56 @@ addEventListener('popstate', hideToasts);
 },{"./actions":5,"./state.js":19,"./views/Main.js":22,"@hyperapp/router":1,"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
 
-var existingAuth = localStorage.getItem("auth");
+var existingAuth = localStorage.getItem('auth');
 
 if (existingAuth) {
-    try {
-        existingAuth = JSON.parse(existingAuth);
-    } catch (error) {
-        existingAuth = null;
-    }
+  try {
+    existingAuth = JSON.parse(existingAuth);
+  } catch (error) {
+    existingAuth = null;
+  }
 }
 if (!existingAuth) existingAuth = { key: '', username: '' };
 
 var state = module.exports = {
-    auth: {
-        key: existingAuth.key,
-        username: existingAuth.username,
-        loading: false,
-        forms: {
-            login: {}
-        }
-    },
-    location: location.state,
-    toasts: {
-        items: []
-    },
-    movies: {
-        showPlot: false,
-        loading: false,
-        page: null,
-        count: 0,
-        next: null,
-        previous: null,
-        current: null,
-        items: [],
-        forms: {
-            edit: null,
-            search: {}
-        }
-    },
-    people: {
-        loading: false,
-        page: null,
-        count: 0,
-        next: null,
-        previous: null,
-        items: [],
-        editing: null
+  auth: {
+    key: existingAuth.key,
+    username: existingAuth.username,
+    loading: false,
+    forms: {
+      login: {}
     }
+  },
+  location: location.state,
+  toasts: {
+    items: []
+  },
+  movies: {
+    showPlot: false,
+    loading: false,
+    page: null,
+    count: 0,
+    next: null,
+    previous: null,
+    current: null,
+    items: [],
+    forms: {
+      edit: null,
+      search: {}
+    }
+  },
+  people: {
+    loading: false,
+    page: null,
+    count: 0,
+    next: null,
+    previous: null,
+    items: [],
+    forms: {
+      edit: null,
+      search: {}
+    }
+  }
 };
 
 },{}],20:[function(require,module,exports){
@@ -1089,7 +1095,7 @@ var reducers = module.exports = function (state, actions) {
           return (0, _Movies2.default)(state, actions.movies, actions);
         } }),
       (0, _hyperapp.h)(_router.Route, { path: '/people', render: function render() {
-          return (0, _People2.default)(state.people, actions.people);
+          return (0, _People2.default)(state, actions.people, actions);
         } }),
       (0, _hyperapp.h)(_router.Route, { path: '/login', render: function render() {
           return (0, _Login2.default)(state.auth, actions.auth, actions);
@@ -1191,7 +1197,7 @@ var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
   });
 };
 
-var Movies = module.exports = function (state, actions, g_actions) {
+module.exports = function (state, actions, g_actions) {
   return (0, _hyperapp.h)(
     'div',
     { key: 'movies' },
@@ -1259,6 +1265,10 @@ var _Table = require('../components/Table.js');
 
 var _Table2 = _interopRequireDefault(_Table);
 
+var _ModalForm = require('../components/ModalForm.js');
+
+var _ModalForm2 = _interopRequireDefault(_ModalForm);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var rowHeaders = ['Id', 'Name', 'Birthday', 'Edit'];
@@ -1273,13 +1283,32 @@ var rowColumns = [function (person) {
   return (0, _hyperapp.h)(
     'button',
     { className: 'btn btn-block btn-primary', onclick: function onclick() {
-        return actions.edit(person);
+        return actions.updateEdit(Object.assign({}, person));
       } },
     'Edit'
   );
 }];
 
-module.exports = function (state, actions) {
+// TODO: Move to auth utils
+var checkAuth = function checkAuth(list, auth) {
+  if (auth.key) return list;
+  return list.slice(0, -1);
+};
+
+// TODO: Move to form utils
+var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
+  return formFields.map(function (f) {
+    return Object.assign({}, f, {
+      'value': item[f.key]
+    }, errors ? {
+      'errors': errors[f.key]
+    } : {});
+  });
+};
+
+var formFields = [{ 'key': 'name', 'label': 'Name', 'type': 'text' }, { 'key': 'birthday', 'label': 'Birthday', 'type': 'text' }];
+
+module.exports = function (state, actions, g_actions) {
   return (0, _hyperapp.h)(
     'div',
     { key: 'people' },
@@ -1297,13 +1326,27 @@ module.exports = function (state, actions) {
             return actions.load(window.g_urls.persons);
           } },
         state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
-          rowHeaders: rowHeaders,
-          rowColumns: rowColumns,
-          rows: state,
+          rowHeaders: checkAuth(rowHeaders, state.auth),
+          rowColumns: checkAuth(rowColumns, state.auth),
+          rows: state.people,
           actions: actions })
       )
-    )
+    ),
+    state.people.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
+      loading: state.movies.loading,
+      formFields: mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
+      item: state.movies.forms.edit,
+      hideAction: function hideAction() {
+        return actions.updateEdit(null);
+      },
+      saveAction: function saveAction() {
+        return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
+      },
+      updateFieldAction: function updateFieldAction(key, value) {
+        return actions.updateField({ formname: 'edit', fieldname: key, value: value });
+      }
+    }) : null
   );
 };
 
-},{"../components/Spinners.js":14,"../components/Table.js":15,"hyperapp":2}]},{},[18]);
+},{"../components/ModalForm.js":10,"../components/Spinners.js":14,"../components/Table.js":15,"hyperapp":2}]},{},[18]);
