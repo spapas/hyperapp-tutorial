@@ -10,76 +10,76 @@
 var _forms = require('./forms.js');
 
 module.exports = {
-    login: function login(g_actions) {
-        return function (state, actions) {
-            actions.updateLoading(true);
-            var data = {
-                username: state.forms.login.username,
-                password: state.forms.login.password
-            };
-            fetch(g_urls.login, {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'content-type': 'application/json'
-                }
-            }).then(function (r) {
-                return r.json();
-            }).then(function (j) {
-                if (j.key) {
-                    console.log("OK", j.key, state.forms.login.username);
-                    actions.updateLogin({ key: j.key, username: state.forms.login.username });
-                    g_actions.location.go("/");
-                    g_actions.toasts.add({ text: "Successfully logged in!", style: "success" });
-                } else {
-                    g_actions.toasts.add({ text: "Error while logging in - please try again!", style: "error" });
-                }
-                actions.updateLoading(false);
-            });
-        };
-    },
-    logout: function logout(g_actions) {
-        return function (state, actions) {
-            actions.updateLoading(true);
-            setTimeout(function () {
-                return fetch(g_urls.logout, {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (r) {
-                    return r.json();
-                }).then(function (j) {
-                    actions.updateLogin({ key: null, username: null });
-                    g_actions.location.go("/");
-                    actions.updateLoading(false);
-                    g_actions.toasts.add({ text: "Successfully logged out!", style: "success" });
-                });
-            }, 500);
-        };
-    },
-    updateLoading: function updateLoading(loading) {
-        return function (state) {
-            return {
-                loading: loading
-            };
-        };
-    },
-    updateLogin: function updateLogin(_ref) {
-        var key = _ref.key,
-            username = _ref.username;
-        return function (state) {
-            localStorage.setItem("auth", JSON.stringify({ key: key, username: username }));
-            return {
-                key: key,
-                username: username,
-                forms: {
-                    login: {}
-                }
-            };
-        };
-    },
-    updateField: _forms.updateField
+  login: function login(g_actions) {
+    return function (state, actions) {
+      actions.updateLoading(true);
+      var data = {
+        username: state.forms.login.username,
+        password: state.forms.login.password
+      };
+      fetch(g_urls.login, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'content-type': 'application/json'
+        }
+      }).then(function (r) {
+        return r.json();
+      }).then(function (j) {
+        if (j.key) {
+          console.log("OK", j.key, state.forms.login.username);
+          actions.updateLogin({ key: j.key, username: state.forms.login.username });
+          g_actions.location.go("/");
+          g_actions.toasts.add({ text: "Successfully logged in!", style: "success" });
+        } else {
+          g_actions.toasts.add({ text: "Error while logging in - please try again!", style: "error" });
+        }
+        actions.updateLoading(false);
+      });
+    };
+  },
+  logout: function logout(g_actions) {
+    return function (state, actions) {
+      actions.updateLoading(true);
+      setTimeout(function () {
+        return fetch(g_urls.logout, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then(function (r) {
+          return r.json();
+        }).then(function (j) {
+          actions.updateLogin({ key: null, username: null });
+          g_actions.location.go("/");
+          actions.updateLoading(false);
+          g_actions.toasts.add({ text: "Successfully logged out!", style: "success" });
+        });
+      }, 500);
+    };
+  },
+  updateLoading: function updateLoading(loading) {
+    return function (state) {
+      return {
+        loading: loading
+      };
+    };
+  },
+  updateLogin: function updateLogin(_ref) {
+    var key = _ref.key,
+        username = _ref.username;
+    return function (state) {
+      localStorage.setItem("auth", JSON.stringify({ key: key, username: username }));
+      return {
+        key: key,
+        username: username,
+        forms: {
+          login: {}
+        }
+      };
+    };
+  },
+  updateField: _forms.updateField
 };
 
 },{"./forms.js":4}],4:[function(require,module,exports){
