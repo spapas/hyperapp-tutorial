@@ -9,13 +9,30 @@
 
 var _forms = require('./forms.js');
 
+var getCookie = function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i];
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === name + '=') {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+};
+
 module.exports = {
   login: function login(g_actions) {
     return function (state, actions) {
       actions.updateLoading(true);
       var data = {
         username: state.forms.login.username,
-        password: state.forms.login.password
+        password: state.forms.login.password,
+        csrfmiddlewaretoken: getCookie('csrftoken')
       };
       fetch(g_urls.login, {
         method: 'POST',
@@ -1010,41 +1027,43 @@ var _FormInputs = require('../components/FormInputs.js');
 var _Spinners = require('../components/Spinners.js');
 
 var okClick = function okClick(e, actions, g_actions) {
-    actions.login(g_actions);
-    return false;
+  actions.login(g_actions);
+  console.log(e);
+  e.preventDefault();
+  return false;
 };
 
 var Login = module.exports = function (state, actions, g_actions) {
-    return (0, _hyperapp.h)(
-        'div',
-        { key: 'login' },
-        (0, _hyperapp.h)(
-            'h2',
-            null,
-            'Login'
-        ),
-        (0, _hyperapp.h)(
-            'form',
-            { method: 'POST' },
-            (0, _hyperapp.h)(_FormInputs.FormInput, {
-                field: { label: 'Username', value: state.forms.login.username, type: 'text' },
-                action: function action(value) {
-                    return actions.updateField({ formname: 'login', fieldname: 'username', value: value });
-                } }),
-            (0, _hyperapp.h)(_FormInputs.FormInput, {
-                field: { label: 'Password', value: state.forms.login.password, type: 'password' },
-                action: function action(value) {
-                    return actions.updateField({ formname: 'login', fieldname: 'password', value: value });
-                } }),
-            state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(
-                'button',
-                { id: 'btn', name: 'btn', 'class': 'btn btn-primary', onclick: function onclick(e) {
-                        return okClick(e, actions, g_actions);
-                    } },
-                'Ok'
-            )
-        )
-    );
+  return (0, _hyperapp.h)(
+    'div',
+    { key: 'login' },
+    (0, _hyperapp.h)(
+      'h2',
+      null,
+      'Login'
+    ),
+    (0, _hyperapp.h)(
+      'form',
+      { method: 'POST' },
+      (0, _hyperapp.h)(_FormInputs.FormInput, {
+        field: { label: 'Username', value: state.forms.login.username, type: 'text' },
+        action: function action(value) {
+          return actions.updateField({ formname: 'login', fieldname: 'username', value: value });
+        } }),
+      (0, _hyperapp.h)(_FormInputs.FormInput, {
+        field: { label: 'Password', value: state.forms.login.password, type: 'password' },
+        action: function action(value) {
+          return actions.updateField({ formname: 'login', fieldname: 'password', value: value });
+        } }),
+      state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(
+        'button',
+        { id: 'btn', name: 'btn', className: 'btn btn-primary', onclick: function onclick(e) {
+            okClick(e, actions, g_actions);
+          } },
+        'Ok'
+      )
+    )
+  );
 };
 
 },{"../components/FormInputs.js":9,"../components/Spinners.js":14,"hyperapp":2}],22:[function(require,module,exports){

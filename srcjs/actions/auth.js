@@ -1,12 +1,29 @@
 import { updateField } from './forms.js';
 
+var getCookie = function(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i];
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+};
+
 module.exports = {
   login: g_actions => (state, actions) => {
-    actions.updateLoading(true)
+    actions.updateLoading(true);
     let data = {
       username: state.forms.login.username,
-      password: state.forms.login.password
-    }
+      password: state.forms.login.password,
+      csrfmiddlewaretoken: getCookie('csrftoken')
+    };
     fetch(g_urls.login, {
       method: 'POST',
       body: JSON.stringify(data),
