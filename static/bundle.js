@@ -435,6 +435,40 @@ module.exports = {
 };
 
 },{}],9:[function(require,module,exports){
+"use strict";
+
+var _hyperapp = require("hyperapp");
+
+module.exports = function (_ref) {
+  var state = _ref.state,
+      actions = _ref.actions;
+  return (0, _hyperapp.h)(
+    "div",
+    { className: "accordion" },
+    (0, _hyperapp.h)("input", { type: "checkbox", id: "accordion-1", name: "accordion-checkbox", hidden: true }),
+    (0, _hyperapp.h)(
+      "label",
+      { className: "accordion-header", "for": "accordion-1" },
+      (0, _hyperapp.h)("i", { className: "icon icon-arrow-right mr-1" }),
+      "Show state"
+    ),
+    (0, _hyperapp.h)(
+      "div",
+      { className: "accordion-body" },
+      (0, _hyperapp.h)(
+        "pre",
+        null,
+        (0, _hyperapp.h)(
+          "small",
+          null,
+          JSON.stringify(state, null, 2)
+        )
+      )
+    )
+  );
+};
+
+},{"hyperapp":2}],10:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -495,7 +529,7 @@ var FormInputLong = function FormInputLong(_ref3) {
 module.exports['FormInput'] = FormInput;
 module.exports['FormInputLong'] = FormInputLong;
 
-},{"hyperapp":2}],10:[function(require,module,exports){
+},{"hyperapp":2}],11:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -580,7 +614,7 @@ var ModalForm = module.exports = function (_ref) {
   );
 };
 
-},{"../components/Spinners.js":14,"./FormInputs.js":9,"hyperapp":2}],11:[function(require,module,exports){
+},{"../components/Spinners.js":15,"./FormInputs.js":10,"hyperapp":2}],12:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -628,7 +662,7 @@ var Pagination = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],12:[function(require,module,exports){
+},{"hyperapp":2}],13:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -680,7 +714,7 @@ var PlotModal = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],13:[function(require,module,exports){
+},{"hyperapp":2}],14:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -753,7 +787,7 @@ var SearchForm = module.exports = function (_ref) {
     );
 };
 
-},{"../components/Spinners.js":14,"hyperapp":2}],14:[function(require,module,exports){
+},{"../components/Spinners.js":15,"hyperapp":2}],15:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -775,7 +809,7 @@ var SpinnerSmall = module.exports = function () {
 module.exports['Spinner'] = Spinner;
 module.exports['SpinnerSmall'] = SpinnerSmall;
 
-},{"hyperapp":2}],15:[function(require,module,exports){
+},{"hyperapp":2}],16:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -841,7 +875,7 @@ var Table = module.exports = function (_ref2) {
     );
 };
 
-},{"../components/Pagination.js":11,"hyperapp":2}],16:[function(require,module,exports){
+},{"../components/Pagination.js":12,"hyperapp":2}],17:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -909,7 +943,7 @@ var Table = module.exports = function (_ref) {
   );
 };
 
-},{"@hyperapp/router":1,"hyperapp":2}],17:[function(require,module,exports){
+},{"@hyperapp/router":1,"hyperapp":2}],18:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -941,7 +975,7 @@ var ToastContainer = module.exports = function (_ref2) {
   );
 };
 
-},{"hyperapp":2}],18:[function(require,module,exports){
+},{"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -975,7 +1009,7 @@ _actions2.default.location.go('/');
 addEventListener('pushstate', hideToasts);
 addEventListener('popstate', hideToasts);
 
-},{"./actions":5,"./state.js":19,"./views/Main.js":22,"@hyperapp/router":1,"hyperapp":2}],19:[function(require,module,exports){
+},{"./actions":5,"./state.js":20,"./views/Main.js":23,"@hyperapp/router":1,"hyperapp":2}],20:[function(require,module,exports){
 'use strict';
 
 var existingAuth = localStorage.getItem('auth');
@@ -1030,7 +1064,7 @@ var state = module.exports = {
   }
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -1053,7 +1087,7 @@ var Home = module.exports = function (state, actions) {
     );
 };
 
-},{"hyperapp":2}],21:[function(require,module,exports){
+},{"hyperapp":2}],22:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1102,7 +1136,7 @@ var Login = module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/FormInputs.js":9,"../components/Spinners.js":14,"hyperapp":2}],22:[function(require,module,exports){
+},{"../components/FormInputs.js":10,"../components/Spinners.js":15,"hyperapp":2}],23:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1133,9 +1167,13 @@ var _ToastContainer = require('../components/ToastContainer.js');
 
 var _ToastContainer2 = _interopRequireDefault(_ToastContainer);
 
+var _DebugContainer = require('../components/DebugContainer.js');
+
+var _DebugContainer2 = _interopRequireDefault(_DebugContainer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var reducers = module.exports = function (state, actions) {
+module.exports = function (state, actions) {
   return (0, _hyperapp.h)(
     'div',
     { className: 'container grid-xl' },
@@ -1157,11 +1195,12 @@ var reducers = module.exports = function (state, actions) {
         } })
     ),
     (0, _hyperapp.h)(_ToastContainer2.default, { toasts: state.toasts, actions: actions }),
-    JSON.stringify(state)
+    (0, _hyperapp.h)('hr', null),
+    (0, _hyperapp.h)(_DebugContainer2.default, { state: state, actions: actions })
   );
 };
 
-},{"../components/Tabs.js":16,"../components/ToastContainer.js":17,"./Home.js":20,"./Login.js":21,"./Movies.js":23,"./People.js":24,"@hyperapp/router":1,"hyperapp":2}],23:[function(require,module,exports){
+},{"../components/DebugContainer.js":9,"../components/Tabs.js":17,"../components/ToastContainer.js":18,"./Home.js":21,"./Login.js":22,"./Movies.js":24,"./People.js":25,"@hyperapp/router":1,"hyperapp":2}],24:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1309,7 +1348,7 @@ module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/ModalForm.js":10,"../components/PlotModal.js":12,"../components/SearchForm.js":13,"../components/Spinners.js":14,"../components/Table.js":15,"hyperapp":2}],24:[function(require,module,exports){
+},{"../components/ModalForm.js":11,"../components/PlotModal.js":13,"../components/SearchForm.js":14,"../components/Spinners.js":15,"../components/Table.js":16,"hyperapp":2}],25:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1404,4 +1443,4 @@ module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/ModalForm.js":10,"../components/Spinners.js":14,"../components/Table.js":15,"hyperapp":2}]},{},[18]);
+},{"../components/ModalForm.js":11,"../components/Spinners.js":15,"../components/Table.js":16,"hyperapp":2}]},{},[19]);

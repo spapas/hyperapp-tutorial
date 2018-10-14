@@ -16,7 +16,9 @@
             width: 70px;
             text-align: center;
         }
-        
+        .accordion input:checked ~ .accordion-body, .accordion[open] .accordion-body {
+          max-height: 250rem;
+        }
         .spinner>div {
             width: 18px;
             height: 18px;
@@ -26,17 +28,17 @@
             -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
             animation: sk-bouncedelay 1.4s infinite ease-in-out both;
         }
-        
+
         .spinner .bounce1 {
             -webkit-animation-delay: -0.32s;
             animation-delay: -0.32s;
         }
-        
+
         .spinner .bounce2 {
             -webkit-animation-delay: -0.16s;
             animation-delay: -0.16s;
         }
-        
+
         @-webkit-keyframes sk-bouncedelay {
             0%,
             80%,
@@ -47,7 +49,7 @@
                 -webkit-transform: scale(1.0)
             }
         }
-        
+
         @keyframes sk-bouncedelay {
             0%,
             80%,
@@ -60,10 +62,10 @@
                 transform: scale(1.0);
             }
         }
-        
+
 
     </style>
-    
+
 </head>
 <body>
   <div id='app'></div>
@@ -76,7 +78,7 @@
         'images': '{% url "image-list" %}',
         'login': '{% url "rest_login" %}',
         'logout': '{% url "rest_logout" %}',
-        
+
     }
   </script>
   <script src="{% static 'bundle.js' %}" type="application/javascript">></script>
