@@ -28,6 +28,7 @@ const formFields = [
   {'key': 'release_year', 'label': 'Release Year', 'type': 'number'},
   {'key': 'runtime', 'label': 'Runtime', 'type': 'number'},
   {'key': 'story', 'label': 'Plot', 'type': 'longtext'},
+  {'key': 'genres', 'label': 'Genres', 'type': 'multiselect', },
 ];
 
 const extraView = (state, actions) => <div>{state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}</div>

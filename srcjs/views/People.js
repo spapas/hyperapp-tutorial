@@ -17,7 +17,7 @@ const rowColumns = [
 
 const formFields = [
   {'key': 'name', 'label': 'Name', 'type': 'text'},
-  {'key': 'birthday', 'label': 'Birthday', 'type': 'text'},
+  {'key': 'birthday', 'label': 'Birthday', 'type': 'date'},
 ];
 
 const People = FilterTableView({

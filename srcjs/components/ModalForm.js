@@ -1,10 +1,20 @@
 import { h } from 'hyperapp'
-import { FormInput, FormInputLong} from './FormInputs.js'
+import { FormInput, FormInputLong } from './FormInputs.js'
+import FormDateInput from './FormDateInput.js'
+import MultiSelect from './MultiSelect.js'
 import { SpinnerSmall } from '../components/Spinners.js'
 
+console.log(FormDateInput)
+
 const renderField = (field, updateFieldAction ) => {
-  let ftype = FormInput
-  if(field.type == 'longtext') ftype = FormInputLong
+  let ftype = undefined;
+  switch(field.type) {
+    case 'longtext': ftype = FormInputLong; break;
+    case 'text': ftype = FormInput; break;
+    case 'number': ftype = FormInput; break;
+    case 'multiselect': ftype = MultiSelect; break;
+    case 'date': ftype = FormDateInput; break;
+  }
   return ftype({
     field,
     action: (val) => updateFieldAction(field.key, val)
