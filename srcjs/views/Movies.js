@@ -5,6 +5,8 @@ import PlotModal from '../components/PlotModal.js';
 import Table from '../components/Table.js';
 import ModalForm from '../components/ModalForm.js';
 import SearchForm from '../components/SearchForm.js';
+import { mergeValuesErrors } from '../util/forms.js';
+import { checkAuth } from '../util/auth';
 
 const rowHeaders = [
   'Id',
@@ -26,11 +28,6 @@ const rowColumns = [
   (movie, actions) => <button className='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, movie) )}>Edit</button>
 ];
 
-const checkAuth = (list, auth) => {
-  if(auth.key) return list;
-  return list.slice(0, -1);
-};
-
 // TODO: Maybe this is better
 const tableDef = [
   {
@@ -47,15 +44,6 @@ const formFields = [
   {'key': 'runtime', 'label': 'Runtime', 'type': 'number'},
   {'key': 'story', 'label': 'Plot', 'type': 'longtext'},
 ];
-
-const mergeValuesErrors = (formFields, item, errors) => {
-  return formFields.map(f => Object.assign({}, f, {
-    'value': item[f.key]
-  }, errors?{
-    'errors': errors[f.key]
-  }:{}
-  ));
-};
 
 
 module.exports = (state, actions, g_actions) => <div key='movies'>

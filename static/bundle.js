@@ -112,6 +112,72 @@ module.exports = {
                 })))
             };
         };
+    },
+
+    searchAction: function searchAction(reset) {
+        return function (state, actions) {
+            if (reset) {
+                actions.load(state.current.split('?')[0]);
+                return {
+                    forms: Object.assign({}, state['forms'], {
+                        search: {}
+                    })
+                };
+            } else {
+                var params = Object.keys(state.forms.search).map(function (k) {
+                    return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
+                }).join('&');
+                actions.load(state.current.split('?')[0] + '?' + params);
+            }
+        };
+    },
+
+    saveEdit: function saveEdit(_ref3) {
+        var key = _ref3.key,
+            g_actions = _ref3.g_actions;
+        return function (state, actions) {
+            actions.updateLoading(true);
+            var item = state.forms.edit;
+            var saveUrl = '';
+            var method = '';
+            if (item.id) {
+                // UPDATE
+                saveUrl = item.url;
+                method = 'PATCH';
+            } else {
+                // CREATE
+                saveUrl = window.g_urls.people;
+                method = 'POST';
+            }
+
+            window.setTimeout(function () {
+                fetch(saveUrl, {
+                    body: JSON.stringify(item),
+                    headers: {
+                        'content-type': 'application/json',
+                        'Authorization': 'Token ' + key
+                    },
+                    method: method
+                }).then(function (response) {
+                    actions.updateLoading(false);
+
+                    if (response.status == 400) {
+                        response.json().then(function (errors) {
+                            actions.addErrors({ formname: 'edit', errors: errors });
+                        });
+                    } else if (response.status == 200 || response.status == 201) {
+                        response.json().then(function (data) {
+                            // Data is the object that was saved
+                            g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
+                            actions.updateEdit(null);
+                            actions.load(state.current);
+                        });
+                    }
+                }).catch(function (error) {
+                    console.log('ERR', error.status);
+                });
+            }, 500);
+        };
     }
 
 };
@@ -149,9 +215,9 @@ var reducers = module.exports = {
 };
 
 },{"./auth.js":3,"./movies.js":6,"./people.js":7,"./toasts.js":8,"@hyperapp/router":1}],6:[function(require,module,exports){
-'use strict';
+"use strict";
 
-var _forms = require('./forms.js');
+var _forms = require("./forms.js");
 
 module.exports = {
   load: function load(url) {
@@ -215,79 +281,16 @@ module.exports = {
     };
   },
 
-  saveEdit: function saveEdit(_ref2) {
-    var key = _ref2.key,
-        g_actions = _ref2.g_actions;
-    return function (state, actions) {
-      actions.updateLoading(true);
-      var item = state.forms.edit;
-      var saveUrl = '';
-      var method = '';
-      if (item.id) {
-        // UPDATE
-        saveUrl = item.url;
-        method = 'PATCH';
-      } else {
-        // CREATE
-        saveUrl = window.g_urls.movies;
-        method = 'POST';
-      }
-
-      window.setTimeout(function () {
-        fetch(saveUrl, {
-          body: JSON.stringify(item),
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': 'Token ' + key
-          },
-          method: method
-        }).then(function (response) {
-          actions.updateLoading(false);
-
-          if (response.status == 400) {
-            response.json().then(function (errors) {
-              actions.addErrors({ formname: 'edit', errors: errors });
-            });
-          } else if (response.status == 200 || response.status == 201) {
-            response.json().then(function (data) {
-              // Data is the object that was saved
-              g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
-              actions.updateEdit(null);
-              actions.load(state.current);
-            });
-          }
-        }).catch(function (error) {
-          console.log('ERR', error.status);
-        });
-      }, 500);
-    };
-  },
-  searchAction: function searchAction(reset) {
-    return function (state, actions) {
-      if (reset) {
-
-        actions.load(state.current.split('?')[0]);
-        return {
-          forms: Object.assign({}, state['forms'], {
-            search: {}
-          })
-        };
-      } else {
-        var params = Object.keys(state.forms.search).map(function (k) {
-          return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
-        }).join('&');
-        actions.load(state.current.split('?')[0] + '?' + params);
-      }
-    };
-  },
+  saveEdit: _forms.saveEdit,
+  searchAction: _forms.searchAction,
   updateField: _forms.updateField,
   addErrors: _forms.addErrors
 };
 
 },{"./forms.js":4}],7:[function(require,module,exports){
-'use strict';
+"use strict";
 
-var _forms = require('./forms.js');
+var _forms = require("./forms.js");
 
 module.exports = {
   load: function load(url) {
@@ -342,54 +345,8 @@ module.exports = {
       };
     };
   },
-
-  saveEdit: function saveEdit(_ref2) {
-    var key = _ref2.key,
-        g_actions = _ref2.g_actions;
-    return function (state, actions) {
-      actions.updateLoading(true);
-      var item = state.forms.edit;
-      var saveUrl = '';
-      var method = '';
-      if (item.id) {
-        // UPDATE
-        saveUrl = item.url;
-        method = 'PATCH';
-      } else {
-        // CREATE
-        saveUrl = window.g_urls.people;
-        method = 'POST';
-      }
-
-      window.setTimeout(function () {
-        fetch(saveUrl, {
-          body: JSON.stringify(item),
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': 'Token ' + key
-          },
-          method: method
-        }).then(function (response) {
-          actions.updateLoading(false);
-
-          if (response.status == 400) {
-            response.json().then(function (errors) {
-              actions.addErrors({ formname: 'edit', errors: errors });
-            });
-          } else if (response.status == 200 || response.status == 201) {
-            response.json().then(function (data) {
-              // Data is the object that was saved
-              g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
-              actions.updateEdit(null);
-              actions.load(state.current);
-            });
-          }
-        }).catch(function (error) {
-          console.log('ERR', error.status);
-        });
-      }, 500);
-    };
-  },
+  saveEdit: _forms.saveEdit,
+  searchAction: _forms.searchAction,
   updateField: _forms.updateField,
   addErrors: _forms.addErrors
 
@@ -1009,7 +966,7 @@ _actions2.default.location.go('/');
 addEventListener('pushstate', hideToasts);
 addEventListener('popstate', hideToasts);
 
-},{"./actions":5,"./state.js":20,"./views/Main.js":23,"@hyperapp/router":1,"hyperapp":2}],20:[function(require,module,exports){
+},{"./actions":5,"./state.js":20,"./views/Main.js":25,"@hyperapp/router":1,"hyperapp":2}],20:[function(require,module,exports){
 'use strict';
 
 var existingAuth = localStorage.getItem('auth');
@@ -1067,6 +1024,35 @@ var state = module.exports = {
 },{}],21:[function(require,module,exports){
 "use strict";
 
+var checkAuth = function checkAuth(list, auth) {
+  if (auth.key) return list;
+  return list.slice(0, -1);
+};
+
+module.exports = {
+  checkAuth: checkAuth
+};
+
+},{}],22:[function(require,module,exports){
+'use strict';
+
+var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
+    return formFields.map(function (f) {
+        return Object.assign({}, f, {
+            'value': item[f.key]
+        }, errors ? {
+            'errors': errors[f.key]
+        } : {});
+    });
+};
+
+module.exports = {
+    mergeValuesErrors: mergeValuesErrors
+};
+
+},{}],23:[function(require,module,exports){
+"use strict";
+
 var _hyperapp = require("hyperapp");
 
 var Home = module.exports = function (state, actions) {
@@ -1087,7 +1073,7 @@ var Home = module.exports = function (state, actions) {
     );
 };
 
-},{"hyperapp":2}],22:[function(require,module,exports){
+},{"hyperapp":2}],24:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1136,7 +1122,7 @@ var Login = module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/FormInputs.js":10,"../components/Spinners.js":15,"hyperapp":2}],23:[function(require,module,exports){
+},{"../components/FormInputs.js":10,"../components/Spinners.js":15,"hyperapp":2}],25:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1200,7 +1186,7 @@ module.exports = function (state, actions) {
   );
 };
 
-},{"../components/DebugContainer.js":9,"../components/Tabs.js":17,"../components/ToastContainer.js":18,"./Home.js":21,"./Login.js":22,"./Movies.js":24,"./People.js":25,"@hyperapp/router":1,"hyperapp":2}],24:[function(require,module,exports){
+},{"../components/DebugContainer.js":9,"../components/Tabs.js":17,"../components/ToastContainer.js":18,"./Home.js":23,"./Login.js":24,"./Movies.js":26,"./People.js":27,"@hyperapp/router":1,"hyperapp":2}],26:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1222,6 +1208,10 @@ var _ModalForm2 = _interopRequireDefault(_ModalForm);
 var _SearchForm = require('../components/SearchForm.js');
 
 var _SearchForm2 = _interopRequireDefault(_SearchForm);
+
+var _forms = require('../util/forms.js');
+
+var _auth = require('../util/auth');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1265,11 +1255,6 @@ var rowColumns = [function (movie) {
   );
 }];
 
-var checkAuth = function checkAuth(list, auth) {
-  if (auth.key) return list;
-  return list.slice(0, -1);
-};
-
 // TODO: Maybe this is better
 var tableDef = [{
   'key': 'id',
@@ -1280,16 +1265,6 @@ var tableDef = [{
 }];
 
 var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }];
-
-var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
-  return formFields.map(function (f) {
-    return Object.assign({}, f, {
-      'value': item[f.key]
-    }, errors ? {
-      'errors': errors[f.key]
-    } : {});
-  });
-};
 
 module.exports = function (state, actions, g_actions) {
   return (0, _hyperapp.h)(
@@ -1316,15 +1291,15 @@ module.exports = function (state, actions, g_actions) {
             return actions.load(window.g_urls.movies);
           } },
         (0, _hyperapp.h)(_SearchForm2.default, {
-          formFields: mergeValuesErrors(formFields, state.movies.forms.search, null),
+          formFields: (0, _forms.mergeValuesErrors)(formFields, state.movies.forms.search, null),
           updateFieldAction: function updateFieldAction(key, value) {
             return actions.updateField({ formname: 'search', fieldname: key, value: value });
           },
           searchAction: actions.searchAction
         }),
         state.movies.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
-          rowHeaders: checkAuth(rowHeaders, state.auth),
-          rowColumns: checkAuth(rowColumns, state.auth),
+          rowHeaders: (0, _auth.checkAuth)(rowHeaders, state.auth),
+          rowColumns: (0, _auth.checkAuth)(rowColumns, state.auth),
           rows: state.movies,
           actions: actions
         })
@@ -1333,7 +1308,7 @@ module.exports = function (state, actions, g_actions) {
     state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null,
     state.movies.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
       loading: state.movies.loading,
-      formFields: mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
+      formFields: (0, _forms.mergeValuesErrors)(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
       item: state.movies.forms.edit,
       hideAction: function hideAction() {
         return actions.updateEdit(null);
@@ -1348,7 +1323,7 @@ module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/ModalForm.js":11,"../components/PlotModal.js":13,"../components/SearchForm.js":14,"../components/Spinners.js":15,"../components/Table.js":16,"hyperapp":2}],25:[function(require,module,exports){
+},{"../components/ModalForm.js":11,"../components/PlotModal.js":13,"../components/SearchForm.js":14,"../components/Spinners.js":15,"../components/Table.js":16,"../util/auth":21,"../util/forms.js":22,"hyperapp":2}],27:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1362,6 +1337,14 @@ var _Table2 = _interopRequireDefault(_Table);
 var _ModalForm = require('../components/ModalForm.js');
 
 var _ModalForm2 = _interopRequireDefault(_ModalForm);
+
+var _SearchForm = require('../components/SearchForm.js');
+
+var _SearchForm2 = _interopRequireDefault(_SearchForm);
+
+var _forms = require('../util/forms.js');
+
+var _auth = require('../util/auth');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1383,23 +1366,6 @@ var rowColumns = [function (person) {
   );
 }];
 
-// TODO: Move to auth utils
-var checkAuth = function checkAuth(list, auth) {
-  if (auth.key) return list;
-  return list.slice(0, -1);
-};
-
-// TODO: Move to form utils
-var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
-  return formFields.map(function (f) {
-    return Object.assign({}, f, {
-      'value': item[f.key]
-    }, errors ? {
-      'errors': errors[f.key]
-    } : {});
-  });
-};
-
 var formFields = [{ 'key': 'name', 'label': 'Name', 'type': 'text' }, { 'key': 'birthday', 'label': 'Birthday', 'type': 'text' }];
 
 module.exports = function (state, actions, g_actions) {
@@ -1419,16 +1385,23 @@ module.exports = function (state, actions, g_actions) {
         { className: 'column col-lg-12', oncreate: function oncreate() {
             return actions.load(window.g_urls.persons);
           } },
+        (0, _hyperapp.h)(_SearchForm2.default, {
+          formFields: (0, _forms.mergeValuesErrors)(formFields, state.people.forms.search, null),
+          updateFieldAction: function updateFieldAction(key, value) {
+            return actions.updateField({ formname: 'search', fieldname: key, value: value });
+          },
+          searchAction: actions.searchAction
+        }),
         state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
-          rowHeaders: checkAuth(rowHeaders, state.auth),
-          rowColumns: checkAuth(rowColumns, state.auth),
+          rowHeaders: (0, _auth.checkAuth)(rowHeaders, state.auth),
+          rowColumns: (0, _auth.checkAuth)(rowColumns, state.auth),
           rows: state.people,
           actions: actions })
       )
     ),
     state.people.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
       loading: state.people.loading,
-      formFields: mergeValuesErrors(formFields, state.people.forms.edit, state.people.forms.edit.errors),
+      formFields: (0, _forms.mergeValuesErrors)(formFields, state.people.forms.edit, state.people.forms.edit.errors),
       item: state.people.forms.edit,
       hideAction: function hideAction() {
         return actions.updateEdit(null);
@@ -1443,4 +1416,4 @@ module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/ModalForm.js":11,"../components/Spinners.js":15,"../components/Table.js":16,"hyperapp":2}]},{},[19]);
+},{"../components/ModalForm.js":11,"../components/SearchForm.js":14,"../components/Spinners.js":15,"../components/Table.js":16,"../util/auth":21,"../util/forms.js":22,"hyperapp":2}]},{},[19]);

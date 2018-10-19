@@ -2,6 +2,9 @@ import { h } from 'hyperapp';
 import { Spinner } from '../components/Spinners.js';
 import Table from '../components/Table.js';
 import ModalForm from '../components/ModalForm.js';
+import SearchForm from '../components/SearchForm.js';
+import { mergeValuesErrors } from '../util/forms.js';
+import { checkAuth } from '../util/auth';
 
 
 const rowHeaders = [
@@ -18,21 +21,7 @@ const rowColumns = [
   (person, actions) => <button className='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, person))}>Edit</button>
 ];
 
-// TODO: Move to auth utils
-const checkAuth = (list, auth) => {
-  if(auth.key) return list;
-  return list.slice(0, -1);
-};
 
-// TODO: Move to form utils
-const mergeValuesErrors = (formFields, item, errors) => {
-  return formFields.map(f => Object.assign({}, f, {
-    'value': item[f.key]
-  }, errors?{
-    'errors': errors[f.key]
-  }:{}
-  ));
-};
 
 const formFields = [
   {'key': 'name', 'label': 'Name', 'type': 'text'},
@@ -44,6 +33,11 @@ module.exports = (state, actions, g_actions) => <div key='people'>
   <h2>People list</h2>
   <div className="columns">
     <div className="column col-lg-12" oncreate={() => actions.load(window.g_urls.persons)}>
+      <SearchForm
+        formFields={mergeValuesErrors(formFields, state.people.forms.search, null)}
+        updateFieldAction={(key, value)=>actions.updateField({formname: 'search', fieldname: key, value})}
+        searchAction={actions.searchAction}
+      />
       {state.loading == true ? <Spinner /> : <Table
         rowHeaders={checkAuth(rowHeaders, state.auth)}
         rowColumns={checkAuth(rowColumns, state.auth)}
