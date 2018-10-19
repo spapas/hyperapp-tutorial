@@ -205,6 +205,8 @@ var actions = module.exports = {
     location: _router.location.actions,
     auth: _auth2.default,
     people: _view_actions2.default,
+    genres: _view_actions2.default,
+    jobs: _view_actions2.default,
     movies: Object.assign({}, _view_actions2.default, {
         updateShowPlot: function updateShowPlot(showPlot) {
             return function (state) {
@@ -764,68 +766,60 @@ var Table = module.exports = function (_ref2) {
 };
 
 },{"../components/Pagination.js":11,"hyperapp":2}],16:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _hyperapp = require("hyperapp");
+var _hyperapp = require('hyperapp');
 
-var _router = require("@hyperapp/router");
+var _router = require('@hyperapp/router');
+
+var createTab = function createTab(url, title) {
+  return function (currentLocation) {
+    return (0, _hyperapp.h)(
+      'li',
+      { className: 'tab-item ' + (currentLocation.pathname == url ? 'active' : '') },
+      (0, _hyperapp.h)(
+        _router.Link,
+        { to: url },
+        title
+      )
+    );
+  };
+};
 
 var Table = module.exports = function (_ref) {
   var currentLocation = _ref.currentLocation,
       auth = _ref.auth,
       actions = _ref.actions;
   return (0, _hyperapp.h)(
-    "ul",
-    { "class": "tab tab-block" },
-    (0, _hyperapp.h)(
-      "li",
-      { className: "tab-item " + (currentLocation.pathname == '/' || !currentLocation.pathname ? 'active' : '') },
-      (0, _hyperapp.h)(
-        _router.Link,
-        { to: "/" },
-        "Home"
-      )
-    ),
-    (0, _hyperapp.h)(
-      "li",
-      { className: "tab-item " + (currentLocation.pathname == '/movies' ? 'active' : '') },
-      (0, _hyperapp.h)(
-        _router.Link,
-        { to: "/movies" },
-        "Movies"
-      )
-    ),
-    (0, _hyperapp.h)(
-      "li",
-      { className: "tab-item " + (currentLocation.pathname == '/people' ? 'active' : '') },
-      (0, _hyperapp.h)(
-        _router.Link,
-        { to: "/people" },
-        "People"
-      )
-    ),
+    'ul',
+    { 'class': 'tab tab-block' },
+    createTab("/", "Home")(currentLocation),
+    createTab("/movies", "Movies")(currentLocation),
+    createTab("/people", "People")(currentLocation),
+    createTab("/genres", "Genres")(currentLocation),
+    createTab("/jobs", "Jobs")(currentLocation),
     auth.key ? (0, _hyperapp.h)(
-      "div",
+      'div',
       null,
       (0, _hyperapp.h)(
-        "span",
-        { "class": "chip" },
+        'span',
+        { 'class': 'chip' },
         auth.username
       ),
       (0, _hyperapp.h)(
-        "button",
-        { "class": "btn", onclick: function onclick() {
+        'button',
+        { 'class': 'btn', onclick: function onclick() {
             return actions.auth.logout(actions);
           } },
-        "Logout"
+        'Logout'
       )
     ) : (0, _hyperapp.h)(
-      "li",
-      { className: "tab-item " + (currentLocation.pathname == '/login' ? 'active' : '') },
+      'li',
+      { className: 'tab-item ' + (currentLocation.pathname == '/login' ? 'active' : '') },
       (0, _hyperapp.h)(
         _router.Link,
-        { to: "/login" },
-        "Login"
+        { to: '/login' },
+        'Login'
       )
     )
   );
@@ -900,16 +894,22 @@ addEventListener('popstate', hideToasts);
 },{"./actions":5,"./state.js":19,"./views/Main.js":25,"@hyperapp/router":1,"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
 
-var existingAuth = localStorage.getItem('auth');
+var _auth = require('./util/auth.js');
 
-if (existingAuth) {
-  try {
-    existingAuth = JSON.parse(existingAuth);
-  } catch (error) {
-    existingAuth = null;
+var genericState = {
+  loading: false,
+  page: null,
+  count: 0,
+  next: null,
+  previous: null,
+  items: [],
+  forms: {
+    edit: null,
+    search: {}
   }
-}
-if (!existingAuth) existingAuth = { key: '', username: '' };
+};
+
+var existingAuth = (0, _auth.getExistingAuth)();
 
 var state = module.exports = {
   auth: {
@@ -924,44 +924,38 @@ var state = module.exports = {
   toasts: {
     items: []
   },
-  movies: {
-    showPlot: false,
-    loading: false,
-    page: null,
-    count: 0,
-    next: null,
-    previous: null,
-    current: null,
-    items: [],
-    forms: {
-      edit: null,
-      search: {}
-    }
-  },
-  people: {
-    loading: false,
-    page: null,
-    count: 0,
-    next: null,
-    previous: null,
-    items: [],
-    forms: {
-      edit: null,
-      search: {}
-    }
-  }
+  movies: Object.assign({}, genericState, {
+    showPlot: false
+  }),
+  people: Object.assign({}, genericState),
+  genres: Object.assign({}, genericState),
+  jobs: Object.assign({}, genericState)
 };
 
-},{}],20:[function(require,module,exports){
-"use strict";
+},{"./util/auth.js":20}],20:[function(require,module,exports){
+'use strict';
 
 var checkAuth = function checkAuth(list, auth) {
   if (auth.key) return list;
   return list.slice(0, -1);
 };
 
+var getExistingAuth = function getExistingAuth() {
+  var existingAuth = localStorage.getItem('auth');
+
+  if (existingAuth) {
+    try {
+      existingAuth = JSON.parse(existingAuth);
+    } catch (error) {
+      existingAuth = null;
+    }
+  }
+  if (!existingAuth) existingAuth = { key: '', username: '' };
+  return existingAuth;
+};
+
 module.exports = {
-  checkAuth: checkAuth
+  checkAuth: checkAuth, getExistingAuth: getExistingAuth
 };
 
 },{}],21:[function(require,module,exports){
@@ -1163,6 +1157,10 @@ var _People = require('./People.js');
 
 var _People2 = _interopRequireDefault(_People);
 
+var _SimpleFilterTableView = require('./SimpleFilterTableView.js');
+
+var _SimpleFilterTableView2 = _interopRequireDefault(_SimpleFilterTableView);
+
 var _Login = require('./Login.js');
 
 var _Login2 = _interopRequireDefault(_Login);
@@ -1198,6 +1196,12 @@ module.exports = function (state, actions) {
       (0, _hyperapp.h)(_router.Route, { path: '/people', render: function render() {
           return (0, _People2.default)(state, actions.people, actions);
         } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/genres', render: function render() {
+          return (0, _SimpleFilterTableView2.default)({ key: 'genres', title: 'Genres' })(state, actions.genres, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/jobs', render: function render() {
+          return (0, _SimpleFilterTableView2.default)({ key: 'jobs', title: 'Jobs' })(state, actions.jobs, actions);
+        } }),
       (0, _hyperapp.h)(_router.Route, { path: '/login', render: function render() {
           return (0, _Login2.default)(state.auth, actions.auth, actions);
         } })
@@ -1208,7 +1212,7 @@ module.exports = function (state, actions) {
   );
 };
 
-},{"../components/DebugContainer.js":8,"../components/Tabs.js":16,"../components/ToastContainer.js":17,"./Home.js":23,"./Login.js":24,"./Movies.js":26,"./People.js":27,"@hyperapp/router":1,"hyperapp":2}],26:[function(require,module,exports){
+},{"../components/DebugContainer.js":8,"../components/Tabs.js":16,"../components/ToastContainer.js":17,"./Home.js":23,"./Login.js":24,"./Movies.js":26,"./People.js":27,"./SimpleFilterTableView.js":28,"@hyperapp/router":1,"hyperapp":2}],26:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1324,5 +1328,48 @@ var People = (0, _FilterTableView2.default)({
 });
 
 module.exports = People;
+
+},{"./FilterTableView.js":22,"hyperapp":2}],28:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _FilterTableView = require('./FilterTableView.js');
+
+var _FilterTableView2 = _interopRequireDefault(_FilterTableView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var rowHeaders = ['Id', 'Name', 'Edit'];
+
+var rowColumns = [function (item) {
+  return item.id;
+}, function (item) {
+  return item.name;
+}, function (item, actions) {
+  return (0, _hyperapp.h)(
+    'button',
+    { className: 'btn btn-block btn-primary', onclick: function onclick() {
+        return actions.updateEdit(Object.assign({}, item));
+      } },
+    'Edit'
+  );
+}];
+
+var formFields = [{ 'key': 'name', 'label': 'Name', 'type': 'text' }];
+
+var SimpleFilterTableView = function SimpleFilterTableView(_ref) {
+  var key = _ref.key,
+      title = _ref.title;
+  return (0, _FilterTableView2.default)({
+    key: key,
+    rowHeaders: rowHeaders,
+    rowColumns: rowColumns,
+    formFields: formFields,
+    title: title
+  });
+};
+
+module.exports = SimpleFilterTableView;
 
 },{"./FilterTableView.js":22,"hyperapp":2}]},{},[18]);

@@ -7,6 +7,8 @@ const actions = module.exports = {
     location: location.actions, 
     auth, 
     people: view_actions,
+    genres: view_actions,
+    jobs: view_actions,
     movies: Object.assign({}, view_actions, {
         updateShowPlot: showPlot => state => ({
             showPlot

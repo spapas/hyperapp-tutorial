@@ -1,15 +1,20 @@
-let existingAuth = localStorage.getItem('auth');
+import { getExistingAuth } from './util/auth.js'
 
-if(existingAuth) {
-  try {
-    existingAuth = JSON.parse(existingAuth);
-  } catch(error) {
-    existingAuth = null;
+const genericState = {
+    loading: false,
+    page: null,
+    count: 0,
+    next: null,
+    previous: null,
+    items: [],
+    forms: {
+      edit: null,
+      search: {}
+    }
   }
-}
-if(!existingAuth) existingAuth = {key:'', username:''};
 
-
+const existingAuth = getExistingAuth()
+  
 const state = module.exports = {
   auth: {
     key: existingAuth.key,
@@ -23,30 +28,10 @@ const state = module.exports = {
   toasts: {
     items: []
   },
-  movies: {
+  movies: Object.assign({}, genericState, {
     showPlot: false,
-    loading: false,
-    page: null,
-    count: 0,
-    next: null,
-    previous: null,
-    current: null,
-    items: [],
-    forms: {
-      edit: null,
-      search: {}
-    }
-  },
-  people: {
-    loading: false,
-    page: null,
-    count: 0,
-    next: null,
-    previous: null,
-    items: [],
-    forms: {
-      edit: null,
-      search: {}
-    }
-  }
+  }),
+  people: Object.assign({}, genericState),
+  genres: Object.assign({}, genericState),
+  jobs: Object.assign({}, genericState)
 };
