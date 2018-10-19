@@ -24,6 +24,7 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = core.serializers.JobSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filter_class = core.filters.JobFilter
+    pagination_class = SmallPaginator
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -31,6 +32,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = core.serializers.GenreSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filter_class = core.filters.GenreFilter
+    pagination_class = SmallPaginator
 
 
 class PersonViewSet(viewsets.ModelViewSet):

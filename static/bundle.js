@@ -195,99 +195,69 @@ var _toasts = require("./toasts.js");
 
 var _toasts2 = _interopRequireDefault(_toasts);
 
-var _people = require("./people.js");
+var _view_actions = require("./view_actions");
 
-var _people2 = _interopRequireDefault(_people);
-
-var _movies = require("./movies.js");
-
-var _movies2 = _interopRequireDefault(_movies);
+var _view_actions2 = _interopRequireDefault(_view_actions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var reducers = module.exports = {
+var actions = module.exports = {
     location: _router.location.actions,
     auth: _auth2.default,
-    movies: _movies2.default,
-    people: _people2.default,
+    people: _view_actions2.default,
+    movies: Object.assign({}, _view_actions2.default, {
+        updateShowPlot: function updateShowPlot(showPlot) {
+            return function (state) {
+                return {
+                    showPlot: showPlot
+                };
+            };
+        }
+    }),
     toasts: _toasts2.default
 
 };
 
-},{"./auth.js":3,"./movies.js":6,"./people.js":7,"./toasts.js":8,"@hyperapp/router":1}],6:[function(require,module,exports){
+},{"./auth.js":3,"./toasts.js":6,"./view_actions":7,"@hyperapp/router":1}],6:[function(require,module,exports){
 "use strict";
 
-var _forms = require("./forms.js");
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 module.exports = {
-  load: function load(url) {
+  add: function add(_ref) {
+    var text = _ref.text,
+        style = _ref.style;
     return function (state, actions) {
-      actions.updateLoading(true);
-      setTimeout(function () {
-        return fetch(url).then(function (r) {
-          return r.json();
-        }).then(function (j) {
-          var match = url.match(/\?page=(\d+)/);
-          var page = 1;
-          if (match) page = 1 * match[1];
-
-          actions.update({ response: j, current: url, page: page });
-          actions.updateLoading(false);
-        });
-      }, 100);
-    };
-  },
-
-  updateLoading: function updateLoading(loading) {
-    return function (state) {
+      // Hide toast after 10 s
+      window.setTimeout(function () {
+        actions.hide(text);
+      }, 10000);
       return {
-        loading: loading
+        items: [].concat(_toConsumableArray(state.items), [{ text: text, style: style }])
       };
     };
   },
 
-  updateShowPlot: function updateShowPlot(showPlot) {
+  hide: function hide(text) {
     return function (state) {
+      var idx = state.items.map(function (v) {
+        return v.text;
+      }).indexOf(text);
       return {
-        showPlot: showPlot
+        items: [].concat(_toConsumableArray(state.items.slice(0, idx)), _toConsumableArray(state.items.slice(idx + 1)))
       };
     };
   },
-
-  update: function update(_ref) {
-    var response = _ref.response,
-        current = _ref.current,
-        page = _ref.page;
+  clear: function clear() {
     return function (state) {
       return {
-        page: page,
-        current: current,
-        count: response.count,
-        next: response.next,
-        previous: response.previous,
-        items: response.results
-
+        items: []
       };
     };
-  },
-
-  updateEdit: function updateEdit(item) {
-    return function (state) {
-      return {
-        forms: Object.assign({}, state['forms'], {
-          edit: item
-        })
-      };
-    };
-  },
-
-  saveEdit: _forms.saveEdit,
-  searchAction: _forms.searchAction,
-  updateField: _forms.updateField,
-  addErrors: _forms.addErrors
+  }
 };
 
-},{"./forms.js":4}],7:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 var _forms = require("./forms.js");
@@ -355,45 +325,6 @@ module.exports = {
 },{"./forms.js":4}],8:[function(require,module,exports){
 "use strict";
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-module.exports = {
-  add: function add(_ref) {
-    var text = _ref.text,
-        style = _ref.style;
-    return function (state, actions) {
-      // Hide toast after 10 s
-      window.setTimeout(function () {
-        actions.hide(text);
-      }, 10000);
-      return {
-        items: [].concat(_toConsumableArray(state.items), [{ text: text, style: style }])
-      };
-    };
-  },
-
-  hide: function hide(text) {
-    return function (state) {
-      var idx = state.items.map(function (v) {
-        return v.text;
-      }).indexOf(text);
-      return {
-        items: [].concat(_toConsumableArray(state.items.slice(0, idx)), _toConsumableArray(state.items.slice(idx + 1)))
-      };
-    };
-  },
-  clear: function clear() {
-    return function (state) {
-      return {
-        items: []
-      };
-    };
-  }
-};
-
-},{}],9:[function(require,module,exports){
-"use strict";
-
 var _hyperapp = require("hyperapp");
 
 module.exports = function (_ref) {
@@ -425,7 +356,7 @@ module.exports = function (_ref) {
   );
 };
 
-},{"hyperapp":2}],10:[function(require,module,exports){
+},{"hyperapp":2}],9:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -486,7 +417,7 @@ var FormInputLong = function FormInputLong(_ref3) {
 module.exports['FormInput'] = FormInput;
 module.exports['FormInputLong'] = FormInputLong;
 
-},{"hyperapp":2}],11:[function(require,module,exports){
+},{"hyperapp":2}],10:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -571,7 +502,7 @@ var ModalForm = module.exports = function (_ref) {
   );
 };
 
-},{"../components/Spinners.js":15,"./FormInputs.js":10,"hyperapp":2}],12:[function(require,module,exports){
+},{"../components/Spinners.js":14,"./FormInputs.js":9,"hyperapp":2}],11:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -619,7 +550,7 @@ var Pagination = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],13:[function(require,module,exports){
+},{"hyperapp":2}],12:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -671,7 +602,7 @@ var PlotModal = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],14:[function(require,module,exports){
+},{"hyperapp":2}],13:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -744,7 +675,7 @@ var SearchForm = module.exports = function (_ref) {
     );
 };
 
-},{"../components/Spinners.js":15,"hyperapp":2}],15:[function(require,module,exports){
+},{"../components/Spinners.js":14,"hyperapp":2}],14:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -766,7 +697,7 @@ var SpinnerSmall = module.exports = function () {
 module.exports['Spinner'] = Spinner;
 module.exports['SpinnerSmall'] = SpinnerSmall;
 
-},{"hyperapp":2}],16:[function(require,module,exports){
+},{"hyperapp":2}],15:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -832,7 +763,7 @@ var Table = module.exports = function (_ref2) {
     );
 };
 
-},{"../components/Pagination.js":12,"hyperapp":2}],17:[function(require,module,exports){
+},{"../components/Pagination.js":11,"hyperapp":2}],16:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -900,7 +831,7 @@ var Table = module.exports = function (_ref) {
   );
 };
 
-},{"@hyperapp/router":1,"hyperapp":2}],18:[function(require,module,exports){
+},{"@hyperapp/router":1,"hyperapp":2}],17:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -932,7 +863,7 @@ var ToastContainer = module.exports = function (_ref2) {
   );
 };
 
-},{"hyperapp":2}],19:[function(require,module,exports){
+},{"hyperapp":2}],18:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -966,7 +897,7 @@ _actions2.default.location.go('/');
 addEventListener('pushstate', hideToasts);
 addEventListener('popstate', hideToasts);
 
-},{"./actions":5,"./state.js":20,"./views/Main.js":25,"@hyperapp/router":1,"hyperapp":2}],20:[function(require,module,exports){
+},{"./actions":5,"./state.js":19,"./views/Main.js":25,"@hyperapp/router":1,"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
 
 var existingAuth = localStorage.getItem('auth');
@@ -1021,7 +952,7 @@ var state = module.exports = {
   }
 };
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 var checkAuth = function checkAuth(list, auth) {
@@ -1033,7 +964,7 @@ module.exports = {
   checkAuth: checkAuth
 };
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
@@ -1050,7 +981,98 @@ module.exports = {
     mergeValuesErrors: mergeValuesErrors
 };
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _Spinners = require('../components/Spinners.js');
+
+var _Table = require('../components/Table.js');
+
+var _Table2 = _interopRequireDefault(_Table);
+
+var _ModalForm = require('../components/ModalForm.js');
+
+var _ModalForm2 = _interopRequireDefault(_ModalForm);
+
+var _SearchForm = require('../components/SearchForm.js');
+
+var _SearchForm2 = _interopRequireDefault(_SearchForm);
+
+var _forms = require('../util/forms.js');
+
+var _auth = require('../util/auth');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = function (_ref) {
+  var key = _ref.key,
+      rowHeaders = _ref.rowHeaders,
+      rowColumns = _ref.rowColumns,
+      formFields = _ref.formFields,
+      title = _ref.title,
+      extraView = _ref.extraView;
+  return function (state, actions, g_actions) {
+    return (0, _hyperapp.h)(
+      'div',
+      { key: key },
+      (0, _hyperapp.h)(
+        'h2',
+        null,
+        title,
+        ' \xA0  \xA0',
+        state.auth.key ? (0, _hyperapp.h)(
+          'button',
+          { className: 'btn btn-primary btn-action btn-lg', onclick: function onclick() {
+              return actions.updateEdit({});
+            } },
+          (0, _hyperapp.h)('i', { className: 'icon icon-plus' })
+        ) : null
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { className: 'columns' },
+        (0, _hyperapp.h)(
+          'div',
+          { className: 'column col-lg-12', oncreate: function oncreate() {
+              return actions.load(window.g_urls[key]);
+            } },
+          (0, _hyperapp.h)(_SearchForm2.default, {
+            formFields: (0, _forms.mergeValuesErrors)(formFields, state[key].forms.search, null),
+            updateFieldAction: function updateFieldAction(key, value) {
+              return actions.updateField({ formname: 'search', fieldname: key, value: value });
+            },
+            searchAction: actions.searchAction
+          }),
+          state[key].loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
+            rowHeaders: (0, _auth.checkAuth)(rowHeaders, state.auth),
+            rowColumns: (0, _auth.checkAuth)(rowColumns, state.auth),
+            rows: state[key],
+            actions: actions
+          })
+        )
+      ),
+      state[key].forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
+        loading: state[key].loading,
+        formFields: (0, _forms.mergeValuesErrors)(formFields, state[key].forms.edit, state[key].forms.edit.errors),
+        item: state[key].forms.edit,
+        hideAction: function hideAction() {
+          return actions.updateEdit(null);
+        },
+        saveAction: function saveAction() {
+          return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
+        },
+        updateFieldAction: function updateFieldAction(key, value) {
+          return actions.updateField({ formname: 'edit', fieldname: key, value: value });
+        }
+      }) : null,
+      extraView ? extraView(state, actions) : null
+    );
+  };
+};
+
+},{"../components/ModalForm.js":10,"../components/SearchForm.js":13,"../components/Spinners.js":14,"../components/Table.js":15,"../util/auth":20,"../util/forms.js":21,"hyperapp":2}],23:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -1122,7 +1144,7 @@ var Login = module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/FormInputs.js":10,"../components/Spinners.js":15,"hyperapp":2}],25:[function(require,module,exports){
+},{"../components/FormInputs.js":9,"../components/Spinners.js":14,"hyperapp":2}],25:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1186,32 +1208,18 @@ module.exports = function (state, actions) {
   );
 };
 
-},{"../components/DebugContainer.js":9,"../components/Tabs.js":17,"../components/ToastContainer.js":18,"./Home.js":23,"./Login.js":24,"./Movies.js":26,"./People.js":27,"@hyperapp/router":1,"hyperapp":2}],26:[function(require,module,exports){
+},{"../components/DebugContainer.js":8,"../components/Tabs.js":16,"../components/ToastContainer.js":17,"./Home.js":23,"./Login.js":24,"./Movies.js":26,"./People.js":27,"@hyperapp/router":1,"hyperapp":2}],26:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
-
-var _Spinners = require('../components/Spinners.js');
 
 var _PlotModal = require('../components/PlotModal.js');
 
 var _PlotModal2 = _interopRequireDefault(_PlotModal);
 
-var _Table = require('../components/Table.js');
+var _FilterTableView = require('./FilterTableView.js');
 
-var _Table2 = _interopRequireDefault(_Table);
-
-var _ModalForm = require('../components/ModalForm.js');
-
-var _ModalForm2 = _interopRequireDefault(_ModalForm);
-
-var _SearchForm = require('../components/SearchForm.js');
-
-var _SearchForm2 = _interopRequireDefault(_SearchForm);
-
-var _forms = require('../util/forms.js');
-
-var _auth = require('../util/auth');
+var _FilterTableView2 = _interopRequireDefault(_FilterTableView);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1255,96 +1263,35 @@ var rowColumns = [function (movie) {
   );
 }];
 
-// TODO: Maybe this is better
-var tableDef = [{
-  'key': 'id',
-  'label': 'Id',
-  'render': function render(movie, actions) {
-    return movie.id;
-  } // etc
-}];
-
 var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }];
 
-module.exports = function (state, actions, g_actions) {
+var extraView = function extraView(state, actions) {
   return (0, _hyperapp.h)(
     'div',
-    { key: 'movies' },
-    (0, _hyperapp.h)(
-      'h2',
-      null,
-      'Movie list \xA0  \xA0',
-      state.auth.key ? (0, _hyperapp.h)(
-        'button',
-        { className: 'btn btn-primary btn-action btn-lg', onclick: function onclick() {
-            return actions.updateEdit({});
-          } },
-        (0, _hyperapp.h)('i', { className: 'icon icon-plus' })
-      ) : null
-    ),
-    (0, _hyperapp.h)(
-      'div',
-      { className: 'columns' },
-      (0, _hyperapp.h)(
-        'div',
-        { className: 'column col-lg-12', oncreate: function oncreate() {
-            return actions.load(window.g_urls.movies);
-          } },
-        (0, _hyperapp.h)(_SearchForm2.default, {
-          formFields: (0, _forms.mergeValuesErrors)(formFields, state.movies.forms.search, null),
-          updateFieldAction: function updateFieldAction(key, value) {
-            return actions.updateField({ formname: 'search', fieldname: key, value: value });
-          },
-          searchAction: actions.searchAction
-        }),
-        state.movies.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
-          rowHeaders: (0, _auth.checkAuth)(rowHeaders, state.auth),
-          rowColumns: (0, _auth.checkAuth)(rowColumns, state.auth),
-          rows: state.movies,
-          actions: actions
-        })
-      )
-    ),
-    state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null,
-    state.movies.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
-      loading: state.movies.loading,
-      formFields: (0, _forms.mergeValuesErrors)(formFields, state.movies.forms.edit, state.movies.forms.edit.errors),
-      item: state.movies.forms.edit,
-      hideAction: function hideAction() {
-        return actions.updateEdit(null);
-      },
-      saveAction: function saveAction() {
-        return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
-      },
-      updateFieldAction: function updateFieldAction(key, value) {
-        return actions.updateField({ formname: 'edit', fieldname: key, value: value });
-      }
-    }) : null
+    null,
+    state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null
   );
 };
 
-},{"../components/ModalForm.js":11,"../components/PlotModal.js":13,"../components/SearchForm.js":14,"../components/Spinners.js":15,"../components/Table.js":16,"../util/auth":21,"../util/forms.js":22,"hyperapp":2}],27:[function(require,module,exports){
+var Movies = (0, _FilterTableView2.default)({
+  key: 'movies',
+  rowHeaders: rowHeaders,
+  rowColumns: rowColumns,
+  formFields: formFields,
+  title: 'Movies list',
+  extraView: extraView
+});
+
+module.exports = Movies;
+
+},{"../components/PlotModal.js":12,"./FilterTableView.js":22,"hyperapp":2}],27:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
 
-var _Spinners = require('../components/Spinners.js');
+var _FilterTableView = require('./FilterTableView.js');
 
-var _Table = require('../components/Table.js');
-
-var _Table2 = _interopRequireDefault(_Table);
-
-var _ModalForm = require('../components/ModalForm.js');
-
-var _ModalForm2 = _interopRequireDefault(_ModalForm);
-
-var _SearchForm = require('../components/SearchForm.js');
-
-var _SearchForm2 = _interopRequireDefault(_SearchForm);
-
-var _forms = require('../util/forms.js');
-
-var _auth = require('../util/auth');
+var _FilterTableView2 = _interopRequireDefault(_FilterTableView);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1368,52 +1315,14 @@ var rowColumns = [function (person) {
 
 var formFields = [{ 'key': 'name', 'label': 'Name', 'type': 'text' }, { 'key': 'birthday', 'label': 'Birthday', 'type': 'text' }];
 
-module.exports = function (state, actions, g_actions) {
-  return (0, _hyperapp.h)(
-    'div',
-    { key: 'people' },
-    (0, _hyperapp.h)(
-      'h2',
-      null,
-      'People list'
-    ),
-    (0, _hyperapp.h)(
-      'div',
-      { className: 'columns' },
-      (0, _hyperapp.h)(
-        'div',
-        { className: 'column col-lg-12', oncreate: function oncreate() {
-            return actions.load(window.g_urls.persons);
-          } },
-        (0, _hyperapp.h)(_SearchForm2.default, {
-          formFields: (0, _forms.mergeValuesErrors)(formFields, state.people.forms.search, null),
-          updateFieldAction: function updateFieldAction(key, value) {
-            return actions.updateField({ formname: 'search', fieldname: key, value: value });
-          },
-          searchAction: actions.searchAction
-        }),
-        state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
-          rowHeaders: (0, _auth.checkAuth)(rowHeaders, state.auth),
-          rowColumns: (0, _auth.checkAuth)(rowColumns, state.auth),
-          rows: state.people,
-          actions: actions })
-      )
-    ),
-    state.people.forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
-      loading: state.people.loading,
-      formFields: (0, _forms.mergeValuesErrors)(formFields, state.people.forms.edit, state.people.forms.edit.errors),
-      item: state.people.forms.edit,
-      hideAction: function hideAction() {
-        return actions.updateEdit(null);
-      },
-      saveAction: function saveAction() {
-        return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
-      },
-      updateFieldAction: function updateFieldAction(key, value) {
-        return actions.updateField({ formname: 'edit', fieldname: key, value: value });
-      }
-    }) : null
-  );
-};
+var People = (0, _FilterTableView2.default)({
+  key: 'people',
+  rowHeaders: rowHeaders,
+  rowColumns: rowColumns,
+  formFields: formFields,
+  title: 'People list'
+});
 
-},{"../components/ModalForm.js":11,"../components/SearchForm.js":14,"../components/Spinners.js":15,"../components/Table.js":16,"../util/auth":21,"../util/forms.js":22,"hyperapp":2}]},{},[19]);
+module.exports = People;
+
+},{"./FilterTableView.js":22,"hyperapp":2}]},{},[18]);

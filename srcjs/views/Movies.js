@@ -1,12 +1,6 @@
 import { h } from "hyperapp"
-import { Spinner } from '../components/Spinners.js';
 import PlotModal from '../components/PlotModal.js';
-
-import Table from '../components/Table.js';
-import ModalForm from '../components/ModalForm.js';
-import SearchForm from '../components/SearchForm.js';
-import { mergeValuesErrors } from '../util/forms.js';
-import { checkAuth } from '../util/auth';
+import FilterTableView from './FilterTableView.js';
 
 const rowHeaders = [
   'Id',
@@ -28,15 +22,6 @@ const rowColumns = [
   (movie, actions) => <button className='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, movie) )}>Edit</button>
 ];
 
-// TODO: Maybe this is better
-const tableDef = [
-  {
-    'key': 'id',
-    'label': 'Id',
-    'render': (movie, actions) => movie.id
-  } // etc
-];
-
 
 const formFields = [
   {'key': 'title', 'label': 'Title', 'type': 'text'},
@@ -45,36 +30,15 @@ const formFields = [
   {'key': 'story', 'label': 'Plot', 'type': 'longtext'},
 ];
 
+const extraView = (state, actions) => <div>{state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}</div>
 
-module.exports = (state, actions, g_actions) => <div key='movies'>
-  <h2>
-    Movie list &nbsp;  &nbsp;
-    {state.auth.key?<button className="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>
-      <i className="icon icon-plus"></i>
-    </button>:null}
-  </h2>
-  <div className="columns">
-    <div className="column col-lg-12" oncreate={() => actions.load(window.g_urls.movies)}>
-      <SearchForm
-        formFields={mergeValuesErrors(formFields, state.movies.forms.search, null)}
-        updateFieldAction={(key, value)=>actions.updateField({formname: 'search', fieldname: key, value})}
-        searchAction={actions.searchAction}
-      />
-      {state.movies.loading == true ? <Spinner /> : <Table
-        rowHeaders={checkAuth(rowHeaders, state.auth)}
-        rowColumns={checkAuth(rowColumns, state.auth)}
-        rows={state.movies}
-        actions={actions}
-      />}
-    </div>
-  </div>
-  {state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}
-  {state.movies.forms.edit?<ModalForm
-    loading={state.movies.loading}
-    formFields={mergeValuesErrors(formFields, state.movies.forms.edit, state.movies.forms.edit.errors)}
-    item={state.movies.forms.edit}
-    hideAction={()=>actions.updateEdit(null)}
-    saveAction={()=>actions.saveEdit({g_actions: g_actions, key: state.auth.key})}
-    updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})}
-  />:null}
-</div>;
+const Movies = FilterTableView({
+  key: 'movies',
+  rowHeaders,
+  rowColumns,
+  formFields,
+  title: 'Movies list',
+  extraView
+})
+
+module.exports = Movies;
