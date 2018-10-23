@@ -87,121 +87,112 @@ module.exports = {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-module.exports = {
+module.exports = function (ajaxUrl) {
+    return {
 
-    updateField: function updateField(_ref) {
-        var formname = _ref.formname,
-            fieldname = _ref.fieldname,
-            value = _ref.value;
-        return function (state) {
-            console.log("Update ", formname, fieldname, value);
-            return {
-                forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], _defineProperty({}, fieldname, value))))
-            };
-        };
-    },
-
-    addErrors: function addErrors(_ref2) {
-        var formname = _ref2.formname,
-            errors = _ref2.errors;
-        return function (state) {
-            console.log("Add errors ", errors);
-            return {
-                forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], {
-                    errors: errors
-                })))
-            };
-        };
-    },
-
-    searchAction: function searchAction(reset) {
-        return function (state, actions) {
-            if (reset) {
-                actions.load(state.current.split('?')[0]);
+        updateField: function updateField(_ref) {
+            var formname = _ref.formname,
+                fieldname = _ref.fieldname,
+                value = _ref.value;
+            return function (state) {
+                console.log("Update ", formname, fieldname, value);
                 return {
-                    forms: Object.assign({}, state['forms'], {
-                        search: {}
-                    })
+                    forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], _defineProperty({}, fieldname, value))))
                 };
-            } else {
-                var params = Object.keys(state.forms.search).map(function (k) {
-                    return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
-                }).join('&');
-                actions.load(state.current.split('?')[0] + '?' + params);
-            }
-        };
-    },
+            };
+        },
 
-    saveEdit: function saveEdit(_ref3) {
-        var key = _ref3.key,
-            g_actions = _ref3.g_actions;
-        return function (state, actions) {
-            actions.updateLoading(true);
-            var item = state.forms.edit;
+        addErrors: function addErrors(_ref2) {
+            var formname = _ref2.formname,
+                errors = _ref2.errors;
+            return function (state) {
+                console.log("Add errors ", errors);
+                return {
+                    forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], {
+                        errors: errors
+                    })))
+                };
+            };
+        },
 
-            console.log("ITEM IS", item);
-
-            var _loop = function _loop() {
-                var v = item[k];
-                if (Array.isArray(v)) {
-                    item[k] = v.map(function (x) {
-                        console.log(" V IS ", v);
-                        return {
-                            'id': x.id,
-                            'name': x.text
-                        };
-                    });
+        searchAction: function searchAction(reset) {
+            return function (state, actions) {
+                if (reset) {
+                    actions.load(state.current.split('?')[0]);
+                    return {
+                        forms: Object.assign({}, state['forms'], {
+                            search: {}
+                        })
+                    };
+                } else {
+                    var params = Object.keys(state.forms.search).map(function (k) {
+                        return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
+                    }).join('&');
+                    actions.load(state.current.split('?')[0] + '?' + params);
                 }
             };
+        },
 
-            for (var k in item) {
-                _loop();
-            }
-            console.log(JSON.stringify(item));
-            var saveUrl = '';
-            var method = '';
-            if (item.id) {
-                // UPDATE
-                saveUrl = item.url;
-                method = 'PATCH';
-            } else {
-                // CREATE
-                saveUrl = window.g_urls.movies;
-                method = 'POST';
-            }
-            console.log(g_urls);
-            console.log(saveUrl);
+        saveEdit: function saveEdit(_ref3) {
+            var key = _ref3.key,
+                g_actions = _ref3.g_actions;
+            return function (state, actions) {
+                actions.updateLoading(true);
+                var item = state.forms.edit;
 
-            window.setTimeout(function () {
-                fetch(saveUrl, {
-                    body: JSON.stringify(item),
-                    headers: {
-                        'content-type': 'application/json',
-                        'Authorization': 'Token ' + key
-                    },
-                    method: method
-                }).then(function (response) {
-                    actions.updateLoading(false);
-
-                    if (response.status == 400) {
-                        response.json().then(function (errors) {
-                            actions.addErrors({ formname: 'edit', errors: errors });
-                        });
-                    } else if (response.status == 200 || response.status == 201) {
-                        response.json().then(function (data) {
-                            // Data is the object that was saved
-                            g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
-                            actions.updateEdit(null);
-                            actions.load(state.current);
+                for (var k in item) {
+                    var v = item[k];
+                    if (Array.isArray(v)) {
+                        item[k] = v.map(function (x) {
+                            return {
+                                'id': x.id,
+                                'name': x.text
+                            };
                         });
                     }
-                }).catch(function (error) {
-                    console.log('ERR', error.status);
-                });
-            }, 500);
-        };
-    }
+                }
+                var saveUrl = '';
+                var method = '';
+                if (item.id) {
+                    // UPDATE
+                    saveUrl = ajaxUrl + item.id;
+                    method = 'PATCH';
+                } else {
+                    // CREATE
+                    saveUrl = ajaxUrl;
+                    method = 'POST';
+                }
 
+                window.setTimeout(function () {
+                    fetch(saveUrl, {
+                        body: JSON.stringify(item),
+                        headers: {
+                            'content-type': 'application/json',
+                            'Authorization': 'Token ' + key
+                        },
+                        method: method
+                    }).then(function (response) {
+                        actions.updateLoading(false);
+
+                        if (response.status == 400) {
+                            response.json().then(function (errors) {
+                                actions.addErrors({ formname: 'edit', errors: errors });
+                            });
+                        } else if (response.status == 200 || response.status == 201) {
+                            response.json().then(function (data) {
+                                // Data is the object that was saved
+                                g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
+                                actions.updateEdit(null);
+                                actions.load(state.current);
+                            });
+                        }
+                    }).catch(function (error) {
+                        console.log('ERR', error.status);
+                    });
+                }, 500);
+            };
+        }
+    };
 };
 
 },{}],5:[function(require,module,exports){
@@ -226,10 +217,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var actions = module.exports = {
     location: _router.location.actions,
     auth: _auth2.default,
-    people: _view_actions2.default,
-    genres: _view_actions2.default,
-    jobs: _view_actions2.default,
-    movies: Object.assign({}, _view_actions2.default, {
+    people: (0, _view_actions2.default)(window.g_urls.people),
+    genres: (0, _view_actions2.default)(window.g_urls.genres),
+    jobs: (0, _view_actions2.default)(window.g_urls.jobs),
+    movies: Object.assign({}, (0, _view_actions2.default)(window.g_urls.movies), {
         updateShowPlot: function updateShowPlot(showPlot) {
             return function (state) {
                 return {
@@ -284,66 +275,70 @@ module.exports = {
 },{}],7:[function(require,module,exports){
 "use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _forms = require("./forms.js");
 
-module.exports = {
-  load: function load(url) {
-    return function (state, actions) {
-      actions.updateLoading(true);
+var _forms2 = _interopRequireDefault(_forms);
 
-      setTimeout(function () {
-        return fetch(url).then(function (r) {
-          return r.json();
-        }).then(function (j) {
-          var match = url.match(/\?page=(\d+)/);
-          var page = 1;
-          if (match) page = 1 * match[1];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-          actions.update({ response: j, current: url, page: page });
-          actions.updateLoading(false);
-        });
-      }, 100);
-    };
-  },
+module.exports = function (ajaxUrl) {
+  return _extends({
+    load: function load(url) {
+      return function (state, actions) {
+        actions.updateLoading(true);
 
-  updateLoading: function updateLoading(loading) {
-    return function (state) {
-      return {
-        loading: loading
+        setTimeout(function () {
+          return fetch(url).then(function (r) {
+            return r.json();
+          }).then(function (j) {
+            var match = url.match(/\?page=(\d+)/);
+            var page = 1;
+            if (match) page = 1 * match[1];
+
+            actions.update({ response: j, current: url, page: page });
+            actions.updateLoading(false);
+          });
+        }, 100);
       };
-    };
-  },
+    },
 
-  update: function update(_ref) {
-    var response = _ref.response,
-        current = _ref.current,
-        page = _ref.page;
-    return function (state) {
-      return {
-        page: page,
-        current: current,
-        count: response.count,
-        next: response.next,
-        previous: response.previous,
-        items: response.results
+    updateLoading: function updateLoading(loading) {
+      return function (state) {
+        return {
+          loading: loading
+        };
       };
-    };
-  },
+    },
 
-  updateEdit: function updateEdit(item) {
-    return function (state) {
-      return {
-        forms: Object.assign({}, state['forms'], {
-          edit: item
-        })
+    update: function update(_ref) {
+      var response = _ref.response,
+          current = _ref.current,
+          page = _ref.page;
+      return function (state) {
+        return {
+          page: page,
+          current: current,
+          count: response.count,
+          next: response.next,
+          previous: response.previous,
+          items: response.results
+        };
       };
-    };
-  },
-  saveEdit: _forms.saveEdit,
-  searchAction: _forms.searchAction,
-  updateField: _forms.updateField,
-  addErrors: _forms.addErrors
+    },
 
+    updateEdit: function updateEdit(item) {
+      return function (state) {
+        return {
+          forms: Object.assign({}, state['forms'], {
+            edit: item
+          })
+        };
+      };
+    }
+
+  }, (0, _forms2.default)(ajaxUrl));
 };
 
 },{"./forms.js":4}],8:[function(require,module,exports){

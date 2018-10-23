@@ -1,6 +1,6 @@
-import { updateField, addErrors, searchAction, saveEdit } from "./forms.js"
+import createFormActions from "./forms.js"
 
-module.exports = {
+module.exports = ajaxUrl => ({
   load: url => (state, actions) => {
     actions.updateLoading(true);
 
@@ -31,10 +31,7 @@ module.exports = {
     forms: Object.assign({}, state['forms'], {
       edit: item
     })
-  }),
-  saveEdit,
-  searchAction,
-  updateField,
-  addErrors
-
-};
+  }), 
+  
+  ...createFormActions(ajaxUrl)
+});

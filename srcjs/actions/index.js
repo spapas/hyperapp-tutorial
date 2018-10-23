@@ -1,15 +1,15 @@
 import { location } from "@hyperapp/router"
 import auth from "./auth.js"
 import toasts from "./toasts.js"
-import view_actions from "./view_actions"
+import createViewActions from "./view_actions"
 
 const actions = module.exports = {
     location: location.actions, 
     auth, 
-    people: view_actions,
-    genres: view_actions,
-    jobs: view_actions,
-    movies: Object.assign({}, view_actions, {
+    people: createViewActions(window.g_urls.people),
+    genres: createViewActions(window.g_urls.genres),
+    jobs: createViewActions(window.g_urls.jobs),
+    movies: Object.assign({}, createViewActions(window.g_urls.movies), {
         updateShowPlot: showPlot => state => ({
             showPlot
         }),

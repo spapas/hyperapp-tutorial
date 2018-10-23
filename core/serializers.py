@@ -6,7 +6,7 @@ from drf_writable_nested import WritableNestedModelSerializer, UniqueFieldsMixin
 class GenreSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     class Meta:
         model = core.models.Genre
-        fields = ('id', 'name') 
+        fields = "__all__"
 
 
 class MovieSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
