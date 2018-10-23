@@ -381,16 +381,8 @@ module.exports = function (_ref) {
 var _require = require('hyperapp'),
     h = _require.h;
 
-var dateInput = function dateInput(element) {
-    flatpickr(element, {
-        onChange: function onChange(selectedDates, dateStr, instance) {
-            console.log("CHANGED", selectedDates, dateStr, instance);
-        }
-    });
-};
-
 var FormDateInput = module.exports = function (_ref) {
-    var value = _ref.value,
+    var field = _ref.field,
         action = _ref.action;
     return h(
         "div",
@@ -401,11 +393,16 @@ var FormDateInput = module.exports = function (_ref) {
             field.label
         ),
         h("input", { "class": "form-input", type: "text", id: "{field.label}",
-            placeholder: field.label, value: value,
-            onkeyup: function onkeyup(e) {
-                return action(e.target.value);
-            },
-            oncreate: dateInput
+            placeholder: field.label, value: field.value,
+            oncreate: function oncreate(element) {
+                $(element).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    onSelect: function onSelect(date, inst) {
+                        console.log(date, inst);
+                        action(date);
+                    }
+                });
+            }
         })
     );
 };
