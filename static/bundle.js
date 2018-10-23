@@ -375,19 +375,18 @@ var dateInput = function dateInput(element) {
 };
 
 var FormDateInput = module.exports = function (_ref) {
-    var label = _ref.label,
-        value = _ref.value,
+    var value = _ref.value,
         action = _ref.action;
     return h(
         "div",
         { "class": "form-group" },
         h(
             "label",
-            { "class": "form-label", "for": "{label}" },
-            label
+            { "class": "form-label", "for": "{field.label}" },
+            field.label
         ),
-        h("input", { "class": "form-input", type: "text", id: "{label}",
-            placeholder: label, value: value,
+        h("input", { "class": "form-input", type: "text", id: "{field.label}",
+            placeholder: field.label, value: value,
             onkeyup: function onkeyup(e) {
                 return action(e.target.value);
             },
@@ -594,24 +593,44 @@ var data = [{
 }];
 
 var MultiSelect = function MultiSelect(_ref2) {
-    var field = _ref2.field,
+    var label = _ref2.label,
+        field = _ref2.field,
         action = _ref2.action;
-    return (0, _hyperapp.h)('select', { name: '', oncreate: function oncreate(element) {
-            console.log(field);
-            console.log(field.value);
-            console.log(field.value.map(function (x) {
-                return x.id;
-            }));
-            new Selectr(element, {
-                data: field.data,
-                multiple: true,
-                selectedValue: field.value.map(function (x) {
-                    return '' + x.id;
-                })
-                //selectedValue: ['1'] 
-            });
-            console.log(element);
-        } });
+    return (0, _hyperapp.h)(
+        'div',
+        { 'class': 'form-group' },
+        (0, _hyperapp.h)(
+            'label',
+            { 'class': 'form-label', 'for': '{field.label}' },
+            field.label
+        ),
+        (0, _hyperapp.h)('select', { name: '', style: 'width: 50%', multiple: 'multiple', oncreate: function oncreate(element) {
+                $(element).select2({
+                    ajax: {
+                        url: '/api/genres/',
+                        dataType: 'json',
+                        delay: 250,
+                        placeholder: 'Search for genres',
+                        data: function data(params) {
+                            return {
+                                name: params.term
+                            };
+                        },
+                        processResults: function processResults(data) {
+                            return {
+                                results: data.results.map(function (r) {
+                                    return { 'id': r.id, 'text': r.name };
+                                })
+                            };
+                        }
+                    }
+                });
+                field.value.forEach(function (v) {
+                    var option = new Option(v.name, v.id, true, true);
+                    $(element).append(option).trigger('change');
+                });
+            } })
+    );
 };
 
 module.exports = MultiSelect;

@@ -17,17 +17,32 @@ var data = [{
     text: 'Wisteria',
 }]
 
-const MultiSelect = ({field, action}) => <select name="" oncreate={element => {
-    console.log(field)
-    console.log(field.value)
-    console.log(field.value.map(x=>x.id))
-    new Selectr(element, {
-        data: field.data,
-        multiple: true,
-        selectedValue: field.value.map(x=>''+x.id) 
-        //selectedValue: ['1'] 
+const MultiSelect = ({label, field, action}) => <div class="form-group" >
+    <label class="form-label" for="{field.label}">{field.label}</label>
+    <select name="" style="width: 50%" multiple="multiple" oncreate={element => {
+    $(element).select2({
+        ajax: {
+            url: '/api/genres/',
+            dataType: 'json',
+            delay: 250,
+            placeholder: 'Search for genres',
+            data: function (params) {
+                return { 
+                    name: params.term,
+                }
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results.map(r => {return {'id': r.id, 'text': r.name}})
+                };
+            }
+        }
     });
-    console.log(element)
-} }></select>
+    field.value.forEach(v => {
+        var option = new Option(v.name, v.id, true, true);
+        $(element).append(option).trigger('change');
+    })
+ }}>
+ </select></div>
 
 module.exports = MultiSelect

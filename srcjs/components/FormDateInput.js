@@ -10,10 +10,10 @@ var dateInput = element => {
 
 }
 
-const FormDateInput = module.exports = ({label, value, action}) => <div class="form-group" >
-    <label class="form-label" for="{label}">{label}</label>
-    <input class="form-input" type="text" id="{label}" 
-        placeholder={label} value={value} 
+const FormDateInput = module.exports = ({value, action}) => <div class="form-group" >
+    <label class="form-label" for="{field.label}">{field.label}</label>
+    <input class="form-input" type="text" id="{field.label}" 
+        placeholder={field.label} value={value} 
         onkeyup={e => action(e.target.value)}
         oncreate={dateInput}
     />
