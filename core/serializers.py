@@ -1,22 +1,28 @@
 from rest_framework import serializers
 import core.models
+from drf_writable_nested import WritableNestedModelSerializer, UniqueFieldsMixin, NestedUpdateMixin
 
 
-class GenreSerializer(serializers.HyperlinkedModelSerializer):
-    id = serializers.ReadOnlyField()
-
+class GenreSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
     class Meta:
         model = core.models.Genre
-        fields = "__all__"
+        fields = ('id', 'name') 
 
 
-class MovieSerializer(serializers.HyperlinkedModelSerializer):
+class MovieSerializer(NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    genres = GenreSerializer(many=True, required=False, read_only=True)
+    genres = GenreSerializer(many=True, required=False, read_only=False)
 
     class Meta:
         model = core.models.Movie
         fields = "__all__"
+
+    def update2(self, instance, validated_data):
+        genres_data = validated_data.pop('genres')
+        for item in validated_data.items():
+            setattr(instance, item[0], item[1])
+        instance.save()
+        return instance
 
 
 class JobSerializer(serializers.HyperlinkedModelSerializer):

@@ -42,6 +42,13 @@ const MultiSelect = ({label, field, action}) => <div class="form-group" >
         var option = new Option(v.name, v.id, true, true);
         $(element).append(option).trigger('change');
     })
+    $(element).on('change', e => {
+        
+        console.log(e);
+        let newval = $(element).select2('data')
+        console.log(newval);
+        action(newval)
+    });
  }}>
  </select></div>
 

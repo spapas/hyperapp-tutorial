@@ -138,6 +138,26 @@ module.exports = {
         return function (state, actions) {
             actions.updateLoading(true);
             var item = state.forms.edit;
+
+            console.log("ITEM IS", item);
+
+            var _loop = function _loop() {
+                var v = item[k];
+                if (Array.isArray(v)) {
+                    item[k] = v.map(function (x) {
+                        console.log(" V IS ", v);
+                        return {
+                            'id': x.id,
+                            'name': x.text
+                        };
+                    });
+                }
+            };
+
+            for (var k in item) {
+                _loop();
+            }
+            console.log(JSON.stringify(item));
             var saveUrl = '';
             var method = '';
             if (item.id) {
@@ -146,9 +166,11 @@ module.exports = {
                 method = 'PATCH';
             } else {
                 // CREATE
-                saveUrl = window.g_urls.people;
+                saveUrl = window.g_urls.movies;
                 method = 'POST';
             }
+            console.log(g_urls);
+            console.log(saveUrl);
 
             window.setTimeout(function () {
                 fetch(saveUrl, {
@@ -628,6 +650,13 @@ var MultiSelect = function MultiSelect(_ref2) {
                 field.value.forEach(function (v) {
                     var option = new Option(v.name, v.id, true, true);
                     $(element).append(option).trigger('change');
+                });
+                $(element).on('change', function (e) {
+
+                    console.log(e);
+                    var newval = $(element).select2('data');
+                    console.log(newval);
+                    action(newval);
                 });
             } })
     );

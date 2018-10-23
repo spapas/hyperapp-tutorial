@@ -41,15 +41,33 @@ module.exports =  {
       saveEdit: ({key, g_actions}) => (state, actions) => {
         actions.updateLoading(true);
         let item = state.forms.edit;
+
+        console.log("ITEM IS", item)
+        for(var k in item) {
+            let v = item[k];
+            if(Array.isArray(v)) {
+                item[k] = v.map(x=> { 
+                    console.log(" V IS ", v)
+                    return {
+                        'id': x.id,
+                        'name': x.text
+                    }
+                } 
+                )
+            }
+        }
+        console.log(JSON.stringify(item))
         let saveUrl = '';
         let method = '';
         if(item.id) { // UPDATE
-        saveUrl = item.url;
-        method = 'PATCH';
+            saveUrl = item.url;
+            method = 'PATCH';
         } else { // CREATE
-        saveUrl = window.g_urls.people;
-        method = 'POST';
+            saveUrl = window.g_urls.movies;
+            method = 'POST';
         }
+        console.log(g_urls)
+        console.log(saveUrl)
 
         window.setTimeout( () => {
         fetch(saveUrl, {
