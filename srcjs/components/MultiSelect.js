@@ -38,10 +38,12 @@ const MultiSelect = ({label, field, action}) => <div class="form-group" >
             }
         }
     });
-    field.value.forEach(v => {
-        var option = new Option(v.name, v.id, true, true);
-        $(element).append(option).trigger('change');
-    })
+    if(field.value) {
+        field.value.forEach(v => {
+            var option = new Option(v.name, v.id, true, true);
+            $(element).append(option).trigger('change');
+        })
+    }
     $(element).on('change', e => {
         
         console.log(e);

@@ -387,8 +387,6 @@ var _require = require('hyperapp'),
     h = _require.h;
 
 var dateInput = function dateInput(element) {
-    console.log(element);
-    console.log(flatpickr);
     flatpickr(element, {
         onChange: function onChange(selectedDates, dateStr, instance) {
             console.log("CHANGED", selectedDates, dateStr, instance);
@@ -647,10 +645,12 @@ var MultiSelect = function MultiSelect(_ref2) {
                         }
                     }
                 });
-                field.value.forEach(function (v) {
-                    var option = new Option(v.name, v.id, true, true);
-                    $(element).append(option).trigger('change');
-                });
+                if (field.value) {
+                    field.value.forEach(function (v) {
+                        var option = new Option(v.name, v.id, true, true);
+                        $(element).append(option).trigger('change');
+                    });
+                }
                 $(element).on('change', function (e) {
 
                     console.log(e);

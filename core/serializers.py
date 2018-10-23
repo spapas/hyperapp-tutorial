@@ -1,6 +1,6 @@
 from rest_framework import serializers
 import core.models
-from drf_writable_nested import WritableNestedModelSerializer, UniqueFieldsMixin, NestedUpdateMixin
+from drf_writable_nested import WritableNestedModelSerializer, UniqueFieldsMixin, NestedUpdateMixin, NestedCreateMixin 
 
 
 class GenreSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
@@ -9,7 +9,7 @@ class GenreSerializer(UniqueFieldsMixin, WritableNestedModelSerializer):
         fields = ('id', 'name') 
 
 
-class MovieSerializer(NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
+class MovieSerializer(NestedCreateMixin, NestedUpdateMixin, serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     genres = GenreSerializer(many=True, required=False, read_only=False)
 

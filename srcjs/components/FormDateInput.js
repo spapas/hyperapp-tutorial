@@ -1,7 +1,5 @@
 const { h } = require('hyperapp')
 var dateInput = element => {
-    console.log(element);
-    console.log(flatpickr);
     flatpickr(element, {
         onChange: function(selectedDates, dateStr, instance) { 
             console.log("CHANGED", selectedDates, dateStr, instance)
