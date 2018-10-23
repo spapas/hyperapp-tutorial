@@ -57,7 +57,7 @@ module.exports = (ajaxUrl) => ({
         let saveUrl = '';
         let method = '';
         if(item.id) { // UPDATE
-            saveUrl = ajaxUrl+item.id;
+            saveUrl = ajaxUrl+item.id+'/';
             method = 'PATCH';
         } else { // CREATE
             saveUrl = ajaxUrl;
