@@ -24,12 +24,12 @@ const renderFields = (fields,  updateFieldAction) => fields.map(
   f => renderField(f, updateFieldAction)
 )
 
-const ModalForm = module.exports = ({ loading, formFields, item, hideAction, saveAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>
+const MultiModalForm = module.exports = ({ loading, formFields, item, hideAction, saveAction, updateFieldAction }) => <div className={`modal ${item?'active':''}`}>
   <div class="modal-overlay"></div>
   <div class="modal-container">
     <div class="modal-header">
       <button class="btn btn-clear float-right" onclick={hideAction}></button>
-      <div class="modal-title h5">{item.id?`Editing form for item ${item.id}`:"Add new item!"}</div>
+      <div class="modal-title h5">{item.id?`Editing multi-form for item ${item.id}`:"Add new item!"}</div>
     </div>
     <div class="modal-body">
       <div class="content">

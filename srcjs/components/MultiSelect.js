@@ -1,33 +1,17 @@
 import { h } from 'hyperapp'
 
-const xMultiSelect = ({field, action}) => AbstractInput({
-    field, 
-    action, 
-    realInput: <input class="form-input" type={field.type} id={field.key}
-        placeholder={field.label} value={field.value} 
-        oninput={e => action(e.target.value)}
-        />
-})
-
-var data = [{
-    value: '1',
-    text: 'Amethyst'
-}, {
-    value: 2,
-    text: 'Wisteria',
-}]
 
 const MultiSelect = ({label, field, action}) => <div class="form-group" >
     <label class="form-label" for="{field.label}">{field.label}</label>
     <select name="" style="width: 50%" multiple="multiple" oncreate={element => {
     $(element).select2({
         ajax: {
-            url: '/api/genres/',
+            url: field.url,
             dataType: 'json',
             delay: 250,
-            placeholder: 'Search for genres',
+            placeholder: 'Search for ' + field.label.toLowerCase(),
             data: function (params) {
-                return { 
+                return {
                     name: params.term,
                 }
             },
@@ -45,7 +29,7 @@ const MultiSelect = ({label, field, action}) => <div class="form-group" >
         })
     }
     $(element).on('change', e => {
-        
+
         console.log(e);
         let newval = $(element).select2('data')
         console.log(newval);

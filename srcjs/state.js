@@ -14,7 +14,7 @@ const genericState = {
   }
 
 const existingAuth = getExistingAuth()
-  
+
 const state = module.exports = {
   auth: {
     key: existingAuth.key,
@@ -30,6 +30,9 @@ const state = module.exports = {
   },
   movies: Object.assign({}, genericState, {
     showPlot: false,
+    forms: Object.assign({}, genericState['forms'], {
+      editPeople: null
+    })
   }),
   people: Object.assign({}, genericState),
   genres: Object.assign({}, genericState),

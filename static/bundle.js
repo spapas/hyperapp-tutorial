@@ -242,6 +242,15 @@ var actions = module.exports = {
                     showPlot: showPlot
                 };
             };
+        },
+        updateEditPeople: function updateEditPeople(movie) {
+            return function (state) {
+                return {
+                    forms: Object.assign({}, state['forms'], {
+                        editPeople: movie
+                    })
+                };
+            };
         }
     }),
     toasts: _toasts2.default
@@ -502,11 +511,9 @@ var _MultiSelect = require('./MultiSelect.js');
 
 var _MultiSelect2 = _interopRequireDefault(_MultiSelect);
 
-var _Spinners = require('../components/Spinners.js');
+var _Spinners = require('./Spinners.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-console.log(_FormDateInput2.default);
 
 var renderField = function renderField(field, updateFieldAction) {
   var ftype = undefined;
@@ -595,53 +602,136 @@ var ModalForm = module.exports = function (_ref) {
   );
 };
 
-},{"../components/Spinners.js":17,"./FormDateInput.js":10,"./FormInputs.js":11,"./MultiSelect.js":13,"hyperapp":2}],13:[function(require,module,exports){
+},{"./FormDateInput.js":10,"./FormInputs.js":11,"./MultiSelect.js":14,"./Spinners.js":18,"hyperapp":2}],13:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
 
-var xMultiSelect = function xMultiSelect(_ref) {
-    var field = _ref.field,
-        action = _ref.action;
-    return AbstractInput({
-        field: field,
-        action: action,
-        realInput: (0, _hyperapp.h)('input', { 'class': 'form-input', type: field.type, id: field.key,
-            placeholder: field.label, value: field.value,
-            oninput: function oninput(e) {
-                return action(e.target.value);
-            }
-        })
-    });
+var _FormInputs = require('./FormInputs.js');
+
+var _FormDateInput = require('./FormDateInput.js');
+
+var _FormDateInput2 = _interopRequireDefault(_FormDateInput);
+
+var _MultiSelect = require('./MultiSelect.js');
+
+var _MultiSelect2 = _interopRequireDefault(_MultiSelect);
+
+var _Spinners = require('./Spinners.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var renderField = function renderField(field, updateFieldAction) {
+  var ftype = undefined;
+  switch (field.type) {
+    case 'longtext':
+      ftype = _FormInputs.FormInputLong;break;
+    case 'text':
+      ftype = _FormInputs.FormInput;break;
+    case 'number':
+      ftype = _FormInputs.FormInput;break;
+    case 'multiselect':
+      ftype = _MultiSelect2.default;break;
+    case 'date':
+      ftype = _FormDateInput2.default;break;
+  }
+  return ftype({
+    field: field,
+    action: function action(val) {
+      return updateFieldAction(field.key, val);
+    }
+  });
 };
 
-var data = [{
-    value: '1',
-    text: 'Amethyst'
-}, {
-    value: 2,
-    text: 'Wisteria'
-}];
+var renderFields = function renderFields(fields, updateFieldAction) {
+  return fields.map(function (f) {
+    return renderField(f, updateFieldAction);
+  });
+};
 
-var MultiSelect = function MultiSelect(_ref2) {
-    var label = _ref2.label,
-        field = _ref2.field,
-        action = _ref2.action;
-    return (0, _hyperapp.h)(
+var MultiModalForm = module.exports = function (_ref) {
+  var loading = _ref.loading,
+      formFields = _ref.formFields,
+      item = _ref.item,
+      hideAction = _ref.hideAction,
+      saveAction = _ref.saveAction,
+      updateFieldAction = _ref.updateFieldAction;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'modal ' + (item ? 'active' : '') },
+    (0, _hyperapp.h)('div', { 'class': 'modal-overlay' }),
+    (0, _hyperapp.h)(
+      'div',
+      { 'class': 'modal-container' },
+      (0, _hyperapp.h)(
         'div',
-        { 'class': 'form-group' },
+        { 'class': 'modal-header' },
+        (0, _hyperapp.h)('button', { 'class': 'btn btn-clear float-right', onclick: hideAction }),
         (0, _hyperapp.h)(
-            'label',
-            { 'class': 'form-label', 'for': '{field.label}' },
+          'div',
+          { 'class': 'modal-title h5' },
+          item.id ? 'Editing multi-form for item ' + item.id : "Add new item!"
+        )
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-body' },
+        (0, _hyperapp.h)(
+          'div',
+          { 'class': 'content' },
+          (0, _hyperapp.h)(
+            'form',
+            { method: 'POST' },
+            renderFields(formFields, updateFieldAction)
+          )
+        )
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-footer' },
+        loading ? (0, _hyperapp.h)(_Spinners.SpinnerSmall, null) : (0, _hyperapp.h)(
+          'div',
+          null,
+          (0, _hyperapp.h)(
+            'button',
+            { 'class': 'btn', onclick: hideAction },
+            'Cancel'
+          ),
+          (0, _hyperapp.h)(
+            'button',
+            { 'class': 'ml-2 btn btn-primary', onclick: saveAction },
+            'Ok'
+          )
+        )
+      )
+    )
+  );
+};
+
+},{"./FormDateInput.js":10,"./FormInputs.js":11,"./MultiSelect.js":14,"./Spinners.js":18,"hyperapp":2}],14:[function(require,module,exports){
+"use strict";
+
+var _hyperapp = require("hyperapp");
+
+var MultiSelect = function MultiSelect(_ref) {
+    var label = _ref.label,
+        field = _ref.field,
+        action = _ref.action;
+    return (0, _hyperapp.h)(
+        "div",
+        { "class": "form-group" },
+        (0, _hyperapp.h)(
+            "label",
+            { "class": "form-label", "for": "{field.label}" },
             field.label
         ),
-        (0, _hyperapp.h)('select', { name: '', style: 'width: 50%', multiple: 'multiple', oncreate: function oncreate(element) {
+        (0, _hyperapp.h)("select", { name: "", style: "width: 50%", multiple: "multiple", oncreate: function oncreate(element) {
                 $(element).select2({
                     ajax: {
-                        url: '/api/genres/',
+                        url: field.url,
                         dataType: 'json',
                         delay: 250,
-                        placeholder: 'Search for genres',
+                        placeholder: 'Search for ' + field.label.toLowerCase(),
                         data: function data(params) {
                             return {
                                 name: params.term
@@ -675,7 +765,7 @@ var MultiSelect = function MultiSelect(_ref2) {
 
 module.exports = MultiSelect;
 
-},{"hyperapp":2}],14:[function(require,module,exports){
+},{"hyperapp":2}],15:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -723,7 +813,7 @@ var Pagination = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],15:[function(require,module,exports){
+},{"hyperapp":2}],16:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -775,7 +865,7 @@ var PlotModal = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],16:[function(require,module,exports){
+},{"hyperapp":2}],17:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -848,7 +938,7 @@ var SearchForm = module.exports = function (_ref) {
     );
 };
 
-},{"../components/Spinners.js":17,"hyperapp":2}],17:[function(require,module,exports){
+},{"../components/Spinners.js":18,"hyperapp":2}],18:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -870,7 +960,7 @@ var SpinnerSmall = module.exports = function () {
 module.exports['Spinner'] = Spinner;
 module.exports['SpinnerSmall'] = SpinnerSmall;
 
-},{"hyperapp":2}],18:[function(require,module,exports){
+},{"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -936,7 +1026,7 @@ var Table = module.exports = function (_ref2) {
     );
 };
 
-},{"../components/Pagination.js":14,"hyperapp":2}],19:[function(require,module,exports){
+},{"../components/Pagination.js":15,"hyperapp":2}],20:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -996,7 +1086,7 @@ var Table = module.exports = function (_ref) {
   );
 };
 
-},{"@hyperapp/router":1,"hyperapp":2}],20:[function(require,module,exports){
+},{"@hyperapp/router":1,"hyperapp":2}],21:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1028,7 +1118,7 @@ var ToastContainer = module.exports = function (_ref2) {
   );
 };
 
-},{"hyperapp":2}],21:[function(require,module,exports){
+},{"hyperapp":2}],22:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1062,7 +1152,7 @@ _actions2.default.location.go('/');
 addEventListener('pushstate', hideToasts);
 addEventListener('popstate', hideToasts);
 
-},{"./actions":6,"./state.js":22,"./views/Main.js":28,"@hyperapp/router":1,"hyperapp":2}],22:[function(require,module,exports){
+},{"./actions":6,"./state.js":23,"./views/Main.js":29,"@hyperapp/router":1,"hyperapp":2}],23:[function(require,module,exports){
 'use strict';
 
 var _auth = require('./util/auth.js');
@@ -1096,14 +1186,17 @@ var state = module.exports = {
     items: []
   },
   movies: Object.assign({}, genericState, {
-    showPlot: false
+    showPlot: false,
+    forms: Object.assign({}, genericState['forms'], {
+      editPeople: null
+    })
   }),
   people: Object.assign({}, genericState),
   genres: Object.assign({}, genericState),
   jobs: Object.assign({}, genericState)
 };
 
-},{"./util/auth.js":23}],23:[function(require,module,exports){
+},{"./util/auth.js":24}],24:[function(require,module,exports){
 'use strict';
 
 var checkAuth = function checkAuth(list, auth) {
@@ -1129,7 +1222,7 @@ module.exports = {
   checkAuth: checkAuth, getExistingAuth: getExistingAuth
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
@@ -1146,7 +1239,7 @@ module.exports = {
     mergeValuesErrors: mergeValuesErrors
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1239,7 +1332,7 @@ module.exports = function (_ref) {
   };
 };
 
-},{"../components/ModalForm.js":12,"../components/SearchForm.js":16,"../components/Spinners.js":17,"../components/Table.js":18,"../util/auth":23,"../util/forms.js":24,"hyperapp":2}],26:[function(require,module,exports){
+},{"../components/ModalForm.js":12,"../components/SearchForm.js":17,"../components/Spinners.js":18,"../components/Table.js":19,"../util/auth":24,"../util/forms.js":25,"hyperapp":2}],27:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -1262,7 +1355,7 @@ var Home = module.exports = function (state, actions) {
     );
 };
 
-},{"hyperapp":2}],27:[function(require,module,exports){
+},{"hyperapp":2}],28:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1311,7 +1404,7 @@ var Login = module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/FormInputs.js":11,"../components/Spinners.js":17,"hyperapp":2}],28:[function(require,module,exports){
+},{"../components/FormInputs.js":11,"../components/Spinners.js":18,"hyperapp":2}],29:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1385,7 +1478,7 @@ module.exports = function (state, actions) {
   );
 };
 
-},{"../components/DebugContainer.js":9,"../components/Tabs.js":19,"../components/ToastContainer.js":20,"./Home.js":26,"./Login.js":27,"./Movies.js":29,"./People.js":30,"./SimpleFilterTableView.js":31,"@hyperapp/router":1,"hyperapp":2}],29:[function(require,module,exports){
+},{"../components/DebugContainer.js":9,"../components/Tabs.js":20,"../components/ToastContainer.js":21,"./Home.js":27,"./Login.js":28,"./Movies.js":30,"./People.js":31,"./SimpleFilterTableView.js":32,"@hyperapp/router":1,"hyperapp":2}],30:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1393,6 +1486,10 @@ var _hyperapp = require('hyperapp');
 var _PlotModal = require('../components/PlotModal.js');
 
 var _PlotModal2 = _interopRequireDefault(_PlotModal);
+
+var _MultiModalForm = require('../components/MultiModalForm');
+
+var _MultiModalForm2 = _interopRequireDefault(_MultiModalForm);
 
 var _FilterTableView = require('./FilterTableView.js');
 
@@ -1444,20 +1541,47 @@ var rowColumns = [function (movie) {
     (0, _hyperapp.h)(
       'button',
       { className: 'btn btn-block btn-primary', onclick: function onclick() {
-          return actions.updateEdit(Object.assign({}, movie));
+          return actions.updateEditPeople(Object.assign({}, movie));
         } },
       'Edit people'
     )
   );
 }];
 
-var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }, { 'key': 'genres', 'label': 'Genres', 'type': 'multiselect' }];
+var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }, { 'key': 'genres', 'label': 'Genres', 'type': 'multiselect', url: '/api/genres/' }];
+
+var multiFormFields = [{ 'key': 'person', 'label': 'Person', 'type': 'text' }, { 'key': 'job', 'label': 'Job', 'type': 'text' }];
 
 var extraViews = [function (state, actions) {
   return (0, _hyperapp.h)(
     'div',
     null,
     state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null
+  );
+}, function (state, actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    null,
+    state.movies.forms.editPeople ? (0, _hyperapp.h)(
+      'div',
+      null,
+      'WILL EDIT',
+      (0, _hyperapp.h)(_MultiModalForm2.default, {
+        loading: state.movies.loading
+        //formFields={mergeValuesErrors(formFields, state.movies.forms.editPeople, state.movies.forms.editPeople.errors)}
+        , formFields: multiFormFields,
+        item: state.movies.forms.editPeople,
+        hideAction: function hideAction() {
+          return actions.updateEditPeople(null);
+        },
+        saveAction: function saveAction() {
+          return actions.saveEditPeople({ g_actions: g_actions, key: state.auth.key });
+        },
+        updateFieldAction: function updateFieldAction(key, value) {
+          return actions.updateField({ formname: 'edit', fieldname: 'movies', value: value });
+        }
+      })
+    ) : null
   );
 }];
 
@@ -1472,7 +1596,7 @@ var Movies = (0, _FilterTableView2.default)({
 
 module.exports = Movies;
 
-},{"../components/PlotModal.js":15,"./FilterTableView.js":25,"hyperapp":2}],30:[function(require,module,exports){
+},{"../components/MultiModalForm":13,"../components/PlotModal.js":16,"./FilterTableView.js":26,"hyperapp":2}],31:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1513,7 +1637,7 @@ var People = (0, _FilterTableView2.default)({
 
 module.exports = People;
 
-},{"./FilterTableView.js":25,"hyperapp":2}],31:[function(require,module,exports){
+},{"./FilterTableView.js":26,"hyperapp":2}],32:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1556,4 +1680,4 @@ var SimpleFilterTableView = function SimpleFilterTableView(_ref) {
 
 module.exports = SimpleFilterTableView;
 
-},{"./FilterTableView.js":25,"hyperapp":2}]},{},[21]);
+},{"./FilterTableView.js":26,"hyperapp":2}]},{},[22]);
