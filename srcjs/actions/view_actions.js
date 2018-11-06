@@ -1,4 +1,5 @@
-import createFormActions from "./forms.js"
+import createAjaxFormActions from "./ajax_forms.js"
+import formActions from "./forms.js"
 
 module.exports = ajaxUrl => ({
   load: url => (state, actions) => {
@@ -31,7 +32,8 @@ module.exports = ajaxUrl => ({
     forms: Object.assign({}, state['forms'], {
       edit: item
     })
-  }), 
-  
-  ...createFormActions(ajaxUrl)
+  }),
+
+  ...formActions,
+  ...createAjaxFormActions(ajaxUrl)
 });

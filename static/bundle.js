@@ -7,7 +7,83 @@
 },{}],3:[function(require,module,exports){
 'use strict';
 
+module.exports = function (ajaxUrl) {
+    return {
+        saveEdit: function saveEdit(_ref) {
+            var key = _ref.key,
+                g_actions = _ref.g_actions;
+            return function (state, actions) {
+                actions.updateLoading(true);
+                var item = state.forms.edit;
+
+                for (var k in item) {
+                    var v = item[k];
+                    if (Array.isArray(v)) {
+                        item[k] = v.map(function (x) {
+                            return {
+                                'id': x.id,
+                                'name': x.text
+                            };
+                        });
+                    }
+                }
+                var saveUrl = '';
+                var method = '';
+                if (item.id) {
+                    // UPDATE
+                    saveUrl = ajaxUrl + item.id + '/';
+                    method = 'PATCH';
+                } else {
+                    // CREATE
+                    saveUrl = ajaxUrl;
+                    method = 'POST';
+                }
+
+                window.setTimeout(function () {
+                    fetch(saveUrl, {
+                        body: JSON.stringify(item),
+                        headers: {
+                            'content-type': 'application/json',
+                            'Authorization': 'Token ' + key
+                        },
+                        method: method
+                    }).then(function (response) {
+                        actions.updateLoading(false);
+
+                        if (response.status == 400) {
+                            response.json().then(function (errors) {
+                                actions.addErrors({ formname: 'edit', errors: errors });
+                            });
+                        } else if (response.status == 200 || response.status == 201) {
+                            response.json().then(function (data) {
+                                // Data is the object that was saved
+                                g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
+                                actions.updateEdit(null);
+                                actions.load(state.current);
+                            });
+                        }
+                    }).catch(function (error) {
+                        console.log('ERR', error.status);
+                    });
+                }, 500);
+            };
+        }
+    };
+};
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
 var _forms = require('./forms.js');
+
+var _forms2 = _interopRequireDefault(_forms);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+console.log("X");
+console.log(_forms2.default);
+console.log(_forms.updateField);
+console.log("Y");
 
 module.exports = {
   login: function login(g_actions) {
@@ -82,120 +158,59 @@ module.exports = {
   updateField: _forms.updateField
 };
 
-},{"./forms.js":4}],4:[function(require,module,exports){
+},{"./forms.js":5}],5:[function(require,module,exports){
 "use strict";
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-module.exports = function (ajaxUrl) {
-    return {
+module.exports = {
 
-        updateField: function updateField(_ref) {
-            var formname = _ref.formname,
-                fieldname = _ref.fieldname,
-                value = _ref.value;
-            return function (state) {
-                console.log("Update ", formname, fieldname, value);
+    updateField: function updateField(_ref) {
+        var formname = _ref.formname,
+            fieldname = _ref.fieldname,
+            value = _ref.value;
+        return function (state) {
+            console.log("Update ", formname, fieldname, value);
+            return {
+                forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], _defineProperty({}, fieldname, value))))
+            };
+        };
+    },
+
+    addErrors: function addErrors(_ref2) {
+        var formname = _ref2.formname,
+            errors = _ref2.errors;
+        return function (state) {
+            console.log("Add errors ", errors);
+            return {
+                forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], {
+                    errors: errors
+                })))
+            };
+        };
+    },
+
+    searchAction: function searchAction(reset) {
+        return function (state, actions) {
+            if (reset) {
+                actions.load(state.current.split('?')[0]);
                 return {
-                    forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], _defineProperty({}, fieldname, value))))
+                    forms: Object.assign({}, state['forms'], {
+                        search: {}
+                    })
                 };
-            };
-        },
+            } else {
+                var params = Object.keys(state.forms.search).map(function (k) {
+                    return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
+                }).join('&');
+                actions.load(state.current.split('?')[0] + '?' + params);
+            }
+        };
+    }
 
-        addErrors: function addErrors(_ref2) {
-            var formname = _ref2.formname,
-                errors = _ref2.errors;
-            return function (state) {
-                console.log("Add errors ", errors);
-                return {
-                    forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], {
-                        errors: errors
-                    })))
-                };
-            };
-        },
-
-        searchAction: function searchAction(reset) {
-            return function (state, actions) {
-                if (reset) {
-                    actions.load(state.current.split('?')[0]);
-                    return {
-                        forms: Object.assign({}, state['forms'], {
-                            search: {}
-                        })
-                    };
-                } else {
-                    var params = Object.keys(state.forms.search).map(function (k) {
-                        return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
-                    }).join('&');
-                    actions.load(state.current.split('?')[0] + '?' + params);
-                }
-            };
-        },
-
-        saveEdit: function saveEdit(_ref3) {
-            var key = _ref3.key,
-                g_actions = _ref3.g_actions;
-            return function (state, actions) {
-                actions.updateLoading(true);
-                var item = state.forms.edit;
-
-                for (var k in item) {
-                    var v = item[k];
-                    if (Array.isArray(v)) {
-                        item[k] = v.map(function (x) {
-                            return {
-                                'id': x.id,
-                                'name': x.text
-                            };
-                        });
-                    }
-                }
-                var saveUrl = '';
-                var method = '';
-                if (item.id) {
-                    // UPDATE
-                    saveUrl = ajaxUrl + item.id + '/';
-                    method = 'PATCH';
-                } else {
-                    // CREATE
-                    saveUrl = ajaxUrl;
-                    method = 'POST';
-                }
-
-                window.setTimeout(function () {
-                    fetch(saveUrl, {
-                        body: JSON.stringify(item),
-                        headers: {
-                            'content-type': 'application/json',
-                            'Authorization': 'Token ' + key
-                        },
-                        method: method
-                    }).then(function (response) {
-                        actions.updateLoading(false);
-
-                        if (response.status == 400) {
-                            response.json().then(function (errors) {
-                                actions.addErrors({ formname: 'edit', errors: errors });
-                            });
-                        } else if (response.status == 200 || response.status == 201) {
-                            response.json().then(function (data) {
-                                // Data is the object that was saved
-                                g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
-                                actions.updateEdit(null);
-                                actions.load(state.current);
-                            });
-                        }
-                    }).catch(function (error) {
-                        console.log('ERR', error.status);
-                    });
-                }, 500);
-            };
-        }
-    };
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 var _router = require("@hyperapp/router");
@@ -233,7 +248,7 @@ var actions = module.exports = {
 
 };
 
-},{"./auth.js":3,"./toasts.js":6,"./view_actions":7,"@hyperapp/router":1}],6:[function(require,module,exports){
+},{"./auth.js":4,"./toasts.js":7,"./view_actions":8,"@hyperapp/router":1}],7:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -272,10 +287,14 @@ module.exports = {
   }
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _ajax_forms = require("./ajax_forms.js");
+
+var _ajax_forms2 = _interopRequireDefault(_ajax_forms);
 
 var _forms = require("./forms.js");
 
@@ -338,10 +357,10 @@ module.exports = function (ajaxUrl) {
       };
     }
 
-  }, (0, _forms2.default)(ajaxUrl));
+  }, _forms2.default, (0, _ajax_forms2.default)(ajaxUrl));
 };
 
-},{"./forms.js":4}],8:[function(require,module,exports){
+},{"./ajax_forms.js":3,"./forms.js":5}],9:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -375,7 +394,7 @@ module.exports = function (_ref) {
   );
 };
 
-},{"hyperapp":2}],9:[function(require,module,exports){
+},{"hyperapp":2}],10:[function(require,module,exports){
 "use strict";
 
 var _require = require('hyperapp'),
@@ -407,7 +426,7 @@ var FormDateInput = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],10:[function(require,module,exports){
+},{"hyperapp":2}],11:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -468,7 +487,7 @@ var FormInputLong = function FormInputLong(_ref3) {
 module.exports['FormInput'] = FormInput;
 module.exports['FormInputLong'] = FormInputLong;
 
-},{"hyperapp":2}],11:[function(require,module,exports){
+},{"hyperapp":2}],12:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -576,7 +595,7 @@ var ModalForm = module.exports = function (_ref) {
   );
 };
 
-},{"../components/Spinners.js":16,"./FormDateInput.js":9,"./FormInputs.js":10,"./MultiSelect.js":12,"hyperapp":2}],12:[function(require,module,exports){
+},{"../components/Spinners.js":17,"./FormDateInput.js":10,"./FormInputs.js":11,"./MultiSelect.js":13,"hyperapp":2}],13:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -656,7 +675,7 @@ var MultiSelect = function MultiSelect(_ref2) {
 
 module.exports = MultiSelect;
 
-},{"hyperapp":2}],13:[function(require,module,exports){
+},{"hyperapp":2}],14:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -704,7 +723,7 @@ var Pagination = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],14:[function(require,module,exports){
+},{"hyperapp":2}],15:[function(require,module,exports){
 'use strict';
 
 var _require = require('hyperapp'),
@@ -756,7 +775,7 @@ var PlotModal = module.exports = function (_ref) {
     );
 };
 
-},{"hyperapp":2}],15:[function(require,module,exports){
+},{"hyperapp":2}],16:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -829,7 +848,7 @@ var SearchForm = module.exports = function (_ref) {
     );
 };
 
-},{"../components/Spinners.js":16,"hyperapp":2}],16:[function(require,module,exports){
+},{"../components/Spinners.js":17,"hyperapp":2}],17:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -851,7 +870,7 @@ var SpinnerSmall = module.exports = function () {
 module.exports['Spinner'] = Spinner;
 module.exports['SpinnerSmall'] = SpinnerSmall;
 
-},{"hyperapp":2}],17:[function(require,module,exports){
+},{"hyperapp":2}],18:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -917,7 +936,7 @@ var Table = module.exports = function (_ref2) {
     );
 };
 
-},{"../components/Pagination.js":13,"hyperapp":2}],18:[function(require,module,exports){
+},{"../components/Pagination.js":14,"hyperapp":2}],19:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -977,7 +996,7 @@ var Table = module.exports = function (_ref) {
   );
 };
 
-},{"@hyperapp/router":1,"hyperapp":2}],19:[function(require,module,exports){
+},{"@hyperapp/router":1,"hyperapp":2}],20:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1009,7 +1028,7 @@ var ToastContainer = module.exports = function (_ref2) {
   );
 };
 
-},{"hyperapp":2}],20:[function(require,module,exports){
+},{"hyperapp":2}],21:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1043,7 +1062,7 @@ _actions2.default.location.go('/');
 addEventListener('pushstate', hideToasts);
 addEventListener('popstate', hideToasts);
 
-},{"./actions":5,"./state.js":21,"./views/Main.js":27,"@hyperapp/router":1,"hyperapp":2}],21:[function(require,module,exports){
+},{"./actions":6,"./state.js":22,"./views/Main.js":28,"@hyperapp/router":1,"hyperapp":2}],22:[function(require,module,exports){
 'use strict';
 
 var _auth = require('./util/auth.js');
@@ -1084,7 +1103,7 @@ var state = module.exports = {
   jobs: Object.assign({}, genericState)
 };
 
-},{"./util/auth.js":22}],22:[function(require,module,exports){
+},{"./util/auth.js":23}],23:[function(require,module,exports){
 'use strict';
 
 var checkAuth = function checkAuth(list, auth) {
@@ -1110,7 +1129,7 @@ module.exports = {
   checkAuth: checkAuth, getExistingAuth: getExistingAuth
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
@@ -1127,7 +1146,7 @@ module.exports = {
     mergeValuesErrors: mergeValuesErrors
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1218,7 +1237,7 @@ module.exports = function (_ref) {
   };
 };
 
-},{"../components/ModalForm.js":11,"../components/SearchForm.js":15,"../components/Spinners.js":16,"../components/Table.js":17,"../util/auth":22,"../util/forms.js":23,"hyperapp":2}],25:[function(require,module,exports){
+},{"../components/ModalForm.js":12,"../components/SearchForm.js":16,"../components/Spinners.js":17,"../components/Table.js":18,"../util/auth":23,"../util/forms.js":24,"hyperapp":2}],26:[function(require,module,exports){
 "use strict";
 
 var _hyperapp = require("hyperapp");
@@ -1241,7 +1260,7 @@ var Home = module.exports = function (state, actions) {
     );
 };
 
-},{"hyperapp":2}],26:[function(require,module,exports){
+},{"hyperapp":2}],27:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1290,7 +1309,7 @@ var Login = module.exports = function (state, actions, g_actions) {
   );
 };
 
-},{"../components/FormInputs.js":10,"../components/Spinners.js":16,"hyperapp":2}],27:[function(require,module,exports){
+},{"../components/FormInputs.js":11,"../components/Spinners.js":17,"hyperapp":2}],28:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1364,7 +1383,7 @@ module.exports = function (state, actions) {
   );
 };
 
-},{"../components/DebugContainer.js":8,"../components/Tabs.js":18,"../components/ToastContainer.js":19,"./Home.js":25,"./Login.js":26,"./Movies.js":28,"./People.js":29,"./SimpleFilterTableView.js":30,"@hyperapp/router":1,"hyperapp":2}],28:[function(require,module,exports){
+},{"../components/DebugContainer.js":9,"../components/Tabs.js":19,"../components/ToastContainer.js":20,"./Home.js":26,"./Login.js":27,"./Movies.js":29,"./People.js":30,"./SimpleFilterTableView.js":31,"@hyperapp/router":1,"hyperapp":2}],29:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1440,7 +1459,7 @@ var Movies = (0, _FilterTableView2.default)({
 
 module.exports = Movies;
 
-},{"../components/PlotModal.js":14,"./FilterTableView.js":24,"hyperapp":2}],29:[function(require,module,exports){
+},{"../components/PlotModal.js":15,"./FilterTableView.js":25,"hyperapp":2}],30:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1481,7 +1500,7 @@ var People = (0, _FilterTableView2.default)({
 
 module.exports = People;
 
-},{"./FilterTableView.js":24,"hyperapp":2}],30:[function(require,module,exports){
+},{"./FilterTableView.js":25,"hyperapp":2}],31:[function(require,module,exports){
 'use strict';
 
 var _hyperapp = require('hyperapp');
@@ -1524,4 +1543,4 @@ var SimpleFilterTableView = function SimpleFilterTableView(_ref) {
 
 module.exports = SimpleFilterTableView;
 
-},{"./FilterTableView.js":24,"hyperapp":2}]},{},[20]);
+},{"./FilterTableView.js":25,"hyperapp":2}]},{},[21]);

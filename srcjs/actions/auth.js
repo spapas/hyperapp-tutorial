@@ -1,4 +1,10 @@
 import { updateField } from './forms.js';
+import koko from './forms.js';
+
+console.log("X")
+console.log(koko)
+console.log(updateField)
+console.log("Y")
 
 module.exports = {
   login: g_actions => (state, actions) => {
