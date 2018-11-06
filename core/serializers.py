@@ -32,3 +32,11 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = core.models.Person
         fields = "__all__"
+
+
+class MoviePersonSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = core.models.MoviePerson
+        fields = "__all__"

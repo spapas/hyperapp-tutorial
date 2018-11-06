@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 import django_filters
-from core.models import Movie, Person, Job, Genre
+from core.models import Movie, Person, Job, Genre, MoviePerson
 from django.db import models
 
 
@@ -29,6 +29,13 @@ class PersonFilter(filters.FilterSet):
     class Meta(IContainsFilter):
         model = Person
         fields = ["name", "id"]
+
+
+class MoviePersonFilter(filters.FilterSet):
+
+    class Meta(IContainsFilter):
+        model = MoviePerson
+        fields = ["id", "person__id", "person__name", "movie__id", "movie__title", "job__name", "job__id",]
 
 
 class JobFilter(filters.FilterSet):

@@ -43,5 +43,13 @@ class PersonViewSet(viewsets.ModelViewSet):
     filter_class = core.filters.PersonFilter
 
 
+class MoviePersonViewSet(viewsets.ModelViewSet):
+    queryset = core.models.MoviePerson.objects.all().order_by("id")
+    serializer_class = core.serializers.MoviePersonSerializer
+    pagination_class = SmallPaginator
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = core.filters.MoviePersonFilter
+
+
 class HomeTemplateView(TemplateView):
     template_name = "home.html"
