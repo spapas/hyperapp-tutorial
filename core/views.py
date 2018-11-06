@@ -43,10 +43,5 @@ class PersonViewSet(viewsets.ModelViewSet):
     filter_class = core.filters.PersonFilter
 
 
-class ImageViewSet(viewsets.ModelViewSet):
-    queryset = core.models.Image.objects.all().order_by("id")
-    serializer_class = core.serializers.ImageSerializer
-
-
 class HomeTemplateView(TemplateView):
     template_name = "home.html"

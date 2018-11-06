@@ -41,9 +41,3 @@ class MoviePerson(models.Model):
     person = models.ForeignKey("Person", on_delete="PROTECT")
     movie = models.ForeignKey("Movie", on_delete="PROTECT")
     job = models.ForeignKey("Job", on_delete="PROTECT")
-
-
-class Image(models.Model):
-    description = models.CharField(max_length=128)
-    image = models.ImageField()
-    movie = models.ForeignKey("Movie", on_delete="PROTECT")

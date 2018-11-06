@@ -12,7 +12,6 @@ router.register(r"movies", core.views.MovieViewSet)
 router.register(r"persons", core.views.PersonViewSet)
 router.register(r"jobs", core.views.JobViewSet)
 router.register(r"genres", core.views.GenreViewSet)
-router.register(r"images", core.views.ImageViewSet)
 
 urlpatterns = (
     [
