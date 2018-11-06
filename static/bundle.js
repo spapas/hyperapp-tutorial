@@ -1432,11 +1432,22 @@ var rowColumns = [function (movie) {
   );
 }, function (movie, actions) {
   return (0, _hyperapp.h)(
-    'button',
-    { className: 'btn btn-block btn-primary', onclick: function onclick() {
-        return actions.updateEdit(Object.assign({}, movie));
-      } },
-    'Edit'
+    'div',
+    null,
+    (0, _hyperapp.h)(
+      'button',
+      { className: 'btn btn-block btn-primary', onclick: function onclick() {
+          return actions.updateEdit(Object.assign({}, movie));
+        } },
+      'Edit'
+    ),
+    (0, _hyperapp.h)(
+      'button',
+      { className: 'btn btn-block btn-primary', onclick: function onclick() {
+          return actions.updateEdit(Object.assign({}, movie));
+        } },
+      'Edit people'
+    )
   );
 }];
 

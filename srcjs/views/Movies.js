@@ -19,7 +19,10 @@ const rowColumns = [
   (movie) => movie.runtime,
   (movie) => movie.genres.map(z => <span className='chip bg-dark'><a class='text-secondary text-norma' href=''>{z.name}</a></span>),
   (movie, actions) => <span onclick={()=>actions.updateShowPlot(movie)}>{movie.story.substring(0,50) + '...'}</span>,
-  (movie, actions) => <button className='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, movie) )}>Edit</button>
+  (movie, actions) => <div>
+    <button className='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, movie) )}>Edit</button>
+    <button className='btn btn-block btn-primary' onclick={()=>actions.updateEdit(Object.assign({}, movie) )}>Edit people</button>
+  </div>
 ];
 
 
