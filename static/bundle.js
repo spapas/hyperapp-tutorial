@@ -1177,7 +1177,7 @@ module.exports = function (_ref) {
       rowColumns = _ref.rowColumns,
       formFields = _ref.formFields,
       title = _ref.title,
-      extraView = _ref.extraView;
+      extraViews = _ref.extraViews;
   return function (state, actions, g_actions) {
     return (0, _hyperapp.h)(
       'div',
@@ -1232,7 +1232,9 @@ module.exports = function (_ref) {
           return actions.updateField({ formname: 'edit', fieldname: key, value: value });
         }
       }) : null,
-      extraView ? extraView(state, actions) : null
+      extraViews ? extraViews.map(function (ev) {
+        return ev(state, actions);
+      }) : null
     );
   };
 };
@@ -1440,13 +1442,13 @@ var rowColumns = [function (movie) {
 
 var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }, { 'key': 'genres', 'label': 'Genres', 'type': 'multiselect' }];
 
-var extraView = function extraView(state, actions) {
+var extraViews = [function (state, actions) {
   return (0, _hyperapp.h)(
     'div',
     null,
     state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null
   );
-};
+}];
 
 var Movies = (0, _FilterTableView2.default)({
   key: 'movies',
@@ -1454,7 +1456,7 @@ var Movies = (0, _FilterTableView2.default)({
   rowColumns: rowColumns,
   formFields: formFields,
   title: 'Movies list',
-  extraView: extraView
+  extraViews: extraViews
 });
 
 module.exports = Movies;

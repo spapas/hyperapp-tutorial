@@ -8,7 +8,7 @@ import { mergeValuesErrors } from '../util/forms.js';
 import { checkAuth } from '../util/auth';
 
 
-module.exports = ({key, rowHeaders, rowColumns, formFields, title, extraView}) => (state, actions, g_actions) => <div key={key}>
+module.exports = ({key, rowHeaders, rowColumns, formFields, title, extraViews}) => (state, actions, g_actions) => <div key={key}>
   <h2>
     {title} &nbsp;  &nbsp;
     {state.auth.key?<button className="btn btn-primary btn-action btn-lg" onclick={()=>actions.updateEdit({})}>
@@ -38,5 +38,5 @@ module.exports = ({key, rowHeaders, rowColumns, formFields, title, extraView}) =
     saveAction={()=>actions.saveEdit({g_actions: g_actions, key: state.auth.key})}
     updateFieldAction={(key, value)=>actions.updateField({formname: 'edit', fieldname: key, value})}
   />:null}
-  {extraView?extraView(state, actions):null}
+  {extraViews?extraViews.map( ev => ev(state, actions)):null}
 </div>;

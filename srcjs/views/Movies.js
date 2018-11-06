@@ -31,7 +31,9 @@ const formFields = [
   {'key': 'genres', 'label': 'Genres', 'type': 'multiselect', },
 ];
 
-const extraView = (state, actions) => <div>{state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}</div>
+const extraViews = [
+  (state, actions) => <div>{state.movies.showPlot?<PlotModal movie={state.movies.showPlot} actions={actions} />:null}</div>
+]
 
 const Movies = FilterTableView({
   key: 'movies',
@@ -39,7 +41,7 @@ const Movies = FilterTableView({
   rowColumns,
   formFields,
   title: 'Movies list',
-  extraView
+  extraViews
 })
 
 module.exports = Movies;
