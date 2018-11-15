@@ -10,11 +10,11 @@ A Hyperapp (https://github.com/jorgebucaran/hyperapp) tutorial application. It u
 
 ## Components used
 
-1. Hyperapp (obviously)
+1. Hyperapp (obviously - https://github.com/jorgebucaran/hyperapp)
 1. Spectre.css for styling (https://picturepan2.github.io/spectre/)
 1. A bunch of home-made spectre.css components for hyperapp (https://github.com/spapas/hyperapp-tutorial/tree/master/srcjs/components)
-1. Browserify / watchify and uglify for JS bundling
-1. Django/DRF for server-side stuff
+1. Browserify / watchify and uglify for JS bundling (https://spapas.github.io/2015/05/27/using-browserify-watchify/)
+1. Django/DRF for server-side stuff (https://www.djangoproject.com/ + https://www.django-rest-framework.org/)
 
 ## To run it locally
 
