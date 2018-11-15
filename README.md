@@ -2,7 +2,7 @@
 
 A tutorial application written in hyperapp. It uses a Django - DRF API.
 
-**Work in progress! I'll try to add more capabilities to this app!**
+**Work in progress! I'll try to add more capabilities to this app; or you can do it if you want; PRs are welcome!!!**
 
 ## Demo
 
