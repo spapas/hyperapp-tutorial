@@ -2,6 +2,8 @@
 
 A tutorial application written in hyperapp. It uses a Django - DRF API.
 
+**Work in progress! I'll try to add more capabilities to this app!**
+
 ## To run it locally
 
 1. Create a python virtualenv and activate it (`virtualenv venv`)
