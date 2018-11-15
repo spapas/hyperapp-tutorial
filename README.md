@@ -1,4 +1,4 @@
-# hyperapp-tutorial
+# Serafeim's Hyperapp Tutorial
 
 A Hyperapp (https://github.com/jorgebucaran/hyperapp) tutorial application. Hyperapp is a modern JS micro-framework with a functional twist. The project uses a Django - DRF API to provide a (writable) REST API.
 
