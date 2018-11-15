@@ -1,6 +1,6 @@
 # hyperapp-tutorial
 
-A tutorial application written in hyperapp. It uses a Django - DRF API.
+A Hyperapp (https://github.com/jorgebucaran/hyperapp) tutorial application. It uses a Django - DRF API to provide a (writable) REST API.
 
 **Work in progress! I'll try to add more capabilities to this app; or you can do it if you want; PRs are welcome!!!**
 
