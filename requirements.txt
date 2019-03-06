@@ -1,12 +1,11 @@
-Django==2.0.9
-django-extensions==1.9.9
-django-filter==1.1.0
+Django==2.1.7
+django-extensions==2.1.6
+django-filter==2.1.0
 django-rest-auth==0.9.3
 djangorestframework==3.7.7
 drf-writable-nested==0.5.1
 Markdown==2.6.11
-Pillow==5.0.0
-pytz==2018.3
+Pillow==5.4.1
 six==1.11.0
 typing==3.6.4
 Werkzeug==0.14.1
