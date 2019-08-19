@@ -1,2 +1,1674 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require(2)):"function"==typeof define&&define.amd?define(["exports","hyperapp"],e):e(t.hyperappRouter={},t.hyperapp)}(this,function(t,e){"use strict";function n(t){return t.protocol+"//"+t.hostname+(t.port?":"+t.port:"")}function o(t,e,n,o){return{isExact:t,path:e,url:n,params:o}}function r(t){for(var e=t.length;"/"===t[--e];);return t.slice(0,e+1)}function a(t){try{return decodeURIComponent(t)}catch(e){return t}}var i={state:{pathname:window.location.pathname,previous:window.location.pathname},actions:{go:function(t){history.pushState(null,"",t)},set:function(t){return t}},subscribe:function(t){function e(e){t.set({pathname:window.location.pathname,previous:e.detail?window.location.previous=e.detail:window.location.previous})}var n=["pushState","replaceState"].reduce(function(t,e){var n=history[e];return history[e]=function(t,e,o){n.call(this,t,e,o),dispatchEvent(new CustomEvent("pushstate",{detail:t}))},function(){history[e]=n,t&&t()}},null);return addEventListener("pushstate",e),addEventListener("popstate",e),function(){removeEventListener("pushstate",e),removeEventListener("popstate",e),n()}}};t.Link=function(t,o){return function(r,a){var i=t.to,u=r.location,c=t.onclick;return delete t.to,delete t.location,t.href=i,t.onclick=function(e){var o;c&&c(e),e.defaultPrevented||0!==e.button||e.altKey||e.metaKey||e.ctrlKey||e.shiftKey||"_blank"===t.target||(o=e.currentTarget,n(location)!==n(o))||(e.preventDefault(),i!==u.pathname&&history.pushState(u.pathname,"",i))},e.h("a",t,o)}},t.Route=function(t){return function(e,n){var i=e.location,u=function(t,e,n){if(t===e||!t)return o(t===e,t,e);var i=n&&n.exact,u=r(t).split("/"),c=r(e).split("/");if(!(u.length>c.length||i&&u.length<c.length)){var p=0,s={},l=u.length;for(e="";p<l;p++){if(":"===u[p][0])s[u[p].slice(1)]=c[p]=a(c[p]);else if(u[p]!==c[p])return;e+=c[p]+"/"}return o(!1,t,e.slice(0,-1),s)}}(t.path,i.pathname,{exact:!t.parent});return u&&t.render({match:u,location:i})}},t.Switch=function(t,e){return function(t,n){for(var o,r=0;!(o=e[r]&&e[r](t,n))&&r<e.length;)r++;return o}},t.Redirect=function(t){return function(e,n){var o=e.location;history.replaceState(t.from||o.pathname,"",t.to)}},t.location=i})},{2:2}],2:[function(require,module,exports){!function(e,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd?define(["exports"],n):n(e.hyperapp={})}(this,function(e){"use strict";e.h=function(e,n){for(var t=[],r=[],o=arguments.length;2<o--;)t.push(arguments[o]);for(;t.length;){var l=t.pop();if(l&&l.pop)for(o=l.length;o--;)t.push(l[o]);else null!=l&&!0!==l&&!1!==l&&r.push(l)}return"function"==typeof e?e(n||{},r):{nodeName:e,attributes:n||{},children:r,key:n&&n.key}},e.app=function(e,n,t,r){var o,l=[].map,u=r&&r.children[0]||null,i=u&&function e(n){return{nodeName:n.nodeName.toLowerCase(),attributes:{},children:l.call(n.childNodes,function(n){return 3===n.nodeType?n.nodeValue:e(n)})}}(u),f=[],a=!0,c=h(e),s=function e(n,t,r){for(var o in r)"function"==typeof r[o]?function(e,o){r[e]=function(e){var l=o(e);return"function"==typeof l&&(l=l(m(n,c),r)),l&&l!==(t=m(n,c))&&!l.then&&p(c=y(n,h(t,l),c)),l}}(o,r[o]):e(n.concat(o),t[o]=h(t[o]),r[o]=h(r[o]));return r}([],c,h(n));return p(),s;function d(e){return"function"==typeof e?d(e(c,s)):null!=e?e:""}function v(){o=!o;var e=d(t);for(r&&!o&&(u=function e(n,t,r,o,l){if(o===r);else if(null==r||r.nodeName!==o.nodeName){var u=k(o,l);n.insertBefore(u,t),null!=r&&T(n,t,r),t=u}else if(null==r.nodeName)t.nodeValue=o;else{x(t,r.attributes,o.attributes,l=l||"svg"===o.nodeName);for(var i={},f={},c=[],s=r.children,v=o.children,p=0;p<s.length;p++){c[p]=t.childNodes[p],null!=(y=g(s[p]))&&(i[y]=[c[p],s[p]])}p=0;for(var h=0;h<v.length;){var y=g(s[p]),m=g(v[h]=d(v[h]));if(f[y])p++;else if(null==m||m!==g(s[p+1]))if(null==m||a)null==y&&(e(t,c[p],s[p],v[h],l),h++),p++;else{var N=i[m]||[];y===m?(e(t,N[0],N[1],v[h],l),p++):N[0]?e(t,t.insertBefore(N[0],c[p]),N[1],v[h],l):e(t,c[p],null,v[h],l),f[m]=v[h],h++}else null==y&&T(t,c[p],s[p]),p++}for(;p<s.length;)null==g(s[p])&&T(t,c[p],s[p]),p++;for(var p in i)f[p]||T(t,i[p][0],i[p][1])}return t}(r,u,i,i=e)),a=!1;f.length;)f.pop()()}function p(){o||(o=!0,setTimeout(v))}function h(e,n){var t={};for(var r in e)t[r]=e[r];for(var r in n)t[r]=n[r];return t}function y(e,n,t){var r={};return e.length?(r[e[0]]=1<e.length?y(e.slice(1),n,t[e[0]]):n,h(t,r)):n}function m(e,n){for(var t=0;t<e.length;)n=n[e[t++]];return n}function g(e){return e?e.key:null}function N(e){return e.currentTarget.events[e.type](e)}function b(e,n,t,r,o){if("key"===n);else if("style"===n)if("string"==typeof t)e.style.cssText=t;else for(var l in"string"==typeof r&&(r=e.style.cssText=""),h(r,t)){var u=null==t||null==t[l]?"":t[l];"-"===l[0]?e.style.setProperty(l,u):e.style[l]=u}else"o"===n[0]&&"n"===n[1]?(n=n.slice(2),e.events?r||(r=e.events[n]):e.events={},(e.events[n]=t)?r||e.addEventListener(n,N):e.removeEventListener(n,N)):n in e&&"list"!==n&&"type"!==n&&"draggable"!==n&&"spellcheck"!==n&&"translate"!==n&&!o?e[n]=null==t?"":t:null!=t&&!1!==t&&e.setAttribute(n,t),null!=t&&!1!==t||e.removeAttribute(n)}function k(e,n){var t="string"==typeof e||"number"==typeof e?document.createTextNode(e):(n=n||"svg"===e.nodeName)?document.createElementNS("http://www.w3.org/2000/svg",e.nodeName):document.createElement(e.nodeName),r=e.attributes;if(r){r.oncreate&&f.push(function(){r.oncreate(t)});for(var o=0;o<e.children.length;o++)t.appendChild(k(e.children[o]=d(e.children[o]),n));for(var l in r)b(t,l,r[l],null,n)}return t}function x(e,n,t,r){for(var o in h(n,t))t[o]!==("value"===o||"checked"===o?e[o]:n[o])&&b(e,o,t[o],n[o],r);var l=a?t.oncreate:t.onupdate;l&&f.push(function(){l(e,n)})}function T(e,n,t){function r(){e.removeChild(function e(n,t){var r=t.attributes;if(r){for(var o=0;o<t.children.length;o++)e(n.childNodes[o],t.children[o]);r.ondestroy&&r.ondestroy(n)}return n}(n,t))}var o=t.attributes&&t.attributes.onremove;o?o(n,r):r()}}})},{}],3:[function(require,module,exports){"use strict";module.exports=function(t){return{saveEdit:function(n){var e=n.key,o=n.g_actions;return function(n,s){s.updateLoading(!0);var a=n.forms.edit;for(var i in a){var r=a[i];Array.isArray(r)&&(a[i]=r.map(function(t){return{id:t.id,name:t.text}}))}var u="",d="";a.id?(u=t+a.id+"/",d="PATCH"):(u=t,d="POST"),window.setTimeout(function(){fetch(u,{body:JSON.stringify(a),headers:{"content-type":"application/json",Authorization:"Token "+e},method:d}).then(function(t){s.updateLoading(!1),400==t.status?t.json().then(function(t){s.addErrors({formname:"edit",errors:t})}):200!=t.status&&201!=t.status||t.json().then(function(t){o.toasts.add({text:"Successfully saved object!",style:"success"}),s.updateEdit(null),s.load(n.current)})}).catch(function(t){console.log("ERR",t.status)})},500)}}}}},{}],4:[function(require,module,exports){"use strict";var _forms=require(5),_forms2=_interopRequireDefault(_forms);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}console.log("X"),console.log(_forms2.default),console.log(_forms.updateField),console.log("Y"),module.exports={login:function(e){return function(o,n){n.updateLoading(!0);var t={username:o.forms.login.username,password:o.forms.login.password};fetch(g_urls.login,{method:"POST",body:JSON.stringify(t),headers:{"content-type":"application/json"}}).then(function(e){return e.json()}).then(function(t){t.key?(console.log("OK",t.key,o.forms.login.username),n.updateLogin({key:t.key,username:o.forms.login.username}),e.location.go("/"),e.toasts.add({text:"Successfully logged in!",style:"success"})):e.toasts.add({text:"Error while logging in - please try again!",style:"error"}),n.updateLoading(!1)})}},logout:function(e){return function(o,n){n.updateLoading(!0),setTimeout(function(){return fetch(g_urls.logout,{method:"POST",headers:{"content-type":"application/json"}}).then(function(e){return e.json()}).then(function(o){n.updateLogin({key:null,username:null}),e.location.go("/"),n.updateLoading(!1),e.toasts.add({text:"Successfully logged out!",style:"success"})})},500)}},updateLoading:function(e){return function(o){return{loading:e}}},updateLogin:function(e){var o=e.key,n=e.username;return function(e){return localStorage.setItem("auth",JSON.stringify({key:o,username:n})),{key:o,username:n,forms:{login:{}}}}},updateField:_forms.updateField}},{5:5}],5:[function(require,module,exports){"use strict";function _defineProperty(r,e,n){return e in r?Object.defineProperty(r,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):r[e]=n,r}module.exports={updateField:function(r){var e=r.formname,n=r.fieldname,o=r.value;return function(r){return console.log("Update ",e,n,o),{forms:Object.assign({},r.forms,_defineProperty({},e,Object.assign({},r.forms[e],_defineProperty({},n,o))))}}},addErrors:function(r){var e=r.formname,n=r.errors;return function(r){return console.log("Add errors ",n),{forms:Object.assign({},r.forms,_defineProperty({},e,Object.assign({},r.forms[e],{errors:n})))}}},searchAction:function(r){return function(e,n){if(r)return n.load(e.current.split("?")[0]),{forms:Object.assign({},e.forms,{search:{}})};var o=Object.keys(e.forms.search).map(function(r){return encodeURIComponent(r)+"="+encodeURIComponent(e.forms.search[r])}).join("&");n.load(e.current.split("?")[0]+"?"+o)}}}},{}],6:[function(require,module,exports){"use strict";var _router=require(1),_auth=require(4),_auth2=_interopRequireDefault(_auth),_toasts=require(7),_toasts2=_interopRequireDefault(_toasts),_view_actions=require(8),_view_actions2=_interopRequireDefault(_view_actions);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var actions=module.exports={location:_router.location.actions,auth:_auth2.default,people:(0,_view_actions2.default)(window.g_urls.people),genres:(0,_view_actions2.default)(window.g_urls.genres),jobs:(0,_view_actions2.default)(window.g_urls.jobs),movies:Object.assign({},(0,_view_actions2.default)(window.g_urls.movies),{updateShowPlot:function(e){return function(t){return{showPlot:e}}},updateEditPeople:function(e){return function(t){return{forms:Object.assign({},t.forms,{editPeople:e})}}}}),toasts:_toasts2.default}},{1:1,4:4,7:7,8:8}],7:[function(require,module,exports){"use strict";function _toConsumableArray(t){if(Array.isArray(t)){for(var r=0,e=Array(t.length);r<t.length;r++)e[r]=t[r];return e}return Array.from(t)}module.exports={add:function(t){var r=t.text,e=t.style;return function(t,n){return window.setTimeout(function(){n.hide(r)},1e4),{items:[].concat(_toConsumableArray(t.items),[{text:r,style:e}])}}},hide:function(t){return function(r){var e=r.items.map(function(t){return t.text}).indexOf(t);return{items:[].concat(_toConsumableArray(r.items.slice(0,e)),_toConsumableArray(r.items.slice(e+1)))}}},clear:function(){return function(t){return{items:[]}}}}},{}],8:[function(require,module,exports){"use strict";var _extends=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},_ajax_forms=require(3),_ajax_forms2=_interopRequireDefault(_ajax_forms),_forms=require(5),_forms2=_interopRequireDefault(_forms);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}module.exports=function(e){return _extends({load:function(e){return function(r,t){t.updateLoading(!0),setTimeout(function(){return fetch(e).then(function(e){return e.json()}).then(function(r){var n=e.match(/\?page=(\d+)/),u=1;n&&(u=1*n[1]),t.update({response:r,current:e,page:u}),t.updateLoading(!1)})},100)}},updateLoading:function(e){return function(r){return{loading:e}}},update:function(e){var r=e.response,t=e.current,n=e.page;return function(e){return{page:n,current:t,count:r.count,next:r.next,previous:r.previous,items:r.results}}},updateEdit:function(e){return function(r){return{forms:Object.assign({},r.forms,{edit:e})}}}},_forms2.default,(0,_ajax_forms2.default)(e))}},{3:3,5:5}],9:[function(require,module,exports){"use strict";var _hyperapp=require(2);module.exports=function(a){var p=a.state;a.actions;return(0,_hyperapp.h)("div",{className:"accordion"},(0,_hyperapp.h)("input",{type:"checkbox",id:"accordion-1",name:"accordion-checkbox",hidden:!0}),(0,_hyperapp.h)("label",{className:"accordion-header","for":"accordion-1"},(0,_hyperapp.h)("i",{className:"icon icon-arrow-right mr-1"}),"Show state"),(0,_hyperapp.h)("div",{className:"accordion-body"},(0,_hyperapp.h)("pre",null,(0,_hyperapp.h)("small",null,JSON.stringify(p,null,2)))))}},{2:2}],10:[function(require,module,exports){"use strict";var _require=require(2),h=_require.h,FormDateInput=module.exports=function(e){var l=e.field,r=e.action;return h("div",{"class":"form-group"},h("label",{"class":"form-label","for":"{field.label}"},l.label),h("input",{"class":"form-input",type:"text",id:"{field.label}",placeholder:l.label,value:l.value,oncreate:function(e){$(e).datepicker({dateFormat:"yy-mm-dd",onSelect:function(e,l){console.log(e,l),r(e)}})}}))}},{2:2}],11:[function(require,module,exports){"use strict";var _hyperapp=require(2),AbstractInput=function(r){var e=r.field,t=(r.action,r.realInput);return(0,_hyperapp.h)("div",{"class":"form-group "+(e.errors?"has-error":""),key:e.key},(0,_hyperapp.h)("label",{"class":"form-label","for":"{field.key}"},e.label),t,(0,_hyperapp.h)("div",{"class":"form-input-hint"},e.errors?e.errors[0]:null))},FormInput=function(r){var e=r.field,t=r.action;return AbstractInput({field:e,action:t,realInput:(0,_hyperapp.h)("input",{"class":"form-input",type:e.type,id:e.key,placeholder:e.label,value:e.value,oninput:function(r){return t(r.target.value)}})})},FormInputLong=function(r){var e=r.field,t=r.action;return AbstractInput({field:e,action:t,realInput:(0,_hyperapp.h)("textarea",{"class":"form-input",id:e.key,rows:"5",placeholder:e.label,oninput:function(r){return t(r.target.value)},value:e.value})})};module.exports.FormInput=FormInput,module.exports.FormInputLong=FormInputLong},{2:2}],12:[function(require,module,exports){"use strict";var _hyperapp=require(2),_FormInputs=require(11),_FormDateInput=require(10),_FormDateInput2=_interopRequireDefault(_FormDateInput),_MultiSelect=require(14),_MultiSelect2=_interopRequireDefault(_MultiSelect),_Spinners=require(18);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var renderField=function(e,r){var t=void 0;switch(e.type){case"longtext":t=_FormInputs.FormInputLong;break;case"text":case"number":t=_FormInputs.FormInput;break;case"multiselect":t=_MultiSelect2.default;break;case"date":t=_FormDateInput2.default}return t({field:e,action:function(t){return r(e.key,t)}})},renderFields=function(e,r){return e.map(function(e){return renderField(e,r)})},ModalForm=module.exports=function(e){var r=e.loading,t=e.formFields,a=e.item,n=e.hideAction,p=e.saveAction,i=e.updateFieldAction;return(0,_hyperapp.h)("div",{className:"modal "+(a?"active":"")},(0,_hyperapp.h)("div",{"class":"modal-overlay"}),(0,_hyperapp.h)("div",{"class":"modal-container"},(0,_hyperapp.h)("div",{"class":"modal-header"},(0,_hyperapp.h)("button",{"class":"btn btn-clear float-right",onclick:n}),(0,_hyperapp.h)("div",{"class":"modal-title h5"},a.id?"Editing form for item "+a.id:"Add new item!")),(0,_hyperapp.h)("div",{"class":"modal-body"},(0,_hyperapp.h)("div",{"class":"content"},(0,_hyperapp.h)("form",{method:"POST"},renderFields(t,i)))),(0,_hyperapp.h)("div",{"class":"modal-footer"},r?(0,_hyperapp.h)(_Spinners.SpinnerSmall,null):(0,_hyperapp.h)("div",null,(0,_hyperapp.h)("button",{"class":"btn",onclick:n},"Cancel"),(0,_hyperapp.h)("button",{"class":"ml-2 btn btn-primary",onclick:p},"Ok")))))}},{10:10,11:11,14:14,18:18,2:2}],13:[function(require,module,exports){"use strict";var _hyperapp=require(2),_FormInputs=require(11),_FormDateInput=require(10),_FormDateInput2=_interopRequireDefault(_FormDateInput),_MultiSelect=require(14),_MultiSelect2=_interopRequireDefault(_MultiSelect),_Spinners=require(18);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var renderField=function(e,t){var r=void 0;switch(e.type){case"longtext":r=_FormInputs.FormInputLong;break;case"text":case"number":r=_FormInputs.FormInput;break;case"multiselect":r=_MultiSelect2.default;break;case"date":r=_FormDateInput2.default}return r({field:e,action:function(r){return t(e.key,r)}})},renderFields=function(e,t){return e.map(function(e){return renderField(e,t)})},MultiModalForm=module.exports=function(e){var t=e.loading,r=e.formFields,a=e.item,n=e.hideAction,p=e.saveAction,i=e.updateFieldAction;return(0,_hyperapp.h)("div",{className:"modal "+(a?"active":"")},(0,_hyperapp.h)("div",{"class":"modal-overlay"}),(0,_hyperapp.h)("div",{"class":"modal-container"},(0,_hyperapp.h)("div",{"class":"modal-header"},(0,_hyperapp.h)("button",{"class":"btn btn-clear float-right",onclick:n}),(0,_hyperapp.h)("div",{"class":"modal-title h5"},a.id?"Editing multi-form for item "+a.id:"Add new item!")),(0,_hyperapp.h)("div",{"class":"modal-body"},(0,_hyperapp.h)("div",{"class":"content"},(0,_hyperapp.h)("form",{method:"POST"},renderFields(r,i)))),(0,_hyperapp.h)("div",{"class":"modal-footer"},t?(0,_hyperapp.h)(_Spinners.SpinnerSmall,null):(0,_hyperapp.h)("div",null,(0,_hyperapp.h)("button",{"class":"btn",onclick:n},"Cancel"),(0,_hyperapp.h)("button",{"class":"ml-2 btn btn-primary",onclick:p},"Ok")))))}},{10:10,11:11,14:14,18:18,2:2}],14:[function(require,module,exports){"use strict";var _hyperapp=require(2),MultiSelect=function(e){e.label;var l=e.field,a=e.action;return(0,_hyperapp.h)("div",{"class":"form-group"},(0,_hyperapp.h)("label",{"class":"form-label","for":"{field.label}"},l.label),(0,_hyperapp.h)("select",{name:"",style:"width: 50%",multiple:"multiple",oncreate:function(e){$(e).select2({ajax:{url:l.url,dataType:"json",delay:250,placeholder:"Search for "+l.label.toLowerCase(),data:function(e){return{name:e.term}},processResults:function(e){return{results:e.results.map(function(e){return{id:e.id,text:e.name}})}}}}),l.value&&l.value.forEach(function(l){var a=new Option(l.name,l.id,!0,!0);$(e).append(a).trigger("change")}),$(e).on("change",function(l){console.log(l);var r=$(e).select2("data");console.log(r),a(r)})}}))};module.exports=MultiSelect},{2:2}],15:[function(require,module,exports){"use strict";var _require=require(2),h=_require.h,Pagination=module.exports=function(e){var i=e.page,a=e.next,r=e.previous,n=e.loadAction;return h("ul",{"class":"pagination"},h("li",{"class":"page-item "+(r?"":"disabled")},h("a",{onclick:function(){return n(r)},href:"#",tabindex:"-1"},"Previous")),h("li",{"class":"page-item"},h("a",{href:"#"},i)),h("li",{"class":"page-item "+(a?"":"disabled")},h("a",{onclick:function(){return n(a)},href:"#"},"Next")))}},{2:2}],16:[function(require,module,exports){"use strict";var _require=require(2),h=_require.h,PlotModal=module.exports=function(t){var l=t.movie,o=t.actions;return h("div",{className:"modal "+(l?"active":"")},h("div",{"class":"modal-overlay"}),h("div",{"class":"modal-container"},h("div",{"class":"modal-header"},h("button",{"class":"btn btn-clear float-right",onclick:function(){return o.updateShowPlot(null)}}),h("div",{"class":"modal-title h5"},l.title)),h("div",{"class":"modal-body"},h("div",{"class":"content"},l.story)),h("div",{"class":"modal-footer"},h("button",{"class":"btn",onclick:function(){return o.updateShowPlot(null)}},"Ok"))))}},{2:2}],17:[function(require,module,exports){"use strict";var _hyperapp=require(2),_Spinners=require(18),renderField=function(e,r){var n=FormInput;return"longtext"==e.type&&(n=FormInputLong),n({field:e,action:function(n){return r(e.key,n)}})},renderFields=function(e,r){return e.map(function(e){return renderField(e,r)})},SearchForm=module.exports=function(e){var r=e.loading,n=e.formFields,p=e.searchAction,t=e.updateFieldAction;return(0,_hyperapp.h)("form",{method:"GET","class":"form-horizontal"},(0,_hyperapp.h)("div",{"class":"form-group"},n.map(function(e){return(0,_hyperapp.h)("div",{key:e.key},(0,_hyperapp.h)("label",{"class":"form-label","for":e.key},e.label),(0,_hyperapp.h)("input",{"class":"form-input",type:e.type,id:e.key,placeholder:e.label,value:e.value,oninput:function(r){return t(e.key,r.target.value)}}))}),r?(0,_hyperapp.h)(_Spinners.SpinnerSmall,null):(0,_hyperapp.h)("div",null,(0,_hyperapp.h)("button",{style:{marginTop:"2.3em"},"class":"btn ml-2 btn-primary",onclick:function(e){return e.preventDefault(),p(),!1}},"Filter"),(0,_hyperapp.h)("button",{style:{"margin-top":"2.3em"},"class":"btn ml-2",onclick:function(e){return e.preventDefault(),p(!0),!1}},"Reset"))))}},{18:18,2:2}],18:[function(require,module,exports){"use strict";var _hyperapp=require(2),Spinner=function(){return(0,_hyperapp.h)("div",{"class":"spinner"},(0,_hyperapp.h)("div",{"class":"bounce1"}),(0,_hyperapp.h)("div",{"class":"bounce2"}),(0,_hyperapp.h)("div",{"class":"bounce3"}))},SpinnerSmall=module.exports=function(){return(0,_hyperapp.h)("div",{"class":"loading loading-lg"})};module.exports.Spinner=Spinner,module.exports.SpinnerSmall=SpinnerSmall},{2:2}],19:[function(require,module,exports){"use strict";var _hyperapp=require(2),_Pagination=require(15),_Pagination2=_interopRequireDefault(_Pagination);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var Row=module.exports=function(e){var r=e.row,p=e.rowColumns,a=e.actions;return(0,_hyperapp.h)("tr",null,p.map(function(e){return(0,_hyperapp.h)("td",null,e(r,a))}))},Table=module.exports=function(e){var r=e.rowHeaders,p=e.rowColumns,a=e.rows,n=e.actions;return(0,_hyperapp.h)("div",null,(0,_hyperapp.h)("table",{"class":"table table-striped table-hover"},(0,_hyperapp.h)("thead",null,(0,_hyperapp.h)("tr",null,r.map(function(e){return(0,_hyperapp.h)("th",null,e)}))),(0,_hyperapp.h)("tbody",null,a.items.map(function(e){return(0,_hyperapp.h)(Row,{row:e,rowColumns:p,actions:n})}))),(0,_hyperapp.h)(_Pagination2.default,{page:a.page,next:a.next,previous:a.previous,loadAction:n.load}))}},{15:15,2:2}],20:[function(require,module,exports){"use strict";var _hyperapp=require(2),_router=require(1),createTab=function(e,a){return function(r){return(0,_hyperapp.h)("li",{className:"tab-item "+(r.pathname==e?"active":"")},(0,_hyperapp.h)(_router.Link,{to:e},a))}},Table=module.exports=function(e){var a=e.currentLocation,r=e.auth,t=e.actions;return(0,_hyperapp.h)("ul",{"class":"tab tab-block"},createTab("/","Home")(a),createTab("/movies","Movies")(a),createTab("/people","People")(a),createTab("/genres","Genres")(a),createTab("/jobs","Jobs")(a),r.key?(0,_hyperapp.h)("div",null,(0,_hyperapp.h)("span",{"class":"chip"},r.username),(0,_hyperapp.h)("button",{"class":"btn",onclick:function(){return t.auth.logout(t)}},"Logout")):(0,_hyperapp.h)("li",{className:"tab-item "+("/login"==a.pathname?"active":"")},(0,_hyperapp.h)(_router.Link,{to:"/login"},"Login")))}},{1:1,2:2}],21:[function(require,module,exports){"use strict";var _hyperapp=require(2),Toast=function(t){var a=t.text,e=t.actions,r=t.style,s=void 0===r?"primary":r;return(0,_hyperapp.h)("div",{className:"toast toast-"+s},(0,_hyperapp.h)("button",{className:"btn btn-clear float-right",onclick:function(){return e.toasts.hide(a)}}),a)},ToastContainer=module.exports=function(t){var a=t.toasts,e=t.actions;return(0,_hyperapp.h)("div",{className:"toast-container"},a.items.map(function(t){return(0,_hyperapp.h)(Toast,{text:t.text,style:t.style,actions:e})}))}},{2:2}],22:[function(require,module,exports){"use strict";var _hyperapp=require(2),_router=require(1),_actions=require(6),_actions2=_interopRequireDefault(_actions),_Main=require(29),_Main2=_interopRequireDefault(_Main),_state=require(23),_state2=_interopRequireDefault(_state);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var application=(0,_hyperapp.app)(_state2.default,_actions2.default,_Main2.default,document.getElementById("app")),unsubscribe=_router.location.subscribe(application.location),hideToasts=function(){application.toasts.clear()};_actions2.default.location.go("/"),addEventListener("pushstate",hideToasts),addEventListener("popstate",hideToasts)},{1:1,2:2,23:23,29:29,6:6}],23:[function(require,module,exports){"use strict";var _auth=require(24),genericState={loading:!1,page:null,count:0,next:null,previous:null,items:[],forms:{edit:null,search:{}}},existingAuth=(0,_auth.getExistingAuth)(),state=module.exports={auth:{key:existingAuth.key,username:existingAuth.username,loading:!1,forms:{login:{}}},location:location.state,toasts:{items:[]},movies:Object.assign({},genericState,{showPlot:!1,forms:Object.assign({},genericState.forms,{editPeople:null})}),people:Object.assign({},genericState),genres:Object.assign({},genericState),jobs:Object.assign({},genericState)}},{24:24}],24:[function(require,module,exports){"use strict";var checkAuth=function(t,e){return e.key?t:t.slice(0,-1)},getExistingAuth=function(){var t=localStorage.getItem("auth");if(t)try{t=JSON.parse(t)}catch(e){t=null}return t||(t={key:"",username:""}),t};module.exports={checkAuth:checkAuth,getExistingAuth:getExistingAuth}},{}],25:[function(require,module,exports){"use strict";var mergeValuesErrors=function(r,e,s){return r.map(function(r){return Object.assign({},r,{value:e[r.key]},s?{errors:s[r.key]}:{})})};module.exports={mergeValuesErrors:mergeValuesErrors}},{}],26:[function(require,module,exports){"use strict";var _hyperapp=require(2),_Spinners=require(18),_Table=require(19),_Table2=_interopRequireDefault(_Table),_ModalForm=require(12),_ModalForm2=_interopRequireDefault(_ModalForm),_SearchForm=require(17),_SearchForm2=_interopRequireDefault(_SearchForm),_forms=require(25),_auth=require(24);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}module.exports=function(e){var r=e.key,n=e.rowHeaders,a=e.rowColumns,o=e.formFields,t=e.title,u=e.extraViews;return function(e,i,l){return(0,_hyperapp.h)("div",{key:r},(0,_hyperapp.h)("h2",null,t,"     ",e.auth.key?(0,_hyperapp.h)("button",{className:"btn btn-primary btn-action btn-lg",onclick:function(){return i.updateEdit({})}},(0,_hyperapp.h)("i",{className:"icon icon-plus"})):null),(0,_hyperapp.h)("div",{className:"columns"},(0,_hyperapp.h)("div",{className:"column col-lg-12",oncreate:function(){return i.load(window.g_urls[r])}},(0,_hyperapp.h)(_SearchForm2.default,{formFields:(0,_forms.mergeValuesErrors)(o,e[r].forms.search,null),updateFieldAction:function(e,r){return i.updateField({formname:"search",fieldname:e,value:r})},searchAction:i.searchAction}),1==e[r].loading?(0,_hyperapp.h)(_Spinners.Spinner,null):(0,_hyperapp.h)(_Table2.default,{rowHeaders:(0,_auth.checkAuth)(n,e.auth),rowColumns:(0,_auth.checkAuth)(a,e.auth),rows:e[r],actions:i}))),e[r].forms.edit?(0,_hyperapp.h)(_ModalForm2.default,{loading:e[r].loading,formFields:(0,_forms.mergeValuesErrors)(o,e[r].forms.edit,e[r].forms.edit.errors),item:e[r].forms.edit,hideAction:function(){return i.updateEdit(null)},saveAction:function(){return i.saveEdit({g_actions:l,key:e.auth.key})},updateFieldAction:function(e,r){return i.updateField({formname:"edit",fieldname:e,value:r})}}):null,u?u.map(function(r){return r(e,i)}):null)}}},{12:12,17:17,18:18,19:19,2:2,24:24,25:25}],27:[function(require,module,exports){"use strict";var _hyperapp=require(2),Home=module.exports=function(e,p){return(0,_hyperapp.h)("div",{key:"home"},e.auth.key?(0,_hyperapp.h)("span",null,"Hello, ",e.auth.username,"!"):(0,_hyperapp.h)("span",null,"Please login to edit things"))}},{2:2}],28:[function(require,module,exports){"use strict";var _hyperapp=require(2),_FormInputs=require(11),_Spinners=require(18),okClick=function(e,n,r){return n.login(r),console.log(e),e.preventDefault(),!1},Login=module.exports=function(e,n,r){return(0,_hyperapp.h)("div",{key:"login"},(0,_hyperapp.h)("h2",null,"Login"),(0,_hyperapp.h)("form",{method:"POST"},(0,_hyperapp.h)(_FormInputs.FormInput,{field:{label:"Username",value:e.forms.login.username,type:"text"},action:function(e){return n.updateField({formname:"login",fieldname:"username",value:e})}}),(0,_hyperapp.h)(_FormInputs.FormInput,{field:{label:"Password",value:e.forms.login.password,type:"password"},action:function(e){return n.updateField({formname:"login",fieldname:"password",value:e})}}),1==e.loading?(0,_hyperapp.h)(_Spinners.Spinner,null):(0,_hyperapp.h)("button",{id:"btn",name:"btn",className:"btn btn-primary",onclick:function(e){okClick(e,n,r)}},"Ok")))}},{11:11,18:18,2:2}],29:[function(require,module,exports){"use strict";var _hyperapp=require(2),_router=require(1),_Home=require(27),_Home2=_interopRequireDefault(_Home),_Movies=require(30),_Movies2=_interopRequireDefault(_Movies),_People=require(31),_People2=_interopRequireDefault(_People),_SimpleFilterTableView=require(32),_SimpleFilterTableView2=_interopRequireDefault(_SimpleFilterTableView),_Login=require(28),_Login2=_interopRequireDefault(_Login),_Tabs=require(20),_Tabs2=_interopRequireDefault(_Tabs),_ToastContainer=require(21),_ToastContainer2=_interopRequireDefault(_ToastContainer),_DebugContainer=require(9),_DebugContainer2=_interopRequireDefault(_DebugContainer);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}module.exports=function(e,r){return(0,_hyperapp.h)("div",{className:"container grid-xl"},(0,_hyperapp.h)(_Tabs2.default,{currentLocation:e.location,auth:e.auth,actions:r}),(0,_hyperapp.h)(_router.Switch,null,(0,_hyperapp.h)(_router.Route,{path:"/",render:function(){return(0,_Home2.default)(e,r)}}),(0,_hyperapp.h)(_router.Route,{path:"/movies",render:function(){return(0,_Movies2.default)(e,r.movies,r)}}),(0,_hyperapp.h)(_router.Route,{path:"/people",render:function(){return(0,_People2.default)(e,r.people,r)}}),(0,_hyperapp.h)(_router.Route,{path:"/genres",render:function(){return(0,_SimpleFilterTableView2.default)({key:"genres",title:"Genres"})(e,r.genres,r)}}),(0,_hyperapp.h)(_router.Route,{path:"/jobs",render:function(){return(0,_SimpleFilterTableView2.default)({key:"jobs",title:"Jobs"})(e,r.jobs,r)}}),(0,_hyperapp.h)(_router.Route,{path:"/login",render:function(){return(0,_Login2.default)(e.auth,r.auth,r)}})),(0,_hyperapp.h)(_ToastContainer2.default,{toasts:e.toasts,actions:r}),(0,_hyperapp.h)("hr",null),(0,_hyperapp.h)(_DebugContainer2.default,{state:e,actions:r}))}},{1:1,2:2,20:20,21:21,27:27,28:28,30:30,31:31,32:32,9:9}],30:[function(require,module,exports){"use strict";var _hyperapp=require(2),_PlotModal=require(16),_PlotModal2=_interopRequireDefault(_PlotModal),_MultiModalForm=require(13),_MultiModalForm2=_interopRequireDefault(_MultiModalForm),_FilterTableView=require(26),_FilterTableView2=_interopRequireDefault(_FilterTableView);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var rowHeaders=["Id","Title","Release year","Runtime","Genres","Plot","Edit"],rowColumns=[function(e){return e.id},function(e){return e.title},function(e){return e.release_year},function(e){return e.runtime},function(e){return e.genres.map(function(e){return(0,_hyperapp.h)("span",{className:"chip bg-dark"},(0,_hyperapp.h)("a",{"class":"text-secondary text-norma",href:""},e.name))})},function(e,t){return(0,_hyperapp.h)("span",{onclick:function(){return t.updateShowPlot(e)}},e.story.substring(0,50)+"...")},function(e,t){return(0,_hyperapp.h)("div",null,(0,_hyperapp.h)("button",{className:"btn btn-block btn-primary",onclick:function(){return t.updateEdit(Object.assign({},e))}},"Edit"),(0,_hyperapp.h)("button",{className:"btn btn-block btn-primary",onclick:function(){return t.updateEditPeople(Object.assign({},e))}},"Edit people"))}],formFields=[{key:"title",label:"Title",type:"text"
-},{key:"release_year",label:"Release Year",type:"number"},{key:"runtime",label:"Runtime",type:"number"},{key:"story",label:"Plot",type:"longtext"},{key:"genres",label:"Genres",type:"multiselect",url:"/api/genres/"}],multiFormFields=[{key:"person",label:"Person",type:"text"},{key:"job",label:"Job",type:"text"}],extraViews=[function(e,t){return(0,_hyperapp.h)("div",null,e.movies.showPlot?(0,_hyperapp.h)(_PlotModal2.default,{movie:e.movies.showPlot,actions:t}):null)},function(e,t){return(0,_hyperapp.h)("div",null,e.movies.forms.editPeople?(0,_hyperapp.h)("div",null,"WILL EDIT",(0,_hyperapp.h)(_MultiModalForm2.default,{loading:e.movies.loading,formFields:multiFormFields,item:e.movies.forms.editPeople,hideAction:function(){return t.updateEditPeople(null)},saveAction:function(){return t.saveEditPeople({g_actions:g_actions,key:e.auth.key})},updateFieldAction:function(e,r){return t.updateField({formname:"edit",fieldname:"movies",value:r})}})):null)}],Movies=(0,_FilterTableView2.default)({key:"movies",rowHeaders:rowHeaders,rowColumns:rowColumns,formFields:formFields,title:"Movies list",extraViews:extraViews});module.exports=Movies},{13:13,16:16,2:2,26:26}],31:[function(require,module,exports){"use strict";var _hyperapp=require(2),_FilterTableView=require(26),_FilterTableView2=_interopRequireDefault(_FilterTableView);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var rowHeaders=["Id","Name","Birthday","Edit"],rowColumns=[function(e){return e.id},function(e){return e.name},function(e){return e.birthday},function(e,r){return(0,_hyperapp.h)("button",{className:"btn btn-block btn-primary",onclick:function(){return r.updateEdit(Object.assign({},e))}},"Edit")}],formFields=[{key:"name",label:"Name",type:"text"},{key:"birthday",label:"Birthday",type:"date"}],People=(0,_FilterTableView2.default)({key:"people",rowHeaders:rowHeaders,rowColumns:rowColumns,formFields:formFields,title:"People list"});module.exports=People},{2:2,26:26}],32:[function(require,module,exports){"use strict";var _hyperapp=require(2),_FilterTableView=require(26),_FilterTableView2=_interopRequireDefault(_FilterTableView);function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}var rowHeaders=["Id","Name","Edit"],rowColumns=[function(e){return e.id},function(e){return e.name},function(e,r){return(0,_hyperapp.h)("button",{className:"btn btn-block btn-primary",onclick:function(){return r.updateEdit(Object.assign({},e))}},"Edit")}],formFields=[{key:"name",label:"Name",type:"text"}],SimpleFilterTableView=function(e){var r=e.key,t=e.title;return(0,_FilterTableView2.default)({key:r,rowHeaders:rowHeaders,rowColumns:rowColumns,formFields:formFields,title:t})};module.exports=SimpleFilterTableView},{2:2,26:26}]},{},[22]);
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("hyperapp")):"function"==typeof define&&define.amd?define(["exports","hyperapp"],e):e(t.hyperappRouter={},t.hyperapp)}(this,function(t,u){"use strict";function c(t){return t.protocol+"//"+t.hostname+(t.port?":"+t.port:"")}function p(t,e,n,r){return{isExact:t,path:e,url:n,params:r}}function s(t){for(var e=t.length;"/"===t[--e];);return t.slice(0,e+1)}function l(e){try{return decodeURIComponent(e)}catch(t){return e}}var e={state:{pathname:window.location.pathname,previous:window.location.pathname},actions:{go:function(t){history.pushState(null,"",t)},set:function(t){return t}},subscribe:function(e){function t(t){e.set({pathname:window.location.pathname,previous:t.detail?window.location.previous=t.detail:window.location.previous})}var n=function(t){return t.reduce(function(t,e){var r=history[e];return history[e]=function(t,e,n){r.call(this,t,e,n),dispatchEvent(new CustomEvent("pushstate",{detail:t}))},function(){history[e]=r,t&&t()}},null)}(["pushState","replaceState"]);return addEventListener("pushstate",t),addEventListener("popstate",t),function(){removeEventListener("pushstate",t),removeEventListener("popstate",t),n()}}};t.Link=function(i,a){return function(t,e){var n=i.to,r=t.location,o=i.onclick;return delete i.to,delete i.location,i.href=n,i.onclick=function(t){o&&o(t),t.defaultPrevented||0!==t.button||t.altKey||t.metaKey||t.ctrlKey||t.shiftKey||"_blank"===i.target||function(t){return c(location)!==c(t)}(t.currentTarget)||(t.preventDefault(),n!==r.pathname&&history.pushState(r.pathname,"",n))},u.h("a",i,a)}},t.Route=function(o){return function(t,e){var n=t.location,r=function(t,e,n){if(t===e||!t)return p(t===e,t,e);var r=n&&n.exact,o=s(t).split("/"),i=s(e).split("/");if(!(o.length>i.length||r&&o.length<i.length)){var a=0,u={},c=o.length;for(e="";a<c;a++){if(":"===o[a][0])u[o[a].slice(1)]=i[a]=l(i[a]);else if(o[a]!==i[a])return;e+=i[a]+"/"}return p(!1,t,e.slice(0,-1),u)}}(o.path,n.pathname,{exact:!o.parent});return r&&o.render({match:r,location:n})}},t.Switch=function(t,o){return function(t,e){for(var n,r=0;!(n=o[r]&&o[r](t,e))&&r<o.length;)r++;return n}},t.Redirect=function(r){return function(t,e){var n=t.location;history.replaceState(r.from||n.pathname,"",r.to)}},t.location=e});
+
+},{"hyperapp":2}],2:[function(require,module,exports){
+!function(e,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd?define(["exports"],n):n(e.hyperapp={})}(this,function(e){"use strict";e.h=function(e,n){for(var t=[],r=[],o=arguments.length;2<o--;)t.push(arguments[o]);for(;t.length;){var l=t.pop();if(l&&l.pop)for(o=l.length;o--;)t.push(l[o]);else null!=l&&!0!==l&&!1!==l&&r.push(l)}return"function"==typeof e?e(n||{},r):{nodeName:e,attributes:n||{},children:r,key:n&&n.key}},e.app=function(e,n,t,r){var o,l=[].map,u=r&&r.children[0]||null,i=u&&function n(e){return{nodeName:e.nodeName.toLowerCase(),attributes:{},children:l.call(e.childNodes,function(e){return 3===e.nodeType?e.nodeValue:n(e)})}}(u),f=[],m=!0,a=v(e),c=function e(r,o,l){for(var n in l)"function"==typeof l[n]?function(e,t){l[e]=function(e){var n=t(e);return"function"==typeof n&&(n=n(h(r,a),l)),n&&n!==(o=h(r,a))&&!n.then&&d(a=p(r,v(o,n),a)),n}}(n,l[n]):e(r.concat(n),o[n]=v(o[n]),l[n]=v(l[n]));return l}([],a,v(n));return d(),c;function g(e){return"function"==typeof e?g(e(a,c)):null!=e?e:""}function s(){o=!o;var e=g(t);for(r&&!o&&(u=function e(n,t,r,o,l){if(o===r);else if(null==r||r.nodeName!==o.nodeName){var u=k(o,l);n.insertBefore(u,t),null!=r&&T(n,t,r),t=u}else if(null==r.nodeName)t.nodeValue=o;else{x(t,r.attributes,o.attributes,l=l||"svg"===o.nodeName);for(var i={},f={},a=[],c=r.children,s=o.children,d=0;d<c.length;d++){a[d]=t.childNodes[d];var v=N(c[d]);null!=v&&(i[v]=[a[d],c[d]])}for(var d=0,p=0;p<s.length;){var v=N(c[d]),h=N(s[p]=g(s[p]));if(f[v])d++;else if(null==h||h!==N(c[d+1]))if(null==h||m)null==v&&(e(t,a[d],c[d],s[p],l),p++),d++;else{var y=i[h]||[];v===h?(e(t,y[0],y[1],s[p],l),d++):y[0]?e(t,t.insertBefore(y[0],a[d]),y[1],s[p],l):e(t,a[d],null,s[p],l),f[h]=s[p],p++}else null==v&&T(t,a[d],c[d]),d++}for(;d<c.length;)null==N(c[d])&&T(t,a[d],c[d]),d++;for(var d in i)f[d]||T(t,i[d][0],i[d][1])}return t}(r,u,i,i=e)),m=!1;f.length;)f.pop()()}function d(){o||(o=!0,setTimeout(s))}function v(e,n){var t={};for(var r in e)t[r]=e[r];for(var r in n)t[r]=n[r];return t}function p(e,n,t){var r={};return e.length?(r[e[0]]=1<e.length?p(e.slice(1),n,t[e[0]]):n,v(t,r)):n}function h(e,n){for(var t=0;t<e.length;)n=n[e[t++]];return n}function N(e){return e?e.key:null}function y(e){return e.currentTarget.events[e.type](e)}function b(e,n,t,r,o){if("key"===n);else if("style"===n)if("string"==typeof t)e.style.cssText=t;else for(var l in"string"==typeof r&&(r=e.style.cssText=""),v(r,t)){var u=null==t||null==t[l]?"":t[l];"-"===l[0]?e.style.setProperty(l,u):e.style[l]=u}else"o"===n[0]&&"n"===n[1]?(n=n.slice(2),e.events?r||(r=e.events[n]):e.events={},(e.events[n]=t)?r||e.addEventListener(n,y):e.removeEventListener(n,y)):n in e&&"list"!==n&&"type"!==n&&"draggable"!==n&&"spellcheck"!==n&&"translate"!==n&&!o?e[n]=null==t?"":t:null!=t&&!1!==t&&e.setAttribute(n,t),null!=t&&!1!==t||e.removeAttribute(n)}function k(e,n){var t="string"==typeof e||"number"==typeof e?document.createTextNode(e):(n=n||"svg"===e.nodeName)?document.createElementNS("http://www.w3.org/2000/svg",e.nodeName):document.createElement(e.nodeName),r=e.attributes;if(r){r.oncreate&&f.push(function(){r.oncreate(t)});for(var o=0;o<e.children.length;o++)t.appendChild(k(e.children[o]=g(e.children[o]),n));for(var l in r)b(t,l,r[l],null,n)}return t}function x(e,n,t,r){for(var o in v(n,t))t[o]!==("value"===o||"checked"===o?e[o]:n[o])&&b(e,o,t[o],n[o],r);var l=m?t.oncreate:t.onupdate;l&&f.push(function(){l(e,n)})}function T(e,n,t){function r(){e.removeChild(function e(n,t){var r=t.attributes;if(r){for(var o=0;o<t.children.length;o++)e(n.childNodes[o],t.children[o]);r.ondestroy&&r.ondestroy(n)}return n}(n,t))}var o=t.attributes&&t.attributes.onremove;o?o(n,r):r()}}});
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+module.exports = function (ajaxUrl) {
+    return {
+        saveEdit: function saveEdit(_ref) {
+            var key = _ref.key,
+                g_actions = _ref.g_actions;
+            return function (state, actions) {
+                actions.updateLoading(true);
+                var item = state.forms.edit;
+
+                for (var k in item) {
+                    var v = item[k];
+                    if (Array.isArray(v)) {
+                        item[k] = v.map(function (x) {
+                            return {
+                                'id': x.id,
+                                'name': x.text
+                            };
+                        });
+                    }
+                }
+                var saveUrl = '';
+                var method = '';
+                if (item.id) {
+                    // UPDATE
+                    saveUrl = ajaxUrl + item.id + '/';
+                    method = 'PATCH';
+                } else {
+                    // CREATE
+                    saveUrl = ajaxUrl;
+                    method = 'POST';
+                }
+
+                window.setTimeout(function () {
+                    fetch(saveUrl, {
+                        body: JSON.stringify(item),
+                        headers: {
+                            'content-type': 'application/json',
+                            'Authorization': 'Token ' + key
+                        },
+                        method: method
+                    }).then(function (response) {
+                        actions.updateLoading(false);
+
+                        if (response.status == 400) {
+                            response.json().then(function (errors) {
+                                actions.addErrors({ formname: 'edit', errors: errors });
+                            });
+                        } else if (response.status == 200 || response.status == 201) {
+                            response.json().then(function (data) {
+                                // Data is the object that was saved
+                                g_actions.toasts.add({ text: 'Successfully saved object!', style: 'success' });
+                                actions.updateEdit(null);
+                                actions.load(state.current);
+                            });
+                        }
+                    }).catch(function (error) {
+                        console.log('ERR', error.status);
+                    });
+                }, 500);
+            };
+        }
+    };
+};
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+var _forms = require('./forms.js');
+
+module.exports = {
+  login: function login(g_actions) {
+    return function (state, actions) {
+      actions.updateLoading(true);
+      var data = {
+        username: state.forms.login.username,
+        password: state.forms.login.password
+      };
+      fetch(g_urls.login, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'content-type': 'application/json'
+        }
+      }).then(function (r) {
+        return r.json();
+      }).then(function (j) {
+        if (j.key) {
+          console.log("OK", j.key, state.forms.login.username);
+          actions.updateLogin({ key: j.key, username: state.forms.login.username });
+          g_actions.location.go("/");
+          g_actions.toasts.add({ text: "Successfully logged in!", style: "success" });
+        } else {
+          g_actions.toasts.add({ text: "Error while logging in - please try again!", style: "error" });
+        }
+        actions.updateLoading(false);
+      });
+    };
+  },
+  logout: function logout(g_actions) {
+    return function (state, actions) {
+      actions.updateLoading(true);
+      setTimeout(function () {
+        return fetch(g_urls.logout, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then(function (r) {
+          return r.json();
+        }).then(function (j) {
+          actions.updateLogin({ key: null, username: null });
+          g_actions.location.go("/");
+          actions.updateLoading(false);
+          g_actions.toasts.add({ text: "Successfully logged out!", style: "success" });
+        });
+      }, 500);
+    };
+  },
+  updateLoading: function updateLoading(loading) {
+    return function (state) {
+      return {
+        loading: loading
+      };
+    };
+  },
+  updateLogin: function updateLogin(_ref) {
+    var key = _ref.key,
+        username = _ref.username;
+    return function (state) {
+      localStorage.setItem("auth", JSON.stringify({ key: key, username: username }));
+      return {
+        key: key,
+        username: username,
+        forms: {
+          login: {}
+        }
+      };
+    };
+  },
+  updateField: _forms.updateField
+};
+
+},{"./forms.js":5}],5:[function(require,module,exports){
+"use strict";
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+module.exports = {
+
+    updateField: function updateField(_ref) {
+        var formname = _ref.formname,
+            fieldname = _ref.fieldname,
+            value = _ref.value;
+        return function (state) {
+            console.log("Update ", formname, fieldname, value);
+            return {
+                forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], _defineProperty({}, fieldname, value))))
+            };
+        };
+    },
+
+    addErrors: function addErrors(_ref2) {
+        var formname = _ref2.formname,
+            errors = _ref2.errors;
+        return function (state) {
+            console.log("Add errors ", errors);
+            return {
+                forms: Object.assign({}, state.forms, _defineProperty({}, formname, Object.assign({}, state.forms[formname], {
+                    errors: errors
+                })))
+            };
+        };
+    },
+
+    searchAction: function searchAction(reset) {
+        return function (state, actions) {
+            if (reset) {
+                actions.load(state.current.split('?')[0]);
+                return {
+                    forms: Object.assign({}, state['forms'], {
+                        search: {}
+                    })
+                };
+            } else {
+                var params = Object.keys(state.forms.search).map(function (k) {
+                    return encodeURIComponent(k) + '=' + encodeURIComponent(state.forms.search[k]);
+                }).join('&');
+                actions.load(state.current.split('?')[0] + '?' + params);
+            }
+        };
+    }
+
+};
+
+},{}],6:[function(require,module,exports){
+"use strict";
+
+var _router = require("@hyperapp/router");
+
+var _auth = require("./auth.js");
+
+var _auth2 = _interopRequireDefault(_auth);
+
+var _toasts = require("./toasts.js");
+
+var _toasts2 = _interopRequireDefault(_toasts);
+
+var _view_actions = require("./view_actions");
+
+var _view_actions2 = _interopRequireDefault(_view_actions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var actions = module.exports = {
+    location: _router.location.actions,
+    auth: _auth2.default,
+    people: (0, _view_actions2.default)(window.g_urls.people),
+    genres: (0, _view_actions2.default)(window.g_urls.genres),
+    jobs: (0, _view_actions2.default)(window.g_urls.jobs),
+    movies: Object.assign({}, (0, _view_actions2.default)(window.g_urls.movies), {
+        updateShowPlot: function updateShowPlot(showPlot) {
+            return function (state) {
+                return {
+                    showPlot: showPlot
+                };
+            };
+        },
+        updateEditPeople: function updateEditPeople(movie) {
+            return function (state) {
+                return {
+                    forms: Object.assign({}, state['forms'], {
+                        editPeople: movie
+                    })
+                };
+            };
+        }
+    }),
+    toasts: _toasts2.default
+
+};
+
+},{"./auth.js":4,"./toasts.js":7,"./view_actions":8,"@hyperapp/router":1}],7:[function(require,module,exports){
+"use strict";
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+module.exports = {
+  add: function add(_ref) {
+    var text = _ref.text,
+        style = _ref.style;
+    return function (state, actions) {
+      // Hide toast after 10 s
+      window.setTimeout(function () {
+        actions.hide(text);
+      }, 10000);
+      return {
+        items: [].concat(_toConsumableArray(state.items), [{ text: text, style: style }])
+      };
+    };
+  },
+
+  hide: function hide(text) {
+    return function (state) {
+      var idx = state.items.map(function (v) {
+        return v.text;
+      }).indexOf(text);
+      return {
+        items: [].concat(_toConsumableArray(state.items.slice(0, idx)), _toConsumableArray(state.items.slice(idx + 1)))
+      };
+    };
+  },
+  clear: function clear() {
+    return function (state) {
+      return {
+        items: []
+      };
+    };
+  }
+};
+
+},{}],8:[function(require,module,exports){
+"use strict";
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _ajax_forms = require("./ajax_forms.js");
+
+var _ajax_forms2 = _interopRequireDefault(_ajax_forms);
+
+var _forms = require("./forms.js");
+
+var _forms2 = _interopRequireDefault(_forms);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = function (ajaxUrl) {
+  return _extends({
+    load: function load(url) {
+      return function (state, actions) {
+        actions.updateLoading(true);
+
+        setTimeout(function () {
+          return fetch(url).then(function (r) {
+            return r.json();
+          }).then(function (j) {
+            var match = url.match(/\?page=(\d+)/);
+            var page = 1;
+            if (match) page = 1 * match[1];
+
+            actions.update({ response: j, current: url, page: page });
+            actions.updateLoading(false);
+          });
+        }, 100);
+      };
+    },
+
+    updateLoading: function updateLoading(loading) {
+      return function (state) {
+        return {
+          loading: loading
+        };
+      };
+    },
+
+    update: function update(_ref) {
+      var response = _ref.response,
+          current = _ref.current,
+          page = _ref.page;
+      return function (state) {
+        return {
+          page: page,
+          current: current,
+          count: response.count,
+          next: response.next,
+          previous: response.previous,
+          items: response.results
+        };
+      };
+    },
+
+    updateEdit: function updateEdit(item) {
+      return function (state) {
+        return {
+          forms: Object.assign({}, state['forms'], {
+            edit: item
+          })
+        };
+      };
+    }
+
+  }, _forms2.default, (0, _ajax_forms2.default)(ajaxUrl));
+};
+
+},{"./ajax_forms.js":3,"./forms.js":5}],9:[function(require,module,exports){
+"use strict";
+
+var _hyperapp = require("hyperapp");
+
+module.exports = function (_ref) {
+  var state = _ref.state,
+      actions = _ref.actions;
+  return (0, _hyperapp.h)(
+    "div",
+    { className: "accordion" },
+    (0, _hyperapp.h)("input", { type: "checkbox", id: "accordion-1", name: "accordion-checkbox", hidden: true }),
+    (0, _hyperapp.h)(
+      "label",
+      { className: "accordion-header", "for": "accordion-1" },
+      (0, _hyperapp.h)("i", { className: "icon icon-arrow-right mr-1" }),
+      "Show state"
+    ),
+    (0, _hyperapp.h)(
+      "div",
+      { className: "accordion-body" },
+      (0, _hyperapp.h)(
+        "pre",
+        null,
+        (0, _hyperapp.h)(
+          "small",
+          null,
+          JSON.stringify(state, null, 2)
+        )
+      )
+    )
+  );
+};
+
+},{"hyperapp":2}],10:[function(require,module,exports){
+"use strict";
+
+var _require = require('hyperapp'),
+    h = _require.h;
+
+var FormDateInput = module.exports = function (_ref) {
+    var field = _ref.field,
+        action = _ref.action;
+    return h(
+        "div",
+        { "class": "form-group" },
+        h(
+            "label",
+            { "class": "form-label", "for": "{field.label}" },
+            field.label
+        ),
+        h("input", { "class": "form-input", type: "text", id: "{field.label}",
+            placeholder: field.label, value: field.value,
+            oncreate: function oncreate(element) {
+                $(element).datepicker({
+                    dateFormat: "yy-mm-dd",
+                    onSelect: function onSelect(date, inst) {
+                        console.log(date, inst);
+                        action(date);
+                    }
+                });
+            }
+        })
+    );
+};
+
+},{"hyperapp":2}],11:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var AbstractInput = function AbstractInput(_ref) {
+    var field = _ref.field,
+        action = _ref.action,
+        realInput = _ref.realInput;
+    return (0, _hyperapp.h)(
+        'div',
+        { 'class': 'form-group ' + (field.errors ? 'has-error' : ''), key: field.key },
+        (0, _hyperapp.h)(
+            'label',
+            { 'class': 'form-label', 'for': '{field.key}' },
+            field.label
+        ),
+        realInput,
+        (0, _hyperapp.h)(
+            'div',
+            { 'class': 'form-input-hint' },
+            field.errors ? field.errors[0] : null
+        )
+    );
+};
+
+var FormInput = function FormInput(_ref2) {
+    var field = _ref2.field,
+        action = _ref2.action;
+    return AbstractInput({
+        field: field,
+        action: action,
+        realInput: (0, _hyperapp.h)('input', { 'class': 'form-input', type: field.type, id: field.key,
+            placeholder: field.label, value: field.value,
+            oninput: function oninput(e) {
+                return action(e.target.value);
+            }
+        })
+    });
+};
+
+var FormInputLong = function FormInputLong(_ref3) {
+    var field = _ref3.field,
+        action = _ref3.action;
+    return AbstractInput({
+        field: field,
+        action: action,
+        realInput: (0, _hyperapp.h)('textarea', { 'class': 'form-input', id: field.key, rows: '5',
+            placeholder: field.label,
+            oninput: function oninput(e) {
+                return action(e.target.value);
+            },
+            value: field.value
+        })
+
+    });
+};
+
+module.exports['FormInput'] = FormInput;
+module.exports['FormInputLong'] = FormInputLong;
+
+},{"hyperapp":2}],12:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _FormInputs = require('./FormInputs.js');
+
+var _FormDateInput = require('./FormDateInput.js');
+
+var _FormDateInput2 = _interopRequireDefault(_FormDateInput);
+
+var _MultiSelect = require('./MultiSelect.js');
+
+var _MultiSelect2 = _interopRequireDefault(_MultiSelect);
+
+var _Spinners = require('./Spinners.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var renderField = function renderField(field, updateFieldAction) {
+  var ftype = undefined;
+  switch (field.type) {
+    case 'longtext':
+      ftype = _FormInputs.FormInputLong;break;
+    case 'text':
+      ftype = _FormInputs.FormInput;break;
+    case 'number':
+      ftype = _FormInputs.FormInput;break;
+    case 'multiselect':
+      ftype = _MultiSelect2.default;break;
+    case 'date':
+      ftype = _FormDateInput2.default;break;
+  }
+  return ftype({
+    field: field,
+    action: function action(val) {
+      return updateFieldAction(field.key, val);
+    }
+  });
+};
+
+var renderFields = function renderFields(fields, updateFieldAction) {
+  return fields.map(function (f) {
+    return renderField(f, updateFieldAction);
+  });
+};
+
+var ModalForm = module.exports = function (_ref) {
+  var loading = _ref.loading,
+      formFields = _ref.formFields,
+      item = _ref.item,
+      hideAction = _ref.hideAction,
+      saveAction = _ref.saveAction,
+      updateFieldAction = _ref.updateFieldAction;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'modal ' + (item ? 'active' : '') },
+    (0, _hyperapp.h)('div', { 'class': 'modal-overlay' }),
+    (0, _hyperapp.h)(
+      'div',
+      { 'class': 'modal-container' },
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-header' },
+        (0, _hyperapp.h)('button', { 'class': 'btn btn-clear float-right', onclick: hideAction }),
+        (0, _hyperapp.h)(
+          'div',
+          { 'class': 'modal-title h5' },
+          item.id ? 'Editing form for item ' + item.id : "Add new item!"
+        )
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-body' },
+        (0, _hyperapp.h)(
+          'div',
+          { 'class': 'content' },
+          (0, _hyperapp.h)(
+            'form',
+            { method: 'POST' },
+            renderFields(formFields, updateFieldAction)
+          )
+        )
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-footer' },
+        loading ? (0, _hyperapp.h)(_Spinners.SpinnerSmall, null) : (0, _hyperapp.h)(
+          'div',
+          null,
+          (0, _hyperapp.h)(
+            'button',
+            { 'class': 'btn', onclick: hideAction },
+            'Cancel'
+          ),
+          (0, _hyperapp.h)(
+            'button',
+            { 'class': 'ml-2 btn btn-primary', onclick: saveAction },
+            'Ok'
+          )
+        )
+      )
+    )
+  );
+};
+
+},{"./FormDateInput.js":10,"./FormInputs.js":11,"./MultiSelect.js":14,"./Spinners.js":18,"hyperapp":2}],13:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _FormInputs = require('./FormInputs.js');
+
+var _FormDateInput = require('./FormDateInput.js');
+
+var _FormDateInput2 = _interopRequireDefault(_FormDateInput);
+
+var _MultiSelect = require('./MultiSelect.js');
+
+var _MultiSelect2 = _interopRequireDefault(_MultiSelect);
+
+var _Spinners = require('./Spinners.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var renderField = function renderField(field, updateFieldAction) {
+  var ftype = undefined;
+  switch (field.type) {
+    case 'longtext':
+      ftype = _FormInputs.FormInputLong;break;
+    case 'text':
+      ftype = _FormInputs.FormInput;break;
+    case 'number':
+      ftype = _FormInputs.FormInput;break;
+    case 'multiselect':
+      ftype = _MultiSelect2.default;break;
+    case 'date':
+      ftype = _FormDateInput2.default;break;
+  }
+  return ftype({
+    field: field,
+    action: function action(val) {
+      return updateFieldAction(field.key, val);
+    }
+  });
+};
+
+var renderFields = function renderFields(fields, updateFieldAction) {
+  return fields.map(function (f) {
+    return renderField(f, updateFieldAction);
+  });
+};
+
+var MultiModalForm = module.exports = function (_ref) {
+  var loading = _ref.loading,
+      formFields = _ref.formFields,
+      item = _ref.item,
+      hideAction = _ref.hideAction,
+      saveAction = _ref.saveAction,
+      updateFieldAction = _ref.updateFieldAction;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'modal ' + (item ? 'active' : '') },
+    (0, _hyperapp.h)('div', { 'class': 'modal-overlay' }),
+    (0, _hyperapp.h)(
+      'div',
+      { 'class': 'modal-container' },
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-header' },
+        (0, _hyperapp.h)('button', { 'class': 'btn btn-clear float-right', onclick: hideAction }),
+        (0, _hyperapp.h)(
+          'div',
+          { 'class': 'modal-title h5' },
+          item.id ? 'Editing multi-form for item ' + item.id : "Add new item!"
+        )
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-body' },
+        (0, _hyperapp.h)(
+          'div',
+          { 'class': 'content' },
+          (0, _hyperapp.h)(
+            'form',
+            { method: 'POST' },
+            renderFields(formFields, updateFieldAction)
+          )
+        )
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { 'class': 'modal-footer' },
+        loading ? (0, _hyperapp.h)(_Spinners.SpinnerSmall, null) : (0, _hyperapp.h)(
+          'div',
+          null,
+          (0, _hyperapp.h)(
+            'button',
+            { 'class': 'btn', onclick: hideAction },
+            'Cancel'
+          ),
+          (0, _hyperapp.h)(
+            'button',
+            { 'class': 'ml-2 btn btn-primary', onclick: saveAction },
+            'Ok'
+          )
+        )
+      )
+    )
+  );
+};
+
+},{"./FormDateInput.js":10,"./FormInputs.js":11,"./MultiSelect.js":14,"./Spinners.js":18,"hyperapp":2}],14:[function(require,module,exports){
+"use strict";
+
+var _hyperapp = require("hyperapp");
+
+var MultiSelect = function MultiSelect(_ref) {
+    var label = _ref.label,
+        field = _ref.field,
+        action = _ref.action;
+    return (0, _hyperapp.h)(
+        "div",
+        { "class": "form-group" },
+        (0, _hyperapp.h)(
+            "label",
+            { "class": "form-label", "for": "{field.label}" },
+            field.label
+        ),
+        (0, _hyperapp.h)("select", { name: "", style: "width: 50%", multiple: "multiple", oncreate: function oncreate(element) {
+                $(element).select2({
+                    ajax: {
+                        url: field.url,
+                        dataType: 'json',
+                        delay: 250,
+                        placeholder: 'Search for ' + field.label.toLowerCase(),
+                        data: function data(params) {
+                            return {
+                                name: params.term
+                            };
+                        },
+                        processResults: function processResults(data) {
+                            return {
+                                results: data.results.map(function (r) {
+                                    return { 'id': r.id, 'text': r.name };
+                                })
+                            };
+                        }
+                    }
+                });
+                if (field.value) {
+                    field.value.forEach(function (v) {
+                        var option = new Option(v.name, v.id, true, true);
+                        $(element).append(option).trigger('change');
+                    });
+                }
+                $(element).on('change', function (e) {
+
+                    console.log(e);
+                    var newval = $(element).select2('data');
+                    console.log(newval);
+                    action(newval);
+                });
+            } })
+    );
+};
+
+module.exports = MultiSelect;
+
+},{"hyperapp":2}],15:[function(require,module,exports){
+'use strict';
+
+var _require = require('hyperapp'),
+    h = _require.h;
+
+var Pagination = module.exports = function (_ref) {
+    var page = _ref.page,
+        next = _ref.next,
+        previous = _ref.previous,
+        loadAction = _ref.loadAction;
+    return h(
+        'ul',
+        { 'class': 'pagination' },
+        h(
+            'li',
+            { 'class': 'page-item ' + (previous ? '' : 'disabled') },
+            h(
+                'a',
+                { onclick: function onclick() {
+                        return loadAction(previous);
+                    }, href: '#', tabindex: '-1' },
+                'Previous'
+            )
+        ),
+        h(
+            'li',
+            { 'class': 'page-item' },
+            h(
+                'a',
+                { href: '#' },
+                page
+            )
+        ),
+        h(
+            'li',
+            { 'class': 'page-item ' + (next ? '' : 'disabled') },
+            h(
+                'a',
+                { onclick: function onclick() {
+                        return loadAction(next);
+                    }, href: '#' },
+                'Next'
+            )
+        )
+    );
+};
+
+},{"hyperapp":2}],16:[function(require,module,exports){
+'use strict';
+
+var _require = require('hyperapp'),
+    h = _require.h;
+
+var PlotModal = module.exports = function (_ref) {
+    var movie = _ref.movie,
+        actions = _ref.actions;
+    return h(
+        'div',
+        { className: 'modal ' + (movie ? 'active' : '') },
+        h('div', { 'class': 'modal-overlay' }),
+        h(
+            'div',
+            { 'class': 'modal-container' },
+            h(
+                'div',
+                { 'class': 'modal-header' },
+                h('button', { 'class': 'btn btn-clear float-right', onclick: function onclick() {
+                        return actions.updateShowPlot(null);
+                    } }),
+                h(
+                    'div',
+                    { 'class': 'modal-title h5' },
+                    movie.title
+                )
+            ),
+            h(
+                'div',
+                { 'class': 'modal-body' },
+                h(
+                    'div',
+                    { 'class': 'content' },
+                    movie.story
+                )
+            ),
+            h(
+                'div',
+                { 'class': 'modal-footer' },
+                h(
+                    'button',
+                    { 'class': 'btn', onclick: function onclick() {
+                            return actions.updateShowPlot(null);
+                        } },
+                    'Ok'
+                )
+            )
+        )
+    );
+};
+
+},{"hyperapp":2}],17:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _Spinners = require('../components/Spinners.js');
+
+var renderField = function renderField(field, updateFieldAction) {
+    var ftype = FormInput;
+    if (field.type == 'longtext') ftype = FormInputLong;
+    return ftype({
+        field: field,
+        action: function action(val) {
+            return updateFieldAction(field.key, val);
+        }
+    });
+};
+
+var renderFields = function renderFields(fields, updateFieldAction) {
+    return fields.map(function (f) {
+        return renderField(f, updateFieldAction);
+    });
+};
+
+var SearchForm = module.exports = function (_ref) {
+    var loading = _ref.loading,
+        formFields = _ref.formFields,
+        searchAction = _ref.searchAction,
+        updateFieldAction = _ref.updateFieldAction;
+    return (0, _hyperapp.h)(
+        'form',
+        { method: 'GET', 'class': 'form-horizontal' },
+        (0, _hyperapp.h)(
+            'div',
+            { 'class': 'form-group' },
+            formFields.map(function (f) {
+                return (0, _hyperapp.h)(
+                    'div',
+                    { key: f.key },
+                    (0, _hyperapp.h)(
+                        'label',
+                        { 'class': 'form-label', 'for': f.key },
+                        f.label
+                    ),
+                    (0, _hyperapp.h)('input', { 'class': 'form-input', type: f.type, id: f.key, placeholder: f.label, value: f.value,
+                        oninput: function oninput(e) {
+                            return updateFieldAction(f.key, e.target.value);
+                        }
+                    })
+                );
+            }),
+            loading ? (0, _hyperapp.h)(_Spinners.SpinnerSmall, null) : (0, _hyperapp.h)(
+                'div',
+                null,
+                (0, _hyperapp.h)(
+                    'button',
+                    { style: { marginTop: '2.3em' }, 'class': 'btn ml-2 btn-primary', onclick: function onclick(e) {
+                            e.preventDefault();searchAction();return false;
+                        } },
+                    'Filter'
+                ),
+                (0, _hyperapp.h)(
+                    'button',
+                    { style: { 'margin-top': '2.3em' }, 'class': 'btn ml-2', onclick: function onclick(e) {
+                            e.preventDefault();searchAction(true);return false;
+                        } },
+                    'Reset'
+                )
+            )
+        )
+    );
+};
+
+},{"../components/Spinners.js":18,"hyperapp":2}],18:[function(require,module,exports){
+"use strict";
+
+var _hyperapp = require("hyperapp");
+
+var Spinner = function Spinner() {
+    return (0, _hyperapp.h)(
+        "div",
+        { "class": "spinner" },
+        (0, _hyperapp.h)("div", { "class": "bounce1" }),
+        (0, _hyperapp.h)("div", { "class": "bounce2" }),
+        (0, _hyperapp.h)("div", { "class": "bounce3" })
+    );
+};
+
+var SpinnerSmall = module.exports = function () {
+    return (0, _hyperapp.h)("div", { "class": "loading loading-lg" });
+};
+
+module.exports['Spinner'] = Spinner;
+module.exports['SpinnerSmall'] = SpinnerSmall;
+
+},{"hyperapp":2}],19:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _Pagination = require('../components/Pagination.js');
+
+var _Pagination2 = _interopRequireDefault(_Pagination);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Row = module.exports = function (_ref) {
+    var row = _ref.row,
+        rowColumns = _ref.rowColumns,
+        actions = _ref.actions;
+    return (0, _hyperapp.h)(
+        'tr',
+        null,
+        rowColumns.map(function (z) {
+            return (0, _hyperapp.h)(
+                'td',
+                null,
+                z(row, actions)
+            );
+        })
+    );
+};
+
+var Table = module.exports = function (_ref2) {
+    var rowHeaders = _ref2.rowHeaders,
+        rowColumns = _ref2.rowColumns,
+        rows = _ref2.rows,
+        actions = _ref2.actions;
+    return (0, _hyperapp.h)(
+        'div',
+        null,
+        (0, _hyperapp.h)(
+            'table',
+            { 'class': 'table table-striped table-hover' },
+            (0, _hyperapp.h)(
+                'thead',
+                null,
+                (0, _hyperapp.h)(
+                    'tr',
+                    null,
+                    rowHeaders.map(function (z) {
+                        return (0, _hyperapp.h)(
+                            'th',
+                            null,
+                            z
+                        );
+                    })
+                )
+            ),
+            (0, _hyperapp.h)(
+                'tbody',
+                null,
+                rows.items.map(function (z) {
+                    return (0, _hyperapp.h)(Row, { row: z, rowColumns: rowColumns, actions: actions });
+                })
+            )
+        ),
+        (0, _hyperapp.h)(_Pagination2.default, { page: rows.page, next: rows.next, previous: rows.previous, loadAction: actions.load })
+    );
+};
+
+},{"../components/Pagination.js":15,"hyperapp":2}],20:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _router = require('@hyperapp/router');
+
+var createTab = function createTab(url, title) {
+  return function (currentLocation) {
+    return (0, _hyperapp.h)(
+      'li',
+      { className: 'tab-item ' + (currentLocation.pathname == url ? 'active' : '') },
+      (0, _hyperapp.h)(
+        _router.Link,
+        { to: url },
+        title
+      )
+    );
+  };
+};
+
+var Table = module.exports = function (_ref) {
+  var currentLocation = _ref.currentLocation,
+      auth = _ref.auth,
+      actions = _ref.actions;
+  return (0, _hyperapp.h)(
+    'ul',
+    { 'class': 'tab tab-block' },
+    createTab("/", "Home")(currentLocation),
+    createTab("/movies", "Movies")(currentLocation),
+    createTab("/people", "People")(currentLocation),
+    createTab("/genres", "Genres")(currentLocation),
+    createTab("/jobs", "Jobs")(currentLocation),
+    auth.key ? (0, _hyperapp.h)(
+      'div',
+      null,
+      (0, _hyperapp.h)(
+        'span',
+        { 'class': 'chip' },
+        auth.username
+      ),
+      (0, _hyperapp.h)(
+        'button',
+        { 'class': 'btn', onclick: function onclick() {
+            return actions.auth.logout(actions);
+          } },
+        'Logout'
+      )
+    ) : (0, _hyperapp.h)(
+      'li',
+      { className: 'tab-item ' + (currentLocation.pathname == '/login' ? 'active' : '') },
+      (0, _hyperapp.h)(
+        _router.Link,
+        { to: '/login' },
+        'Login'
+      )
+    )
+  );
+};
+
+},{"@hyperapp/router":1,"hyperapp":2}],21:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var Toast = function Toast(_ref) {
+  var text = _ref.text,
+      actions = _ref.actions,
+      _ref$style = _ref.style,
+      style = _ref$style === undefined ? 'primary' : _ref$style;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'toast toast-' + style },
+    (0, _hyperapp.h)('button', { className: 'btn btn-clear float-right', onclick: function onclick() {
+        return actions.toasts.hide(text);
+      } }),
+    text
+  );
+};
+
+var ToastContainer = module.exports = function (_ref2) {
+  var toasts = _ref2.toasts,
+      actions = _ref2.actions;
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'toast-container' },
+    toasts.items.map(function (t) {
+      return (0, _hyperapp.h)(Toast, { text: t.text, style: t.style, actions: actions });
+    })
+  );
+};
+
+},{"hyperapp":2}],22:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _router = require('@hyperapp/router');
+
+var _actions = require('./actions');
+
+var _actions2 = _interopRequireDefault(_actions);
+
+var _Main = require('./views/Main.js');
+
+var _Main2 = _interopRequireDefault(_Main);
+
+var _state = require('./state.js');
+
+var _state2 = _interopRequireDefault(_state);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var application = (0, _hyperapp.app)(_state2.default, _actions2.default, _Main2.default, document.getElementById('app'));
+
+var unsubscribe = _router.location.subscribe(application.location);
+
+var hideToasts = function hideToasts() {
+  application.toasts.clear();
+};
+
+_actions2.default.location.go('/');
+
+addEventListener('pushstate', hideToasts);
+addEventListener('popstate', hideToasts);
+
+},{"./actions":6,"./state.js":23,"./views/Main.js":29,"@hyperapp/router":1,"hyperapp":2}],23:[function(require,module,exports){
+'use strict';
+
+var _auth = require('./util/auth.js');
+
+var genericState = {
+  loading: false,
+  page: null,
+  count: 0,
+  next: null,
+  previous: null,
+  items: [],
+  forms: {
+    edit: null,
+    search: {}
+  }
+};
+
+var existingAuth = (0, _auth.getExistingAuth)();
+
+var state = module.exports = {
+  auth: {
+    key: existingAuth.key,
+    username: existingAuth.username,
+    loading: false,
+    forms: {
+      login: {}
+    }
+  },
+  location: location.state,
+  toasts: {
+    items: []
+  },
+  movies: Object.assign({}, genericState, {
+    showPlot: false,
+    forms: Object.assign({}, genericState['forms'], {
+      editPeople: null
+    })
+  }),
+  people: Object.assign({}, genericState),
+  genres: Object.assign({}, genericState),
+  jobs: Object.assign({}, genericState)
+};
+
+},{"./util/auth.js":24}],24:[function(require,module,exports){
+'use strict';
+
+var checkAuth = function checkAuth(list, auth) {
+  if (auth.key) return list;
+  return list.slice(0, -1);
+};
+
+var getExistingAuth = function getExistingAuth() {
+  var existingAuth = localStorage.getItem('auth');
+
+  if (existingAuth) {
+    try {
+      existingAuth = JSON.parse(existingAuth);
+    } catch (error) {
+      existingAuth = null;
+    }
+  }
+  if (!existingAuth) existingAuth = { key: '', username: '' };
+  return existingAuth;
+};
+
+module.exports = {
+  checkAuth: checkAuth, getExistingAuth: getExistingAuth
+};
+
+},{}],25:[function(require,module,exports){
+'use strict';
+
+var mergeValuesErrors = function mergeValuesErrors(formFields, item, errors) {
+    return formFields.map(function (f) {
+        return Object.assign({}, f, {
+            'value': item[f.key]
+        }, errors ? {
+            'errors': errors[f.key]
+        } : {});
+    });
+};
+
+module.exports = {
+    mergeValuesErrors: mergeValuesErrors
+};
+
+},{}],26:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _Spinners = require('../components/Spinners.js');
+
+var _Table = require('../components/Table.js');
+
+var _Table2 = _interopRequireDefault(_Table);
+
+var _ModalForm = require('../components/ModalForm.js');
+
+var _ModalForm2 = _interopRequireDefault(_ModalForm);
+
+var _SearchForm = require('../components/SearchForm.js');
+
+var _SearchForm2 = _interopRequireDefault(_SearchForm);
+
+var _forms = require('../util/forms.js');
+
+var _auth = require('../util/auth');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = function (_ref) {
+  var key = _ref.key,
+      rowHeaders = _ref.rowHeaders,
+      rowColumns = _ref.rowColumns,
+      formFields = _ref.formFields,
+      title = _ref.title,
+      extraViews = _ref.extraViews;
+  return function (state, actions, g_actions) {
+    return (0, _hyperapp.h)(
+      'div',
+      { key: key },
+      (0, _hyperapp.h)(
+        'h2',
+        null,
+        title,
+        ' \xA0  \xA0',
+        state.auth.key ? (0, _hyperapp.h)(
+          'button',
+          { className: 'btn btn-primary btn-action btn-lg', onclick: function onclick() {
+              return actions.updateEdit({});
+            } },
+          (0, _hyperapp.h)('i', { className: 'icon icon-plus' })
+        ) : null
+      ),
+      (0, _hyperapp.h)(
+        'div',
+        { className: 'columns' },
+        (0, _hyperapp.h)(
+          'div',
+          { className: 'column col-lg-12', oncreate: function oncreate() {
+              return actions.load(window.g_urls[key]);
+            } },
+          (0, _hyperapp.h)(_SearchForm2.default, {
+            formFields: (0, _forms.mergeValuesErrors)(formFields, state[key].forms.search, null),
+            updateFieldAction: function updateFieldAction(key, value) {
+              return actions.updateField({ formname: 'search', fieldname: key, value: value });
+            },
+            searchAction: actions.searchAction
+          }),
+          state[key].loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(_Table2.default, {
+            rowHeaders: (0, _auth.checkAuth)(rowHeaders, state.auth),
+            rowColumns: (0, _auth.checkAuth)(rowColumns, state.auth),
+            rows: state[key],
+            actions: actions
+          })
+        )
+      ),
+      state[key].forms.edit ? (0, _hyperapp.h)(_ModalForm2.default, {
+        loading: state[key].loading,
+        formFields: (0, _forms.mergeValuesErrors)(formFields, state[key].forms.edit, state[key].forms.edit.errors),
+        item: state[key].forms.edit,
+        hideAction: function hideAction() {
+          return actions.updateEdit(null);
+        },
+        saveAction: function saveAction() {
+          return actions.saveEdit({ g_actions: g_actions, key: state.auth.key });
+        },
+        updateFieldAction: function updateFieldAction(key, value) {
+          return actions.updateField({ formname: 'edit', fieldname: key, value: value });
+        }
+      }) : null,
+      extraViews ? extraViews.map(function (ev) {
+        return ev(state, actions);
+      }) : null
+    );
+  };
+};
+
+},{"../components/ModalForm.js":12,"../components/SearchForm.js":17,"../components/Spinners.js":18,"../components/Table.js":19,"../util/auth":24,"../util/forms.js":25,"hyperapp":2}],27:[function(require,module,exports){
+"use strict";
+
+var _hyperapp = require("hyperapp");
+
+var Home = module.exports = function (state, actions) {
+    return (0, _hyperapp.h)(
+        "div",
+        { key: "home" },
+        state.auth.key ? (0, _hyperapp.h)(
+            "span",
+            null,
+            "Hello, ",
+            state.auth.username,
+            "!"
+        ) : (0, _hyperapp.h)(
+            "span",
+            null,
+            "Please login to edit things"
+        )
+    );
+};
+
+},{"hyperapp":2}],28:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _FormInputs = require('../components/FormInputs.js');
+
+var _Spinners = require('../components/Spinners.js');
+
+var okClick = function okClick(e, actions, g_actions) {
+  actions.login(g_actions);
+  console.log(e);
+  e.preventDefault();
+  return false;
+};
+
+var Login = module.exports = function (state, actions, g_actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    { key: 'login' },
+    (0, _hyperapp.h)(
+      'h2',
+      null,
+      'Login'
+    ),
+    (0, _hyperapp.h)(
+      'form',
+      { method: 'POST' },
+      (0, _hyperapp.h)(_FormInputs.FormInput, {
+        field: { label: 'Username', value: state.forms.login.username, type: 'text' },
+        action: function action(value) {
+          return actions.updateField({ formname: 'login', fieldname: 'username', value: value });
+        } }),
+      (0, _hyperapp.h)(_FormInputs.FormInput, {
+        field: { label: 'Password', value: state.forms.login.password, type: 'password' },
+        action: function action(value) {
+          return actions.updateField({ formname: 'login', fieldname: 'password', value: value });
+        } }),
+      state.loading == true ? (0, _hyperapp.h)(_Spinners.Spinner, null) : (0, _hyperapp.h)(
+        'button',
+        { id: 'btn', name: 'btn', className: 'btn btn-primary', onclick: function onclick(e) {
+            okClick(e, actions, g_actions);
+          } },
+        'Ok'
+      )
+    )
+  );
+};
+
+},{"../components/FormInputs.js":11,"../components/Spinners.js":18,"hyperapp":2}],29:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _router = require('@hyperapp/router');
+
+var _Home = require('./Home.js');
+
+var _Home2 = _interopRequireDefault(_Home);
+
+var _Movies = require('./Movies.js');
+
+var _Movies2 = _interopRequireDefault(_Movies);
+
+var _People = require('./People.js');
+
+var _People2 = _interopRequireDefault(_People);
+
+var _SimpleFilterTableView = require('./SimpleFilterTableView.js');
+
+var _SimpleFilterTableView2 = _interopRequireDefault(_SimpleFilterTableView);
+
+var _Login = require('./Login.js');
+
+var _Login2 = _interopRequireDefault(_Login);
+
+var _Tabs = require('../components/Tabs.js');
+
+var _Tabs2 = _interopRequireDefault(_Tabs);
+
+var _ToastContainer = require('../components/ToastContainer.js');
+
+var _ToastContainer2 = _interopRequireDefault(_ToastContainer);
+
+var _DebugContainer = require('../components/DebugContainer.js');
+
+var _DebugContainer2 = _interopRequireDefault(_DebugContainer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = function (state, actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    { className: 'container grid-xl' },
+    (0, _hyperapp.h)(_Tabs2.default, { currentLocation: state.location, auth: state.auth, actions: actions }),
+    (0, _hyperapp.h)(
+      _router.Switch,
+      null,
+      (0, _hyperapp.h)(_router.Route, { path: '/', render: function render() {
+          return (0, _Home2.default)(state, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/movies', render: function render() {
+          return (0, _Movies2.default)(state, actions.movies, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/people', render: function render() {
+          return (0, _People2.default)(state, actions.people, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/genres', render: function render() {
+          return (0, _SimpleFilterTableView2.default)({ key: 'genres', title: 'Genres' })(state, actions.genres, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/jobs', render: function render() {
+          return (0, _SimpleFilterTableView2.default)({ key: 'jobs', title: 'Jobs' })(state, actions.jobs, actions);
+        } }),
+      (0, _hyperapp.h)(_router.Route, { path: '/login', render: function render() {
+          return (0, _Login2.default)(state.auth, actions.auth, actions);
+        } })
+    ),
+    (0, _hyperapp.h)(_ToastContainer2.default, { toasts: state.toasts, actions: actions }),
+    (0, _hyperapp.h)('hr', null),
+    (0, _hyperapp.h)(_DebugContainer2.default, { state: state, actions: actions })
+  );
+};
+
+},{"../components/DebugContainer.js":9,"../components/Tabs.js":20,"../components/ToastContainer.js":21,"./Home.js":27,"./Login.js":28,"./Movies.js":30,"./People.js":31,"./SimpleFilterTableView.js":32,"@hyperapp/router":1,"hyperapp":2}],30:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _PlotModal = require('../components/PlotModal.js');
+
+var _PlotModal2 = _interopRequireDefault(_PlotModal);
+
+var _MultiModalForm = require('../components/MultiModalForm');
+
+var _MultiModalForm2 = _interopRequireDefault(_MultiModalForm);
+
+var _FilterTableView = require('./FilterTableView.js');
+
+var _FilterTableView2 = _interopRequireDefault(_FilterTableView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var rowHeaders = ['Id', 'Title', 'Release year', 'Runtime', 'Genres', 'Plot', 'Edit'];
+
+var rowColumns = [function (movie) {
+  return movie.id;
+}, function (movie) {
+  return movie.title;
+}, function (movie) {
+  return movie.release_year;
+}, function (movie) {
+  return movie.runtime;
+}, function (movie) {
+  return movie.genres.map(function (z) {
+    return (0, _hyperapp.h)(
+      'span',
+      { className: 'chip bg-dark' },
+      (0, _hyperapp.h)(
+        'a',
+        { 'class': 'text-secondary text-norma', href: '' },
+        z.name
+      )
+    );
+  });
+}, function (movie, actions) {
+  return (0, _hyperapp.h)(
+    'span',
+    { onclick: function onclick() {
+        return actions.updateShowPlot(movie);
+      } },
+    movie.story.substring(0, 50) + '...'
+  );
+}, function (movie, actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    null,
+    (0, _hyperapp.h)(
+      'button',
+      { className: 'btn btn-block btn-primary', onclick: function onclick() {
+          return actions.updateEdit(Object.assign({}, movie));
+        } },
+      'Edit'
+    ),
+    (0, _hyperapp.h)(
+      'button',
+      { className: 'btn btn-block btn-primary', onclick: function onclick() {
+          return actions.updateEditPeople(Object.assign({}, movie));
+        } },
+      'Edit people'
+    )
+  );
+}];
+
+var formFields = [{ 'key': 'title', 'label': 'Title', 'type': 'text' }, { 'key': 'release_year', 'label': 'Release Year', 'type': 'number' }, { 'key': 'runtime', 'label': 'Runtime', 'type': 'number' }, { 'key': 'story', 'label': 'Plot', 'type': 'longtext' }, { 'key': 'genres', 'label': 'Genres', 'type': 'multiselect', url: '/api/genres/' }];
+
+var multiFormFields = [{ 'key': 'person', 'label': 'Person', 'type': 'text' }, { 'key': 'job', 'label': 'Job', 'type': 'text' }];
+
+var extraViews = [function (state, actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    null,
+    state.movies.showPlot ? (0, _hyperapp.h)(_PlotModal2.default, { movie: state.movies.showPlot, actions: actions }) : null
+  );
+}, function (state, actions) {
+  return (0, _hyperapp.h)(
+    'div',
+    null,
+    state.movies.forms.editPeople ? (0, _hyperapp.h)(
+      'div',
+      null,
+      'WILL EDIT',
+      (0, _hyperapp.h)(_MultiModalForm2.default, {
+        loading: state.movies.loading
+        //formFields={mergeValuesErrors(formFields, state.movies.forms.editPeople, state.movies.forms.editPeople.errors)}
+        , formFields: multiFormFields,
+        item: state.movies.forms.editPeople,
+        hideAction: function hideAction() {
+          return actions.updateEditPeople(null);
+        },
+        saveAction: function saveAction() {
+          return actions.saveEditPeople({ g_actions: g_actions, key: state.auth.key });
+        },
+        updateFieldAction: function updateFieldAction(key, value) {
+          return actions.updateField({ formname: 'edit', fieldname: 'movies', value: value });
+        }
+      })
+    ) : null
+  );
+}];
+
+var Movies = (0, _FilterTableView2.default)({
+  key: 'movies',
+  rowHeaders: rowHeaders,
+  rowColumns: rowColumns,
+  formFields: formFields,
+  title: 'Movies list',
+  extraViews: extraViews
+});
+
+module.exports = Movies;
+
+},{"../components/MultiModalForm":13,"../components/PlotModal.js":16,"./FilterTableView.js":26,"hyperapp":2}],31:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _FilterTableView = require('./FilterTableView.js');
+
+var _FilterTableView2 = _interopRequireDefault(_FilterTableView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var rowHeaders = ['Id', 'Name', 'Birthday', 'Edit'];
+
+var rowColumns = [function (person) {
+  return person.id;
+}, function (person) {
+  return person.name;
+}, function (person) {
+  return person.birthday;
+}, function (person, actions) {
+  return (0, _hyperapp.h)(
+    'button',
+    { className: 'btn btn-block btn-primary', onclick: function onclick() {
+        return actions.updateEdit(Object.assign({}, person));
+      } },
+    'Edit'
+  );
+}];
+
+var formFields = [{ 'key': 'name', 'label': 'Name', 'type': 'text' }, { 'key': 'birthday', 'label': 'Birthday', 'type': 'date' }];
+
+var People = (0, _FilterTableView2.default)({
+  key: 'people',
+  rowHeaders: rowHeaders,
+  rowColumns: rowColumns,
+  formFields: formFields,
+  title: 'People list'
+});
+
+module.exports = People;
+
+},{"./FilterTableView.js":26,"hyperapp":2}],32:[function(require,module,exports){
+'use strict';
+
+var _hyperapp = require('hyperapp');
+
+var _FilterTableView = require('./FilterTableView.js');
+
+var _FilterTableView2 = _interopRequireDefault(_FilterTableView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var rowHeaders = ['Id', 'Name', 'Edit'];
+
+var rowColumns = [function (item) {
+  return item.id;
+}, function (item) {
+  return item.name;
+}, function (item, actions) {
+  return (0, _hyperapp.h)(
+    'button',
+    { className: 'btn btn-block btn-primary', onclick: function onclick() {
+        return actions.updateEdit(Object.assign({}, item));
+      } },
+    'Edit'
+  );
+}];
+
+var formFields = [{ 'key': 'name', 'label': 'Name', 'type': 'text' }];
+
+var SimpleFilterTableView = function SimpleFilterTableView(_ref) {
+  var key = _ref.key,
+      title = _ref.title;
+  return (0, _FilterTableView2.default)({
+    key: key,
+    rowHeaders: rowHeaders,
+    rowColumns: rowColumns,
+    formFields: formFields,
+    title: title
+  });
+};
+
+module.exports = SimpleFilterTableView;
+
+},{"./FilterTableView.js":26,"hyperapp":2}]},{},[22]);
