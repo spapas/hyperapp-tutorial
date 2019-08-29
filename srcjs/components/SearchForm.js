@@ -30,7 +30,5 @@ const SearchForm = module.exports = ({ loading, formFields, searchAction, update
             <button style={{'margin-top': '2.3em'}} class="btn ml-2" onclick={e => {e.preventDefault(); searchAction(true); return false; }} >Reset</button>
         </div>}
     </div>
-  
-  
 </form>
             
