@@ -1,29 +1,28 @@
 {
   "name": "hyperapp-sample",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "A Hyperapp (https://github.com/jorgebucaran/hyperapp) tutorial application. Hyperapp is a modern JS micro-framework with a functional twist. The project uses a Django - DRF API to provide a (writable) REST API.",
   "main": "index.js",
   "scripts": {
-    "build": "browserify -t babelify -g uglifyify -p bundle-collapser/plugin ./srcjs/index.js | uglifyjs > ./static/bundle.js",
-    "watch": "watchify -v -t babelify  ./srcjs/index.js -o ./static/bundle.js"
+    "watch": "parcel srcjs\\index.js -d static",
+    "build": "parcel build srcjs\\index.js -d static"
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spapas/hyperapp-tutorial.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/spapas/hyperapp-tutorial/issues"
+  },
+  "homepage": "https://github.com/spapas/hyperapp-tutorial#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.6.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.1.0",
-    "bundle-collapser": "^1.2.1",
-    "uglifyify": "^5.0.1",
-    "uglifyjs": "^2.4.11",
-    "watchify": "^3.9.0"
+    "@babel/core": "^7.5.5"
   },
   "dependencies": {
-    "@hyperapp/router": "^0.7.1",
-    "hyperapp": "^1.2.9",
-    "update": "^0.7.4"
+    "@hyperapp/router": "^0.7.2",
+    "hyperapp": "^1.2.10"
   }
 }
